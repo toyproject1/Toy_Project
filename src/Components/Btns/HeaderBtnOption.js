@@ -29,9 +29,6 @@ export default function HeaderBtnOption() {
           <View style={styles.modalCard}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalHeaderTitle}>Option</Text>
-              <Pressable onPress={() => setModalVisible(!modalVisible)}>
-                <Text style={styles.btnCloseTop}>close</Text>
-              </Pressable>
             </View>
             <View style={{ marginTop: 30 }}>
               <Text style={styles.bgSound}>BackGround Sound</Text>
@@ -113,7 +110,7 @@ const styles = StyleSheet.create({
   modalHeader: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
     width: "100%",
     backgroundColor: "#7EB85A",
     height: 54,
