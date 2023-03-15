@@ -34,13 +34,6 @@ export default function App() {
     return false;
   };
 
-  // useEffect(() => {
-  //   BackHandler.addEventListener("hardwareBackPress", backAction);
-  //   return () => {
-  //     BackHandler.removeEventListener("hardwareBackPress", backAction);
-  //   };
-  // }, [isModalOpened, backAction]);
-
   return (
     <>
       <StatusBar hidden={true} />

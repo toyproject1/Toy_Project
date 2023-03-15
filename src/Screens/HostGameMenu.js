@@ -7,17 +7,23 @@ import {
   Text,
   Pressable,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import BtnMainMenu from "../Components/Btns/BtnMainMenu";
 import Header from "../Components/Header";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HostGameMenu({ navigation }) {
-  const [gTitle, onChangeGTitle] = React.useState("");
-  const [HCNum, onChangeHCNum] = React.useState(2);
-  const [gameInfo, setGInfo] = React.useState({
-    gTitle: { gTitle },
-    headCount: { HCNum },
-  });
+  const [gTitle, onChangeGTitle] = useState("");
+  const [HCNum, onChangeHCNum] = useState(2);
+  // const onSubmit = async () => {
+  //   await AsyncStorage.setItem("gameTitle", gTitle);
+  //   navigation.navigate("GameScreen", {
+  //     gTitle: gTitle,
+  //     HCNum: HCNum,
+  //   });
+  //   console.log(`${gTitle}, ${HCNum}`);
+  // };
 
   return (
     <View style={styles.main}>
@@ -59,7 +65,13 @@ export default function HostGameMenu({ navigation }) {
               <TouchableOpacity
                 style={styles.btn}
                 activeOpacity={0.9}
-                onPress={() => navigation.navigate("GameScreen")}
+                // onPress={onSubmit}
+                onPress={() =>
+                  navigation.navigate("GameScreen", {
+                    gTitle: gTitle,
+                    HCNum: HCNum,
+                  })
+                }
               >
                 <Text style={styles.btnTxt}>Create Game</Text>
               </TouchableOpacity>

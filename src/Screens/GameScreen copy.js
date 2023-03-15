@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Text, Modal, Pressable, route } from "react-native";
+import { View, StyleSheet, Text, Modal, Pressable } from "react-native";
 import GHeader from "../Components/GHeader";
 
-export default function GameScreen({ navigation, route }) {
+export default function GameScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(true);
   const [roomnumber, setRoomnumber] = useState("001");
-  const [plCount, setPlCount] = useState(1);
+  const [gameTitle, setGameTitle] = useState("Game Title");
+  const [plCount, setPlCount] = useState(3);
   const [player, setPlayer] = useState("User Name");
-  const [ready, setReady] = useState("Wait ...");
-  const { gTitle, HCNum } = route.params;
+  const [ready, setReady] = useState("Ready");
+
   return (
     <View style={styles.main}>
       <GHeader />
@@ -25,37 +26,17 @@ export default function GameScreen({ navigation, route }) {
             <View style={styles.modalBG}>
               <View style={styles.modalCard}>
                 <View style={styles.modalHeader}>
-                  <View style={styles.roomlocation}>
-                    <Text style={styles.roomnumber}>{roomnumber}</Text>
-                  </View>
-                  <View style={styles.roomlocation1}>
-                    <Text style={styles.modalHeaderTitle}>{gTitle}</Text>
-                  </View>
-                  <View style={styles.roomlocation2}>
-                    <Text style={styles.peopleCount}>
-                      {plCount}/{JSON.parse(HCNum)}
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.playerBox}>
-                  <Text style={styles.player}>{player}</Text>
-                  <Text style={styles.player}>{ready}</Text>
-                </View>
-                <View style={styles.playerBox}>
-                  <Text style={styles.player}>{player}</Text>
-                  <Text style={styles.player}>{ready}</Text>
-                </View>
-                <View style={styles.playerBox}>
-                  <Text style={styles.player}>{player}</Text>
-                  <Text style={styles.player}>{ready}</Text>
+                  <Text style={styles.roomnumber}>{roomnumber}</Text>
+                  <Text style={styles.modalHeaderTitle}>{gameTitle}</Text>
+                  <Text style={styles.peopleCount}>{plCount}/4</Text>
                 </View>
                 <View style={styles.playerBox}>
                   <Text style={styles.player}>{player}</Text>
                   <Text style={styles.player}>{ready}</Text>
                 </View>
                 <View style={styles.btnOp}>
-                  <Pressable onPress={() => setReady(true)}>
-                    <Text style={styles.btnClose}>Ready</Text>
+                  <Pressable onPress={() => setModalVisible(!modalVisible)}>
+                    <Text style={styles.btnClose}>Start</Text>
                   </Pressable>
                   <Pressable onPress={() => navigation.navigate("MainMenu")}>
                     <Text style={styles.btnSave}>Exit</Text>
@@ -83,7 +64,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
-    marginBottom: 5,
     shadowOffset: {
       width: 0,
       height: 4,
@@ -94,7 +74,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
-    marginTop: 30,
+    marginTop: 15,
   },
   player: {
     fontSize: 20,
@@ -140,40 +120,30 @@ const styles = StyleSheet.create({
     height: 54,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-  },
-  roomlocation: {
-    justifyContent: "center",
-  },
-  roomlocation1: {
-    justifyContent: "center",
-  },
-  roomlocation2: {
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
   },
   roomnumber: {
     fontSize: 25,
     color: "#FFFFFF",
     marginLeft: 15,
-    marginRight: 35,
+    marginRight: 60,
   },
   modalHeaderTitle: {
     fontSize: 25,
     color: "#FFFFFF",
-    marginLeft: 15,
-    marginRight: 15,
+    marginLeft: 10,
   },
   peopleCount: {
     fontSize: 25,
     color: "#FFFFFF",
-    marginLeft: 35,
+    marginLeft: 60,
     marginRight: 15,
   },
   btnOp: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    marginTop: 30,
+    marginTop: 160,
   },
   btnClose: {
     fontSize: 25,
