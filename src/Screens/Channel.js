@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
   View,
@@ -9,13 +9,16 @@ import {
   TouchableOpacity,
   Dimensions,
   ScrollView,
+  BackHandler,
+  Alert,
+  goBack,
 } from "react-native";
 import BtnMainMenu from "../Components/Btns/BtnMainMenu";
 import BtnCreateGame from "../Components/Btns/BtnCreateGame";
 import Header from "../Components/Header";
 import ChannelButton from "../Components/Btns/ChannelButton";
 
-export default function HostGameMenu({ navigation }) {
+export default function Channel({ navigation }) {
   const [gTitle, onChangeGTitle] = React.useState("");
   const [HCNum, onChangeHCNum] = React.useState(2);
   const [gameInfo, setGInfo] = React.useState({

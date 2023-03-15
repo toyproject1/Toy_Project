@@ -1,12 +1,12 @@
 import React from "react";
 import { TouchableOpacity, StyleSheet, View, Text } from "react-native";
 
-export default function BtnCreateGame() {
+export default function BtnCreateGame({ navigation }) {
   return (
     <TouchableOpacity
       style={styles.btn}
       activeOpacity={0.9}
-      onPress={() => <></>}
+      onPress={() => navigation.navigate("GameScreen")}
     >
       <Text style={styles.btnTxt}>Create Game</Text>
     </TouchableOpacity>

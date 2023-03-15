@@ -6,33 +6,60 @@ import {
   Pressable,
   TouchableOpacity,
   Image,
-  BackHandler,
   Alert,
+  BackHandler,
 } from "react-native";
-import BtnJoinGame from "../Components/Btns/BtnJoinGame";
 import BtnOption from "../Components/Btns/BtnOption";
-import BtnLogOut from "../Components/Btns/BtnLogOut";
-import BtnExit from "../Components/Btns/BtnExit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Header from "../Components/Header";
 import Dice from "../Components/Imgs/Dice111.png";
-
-const backAction = () => {
-  Alert.alert("Hold on!", "앱을 종료하시겠습니까?", [
-    {
-      text: "취소",
-      onPress: () => null,
-    },
-    { text: "확인", onPress: () => BackHandler.exitApp() },
-  ]);
-  return true;
-};
+import { useNavigation } from "@react-navigation/native";
 
 const MainMenu = ({ navigation }) => {
+  // const navigation = useNavigation();
+
+  const backAction = () => {
+    Alert.alert("Hold on!", "앱을 종료하시겠습니까?", [
+      {
+        text: "취소",
+        onPress: () => null,
+      },
+      { text: "확인", onPress: () => BackHandler.exitApp() },
+    ]);
+    return true;
+  };
+
+  const backPress = () => {
+    Alert.alert("Hold on!", "앱을 종료하시겠습니까?", [
+      {
+        text: "취소",
+        onPress: () => null,
+      },
+      {
+        text: "확인",
+        onPress: () => {
+          if (navigation.routes[0].name === "MainMenu")
+            return BackHandler.exitApp();
+          else {
+            navigation.goBack();
+          }
+        },
+      },
+    ]);
+    return true;
+  };
+
   const logout = async () => {
     await AsyncStorage.removeItem("token");
     navigation.navigate("Login");
   };
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+    return () => backHandler.remove();
+  }, []);
 
   return (
     <View style={styles.main}>

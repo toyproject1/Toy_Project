@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import BtnMainMenu from "../Components/Btns/BtnMainMenu";
-import BtnCreateGame from "../Components/Btns/BtnCreateGame";
 import Header from "../Components/Header";
 
 export default function HostGameMenu({ navigation }) {
@@ -56,14 +55,21 @@ export default function HostGameMenu({ navigation }) {
             </View>
           </View>
           <View style={styles.btns}>
-            <Pressable style={styles.btnCG} onPress={console.log(gameInfo)}>
-              <BtnCreateGame />
+            <Pressable style={styles.btnCG}>
+              <TouchableOpacity
+                style={styles.btn}
+                activeOpacity={0.9}
+                onPress={() => navigation.navigate("GameScreen")}
+              >
+                <Text style={styles.btnTxt}>Create Game</Text>
+              </TouchableOpacity>
             </Pressable>
             <View style={styles.btnMM}>
               <TouchableOpacity
                 style={styles.btn}
                 activeOpacity={0.9}
                 onPress={() => navigation.navigate("MainMenu")}
+                // onPress={navigation.goBack}
               >
                 <Text style={styles.btnTxt}>Main Menu</Text>
               </TouchableOpacity>
@@ -110,6 +116,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     fontSize: 20,
   },
+
   btn: {
     width: 115,
     height: 60,
@@ -132,6 +139,7 @@ const styles = StyleSheet.create({
   btns: {
     flexDirection: "row",
     justifyContent: "space-evenly",
+    marginTop: 100,
   },
   btnCG: {
     marginRight: 15,

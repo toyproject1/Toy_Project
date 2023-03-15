@@ -8,6 +8,7 @@ import {
   Pressable,
   Image,
   ScrollView,
+  Alert,
 } from "react-native";
 import GameRule01 from "../Imgs/gameRule01.png";
 import GameRule02 from "../Imgs/gameRule02.png";
@@ -21,7 +22,6 @@ export default function HeaderBtnRule() {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
           setModalVisible(!modalVisible);
         }}
       >

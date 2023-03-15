@@ -6,13 +6,15 @@ import {
   View,
   Modal,
   Pressable,
+  Image,
+  ScrollView,
 } from "react-native";
 import Slider from "@react-native-community/slider";
 
-export default function HeaderBtnMy() {
+export default function HeaderBtnOption() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [sliderValue, setSliderValue] = useState(100);
-  const [sliderValue1, setSliderValue1] = useState(100);
+  const [sliderValue, setSliderValue] = useState(0);
+  const [sliderValue1, setSliderValue1] = useState(0);
   return (
     <View style={styles.btnSite}>
       <Modal
@@ -27,6 +29,9 @@ export default function HeaderBtnMy() {
           <View style={styles.modalCard}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalHeaderTitle}>Option</Text>
+              <Pressable onPress={() => setModalVisible(!modalVisible)}>
+                <Text style={styles.btnCloseTop}>close</Text>
+              </Pressable>
             </View>
             <View style={{ marginTop: 30 }}>
               <Text style={styles.bgSound}>BackGround Sound</Text>
@@ -44,7 +49,7 @@ export default function HeaderBtnMy() {
                 <Text>{sliderValue}</Text>
               </View>
             </View>
-            <View>
+            <View style={{ marginTop: 30 }}>
               <Text style={styles.bgSound}>Sound Effect</Text>
               <View style={styles.bgSd}>
                 <Slider
@@ -72,11 +77,11 @@ export default function HeaderBtnMy() {
         </View>
       </Modal>
       <TouchableOpacity
-        style={styles.btns}
+        style={styles.btn}
         activeOpacity={0.9}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={styles.btnTextop}>Option</Text>
+        <Text style={styles.btnText}>Option</Text>
       </TouchableOpacity>
     </View>
   );
@@ -84,18 +89,6 @@ export default function HeaderBtnMy() {
 
 const styles = StyleSheet.create({
   btnSite: {},
-  bgSd: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 20,
-  },
-  bgSound: {
-    fontSize: 20,
-    marginLeft: 60,
-    marginTop: 20,
-    justifyContent: "center",
-    alignContent: "center",
-  },
   btn: {
     outline: "none",
     backgroundColor: "transparent",
@@ -120,7 +113,7 @@ const styles = StyleSheet.create({
   modalHeader: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
     width: "100%",
     backgroundColor: "#7EB85A",
     height: 54,
@@ -130,11 +123,32 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     marginLeft: 10,
   },
-  btnOp: {
+  btnCloseTop: {
+    fontSize: 20,
+    color: "#FFFFFF",
+    marginRight: 15,
+  },
+  profileContents: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  profileTexts: {
+    fontSize: 24,
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  bgSd: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: "100%",
-    marginTop: 160,
+    marginTop: 20,
+  },
+  bgSound: {
+    fontSize: 20,
+    marginLeft: 60,
+    marginTop: 20,
+    justifyContent: "center",
+    alignContent: "center",
   },
   btnClose: {
     fontSize: 25,
@@ -148,41 +162,10 @@ const styles = StyleSheet.create({
     marginRight: 30,
     marginTop: 15,
   },
-  profileContents: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  profileTexts: {
-    fontSize: 24,
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  main: {
-    flex: 1,
+  btnOp: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     width: "100%",
-    backgroundColor: "#A8D98A",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  btns: {
-    width: 250,
-    height: 60,
-    borderRadius: 15,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#D9D9D9",
-    marginTop: 15,
-  },
-  btnTextop: {
-    fontSize: 30,
+    marginTop: 160,
   },
 });
