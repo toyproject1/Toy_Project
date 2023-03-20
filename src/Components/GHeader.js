@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import HeaderBtnMy from "./Btns/HeaderBtnMy";
 import HeaderBtnOption from "./Btns/HeaderBtnOption";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function GHeader() {
   return (

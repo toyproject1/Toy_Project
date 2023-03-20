@@ -2,14 +2,33 @@ import React, { useState } from "react";
 import CustomInput from "../Components/Btns/CustomInput";
 import { Text, StyleSheet, Pressable, View, Alert } from "react-native";
 import CustomButton from "../Components/Btns/CustomButton";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SignUp = ({ navigation }) => {
   const [Username, setUsername] = useState("");
   const [Email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
-  const onSignInPressed = () => {
+  const onSignInPressed = async () => {
     Alert.alert(`${Username}, ${Email}, ${password}, ${password2}`);
+    // const header = { Authorization: `Bearer ${TOKEN.accessToken}` };
+    axios
+      .post(
+        `http://3.38.165.165:3000/api/signUp`,
+        { user_name: Username, user_email: Email, user_pw: password }
+        // { header }
+      )
+      .then((response) => console.log(response))
+      .catch((err) => console.log(err));
+    try {
+      const test = await AsyncStorage.setItem(
+        "userData",
+        JSON.stringify(Username, Email)
+      );
+      console.log(value);
+    } catch (error) {}
+    navigation.navigate("Start");
   };
   const onLoginPressed = () => {
     console.warn("onLoginPressed");

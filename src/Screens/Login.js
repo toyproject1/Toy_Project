@@ -1,39 +1,91 @@
-import React, { useState } from "react"; // , useContext
+import React, { useState, useEffect } from "react"; // , useContext
 import CustomInput from "../Components/Btns/CustomInput";
-import { Text, StyleSheet, Pressable, View } from "react-native";
+import { Text, StyleSheet, Pressable, View, Json, Alert } from "react-native";
 import CustomButton from "../Components/Btns/CustomButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { AuthContext } from "./AuthContext";
+import { Buffer } from "buffer";
+import axios from "axios";
+import restart from "./restart";
 
 const Login = ({ navigation }) => {
-  const [Email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [token, setToken] = useState(null);
   const onLoginPressed = () => {
     console.warn("onLoginPressed");
   };
+  const [Email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const onSubmit = async () => {
-    await AsyncStorage.setItem("token", Email);
-    if (Email === "wlwhsxorhs@naver.com" && password === "1234") {
-      console.warn("connect");
-      navigation.navigate("MainMenu");
-    } else {
-      console.warn("not connect");
-    }
+    console.log(Email);
+    let temp;
+    await axios
+      .post(`http://3.38.165.165:3000/api/signIn`, {
+        user_email: Email,
+        user_pw: password,
+      })
+      .then(async (response) => {
+        temp = response.data;
+        console.log(response.data);
+        const parts = temp.access_token
+          .split(".")
+          .map((part) =>
+            Buffer.from(
+              part.replace(/-/g, "+").replace(/_/g, "/"),
+              "base64"
+            ).toString()
+          );
+        const payload = parts[1];
+        // console.log("JWT decode", payload);
+        await AsyncStorage.setItem("userInfo", payload);
+        console.log(payload);
+
+        console.log(
+          JSON.parse(await AsyncStorage.getItem("userInfo")).user_name
+        );
+
+        const userInfo = JSON.parse(await AsyncStorage.getItem("userInfo"));
+        userInfo["access_token"] = temp.access_token;
+        userInfo["refresh_token"] = temp.refresh_token;
+        console.log(userInfo);
+        restart();
+        //navigation.navigate("MainMenu");
+        // navigation.replace("MainMenu");
+      })
+      .catch((err) => console.log(err));
   };
 
-  const tokenlogin = async () => {
-    const value = await AsyncStorage.getItem("token");
-    if (value !== null) {
-      navigation.navigate("MainMenu");
-      console.warn("connect");
-    } else {
-      console.warn("not connect");
-    }
-  };
+  // AsyncStorage.setItem(
+  //   "userData",
+  //   JSON.stringify({
+  //     user_email: Email,
+  //     user_pw: password,
+  //   })
+  // );
 
-  tokenlogin();
+  // const userData = async () => {
+  //   Alert.alert(`${Email}, ${password}`);
+  //   //await AsyncStorage.setItem("token", Email);
+  //   let temp;
+  //   await axios
+  //     .post(`http://43.200.253.133:3000/api/signIn`, {
+  //       user_email: Email,
+  //       user_pw: password,
+  //     })
+  //     .then((response) => {
+  //       console.log(response.data);
+  //       temp = response.data;
+  //     })
+  //     .catch((err) => console.log(err));
+  //   console.log(temp);
+
+  //   const value = await AsyncStorage.getItem("userData");
+  //   if (value !== null) {
+  //     navigation.navigate("MainMenu");
+
+  //     console.warn("connect");
+  //   } else {
+  //     console.warn("not connect");
+  //   }
+  // };
 
   return (
     <View style={styles.container}>

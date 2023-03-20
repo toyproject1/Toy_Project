@@ -17,6 +17,7 @@ import BtnMainMenu from "../Components/Btns/BtnMainMenu";
 import BtnCreateGame from "../Components/Btns/BtnCreateGame";
 import Header from "../Components/Header";
 import ChannelButton from "../Components/Btns/ChannelButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Channel({ navigation }) {
   const [gTitle, onChangeGTitle] = React.useState("");

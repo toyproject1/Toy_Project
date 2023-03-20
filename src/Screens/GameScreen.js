@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Text, Modal, Pressable, route } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import GHeader from "../Components/GHeader";
 
 export default function GameScreen({ navigation, route }) {

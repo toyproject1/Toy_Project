@@ -2,7 +2,7 @@ import React from "react";
 import { Text, StyleSheet, View, Image, Pressable } from "react-native";
 import CustomButton from "../Components/Btns/CustomButton";
 import images from "../../assets/Dice.png";
-
+// 앱을 들어왔을 때 첫 페이지
 const Start = ({ navigation }) => {
   return (
     <View style={styles.container}>

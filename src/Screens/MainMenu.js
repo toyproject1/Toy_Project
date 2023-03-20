@@ -14,9 +14,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Header from "../Components/Header";
 import Dice from "../Components/Imgs/Dice111.png";
 import { useNavigation } from "@react-navigation/native";
+import restart from "./restart";
 
 const MainMenu = ({ navigation }) => {
   // const navigation = useNavigation();
+  // const header = { Authorization: `Bearer ${}`,};
 
   const backAction = () => {
     Alert.alert("Hold on!", "앱을 종료하시겠습니까?", [
@@ -50,8 +52,20 @@ const MainMenu = ({ navigation }) => {
   };
 
   const logout = async () => {
-    await AsyncStorage.removeItem("token");
-    navigation.navigate("Login");
+    try {
+      await AsyncStorage.removeItem("userInfo");
+      restart();
+    } catch (error) {
+      console.log(error);
+    }
+
+    // 추가 한 것
+    // try {
+    //   AsyncStorage.clear();
+    //   navigation.replace("Login");
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -60,6 +74,14 @@ const MainMenu = ({ navigation }) => {
     );
     return () => backHandler.remove();
   }, []);
+
+  // const userData = async () => {
+  //   console.log(JSON.parse(await AsyncStorage.getItem("userInfo")).user_name);
+  //   console.log(JSON.parse(await AsyncStorage.getItem("userInfo")));
+  // };
+  // useEffect(() => {
+  //   userData();
+  // });
 
   return (
     <View style={styles.main}>
