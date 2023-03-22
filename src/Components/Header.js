@@ -54,7 +54,7 @@ export default function Header() {
                     <Text style={styles.btnClose}>close</Text>
                   </Pressable>
                 </View>
-                {/* {value}  */}
+                {/* {value} */}
                 <View style={styles.profileContents}>
                   <Text style={styles.profileTexts}>Your Name : </Text>
                   <Text style={styles.profileTexts}>Win :</Text>

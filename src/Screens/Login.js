@@ -5,7 +5,10 @@ import CustomButton from "../Components/Btns/CustomButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Buffer } from "buffer";
 import axios from "axios";
-import restart from "./restart";
+import MainMenu from "./MainMenu";
+import { CommonActions } from "@react-navigation/native";
+import AuthStack from "../../AuthStack";
+import AppStack from "../../AppStack";
 
 const Login = ({ navigation }) => {
   const onLoginPressed = () => {
@@ -46,8 +49,8 @@ const Login = ({ navigation }) => {
         userInfo["access_token"] = temp.access_token;
         userInfo["refresh_token"] = temp.refresh_token;
         console.log(userInfo);
-        restart();
-        //navigation.navigate("MainMenu");
+        // navigation.popToTop();
+        navigation.navigate("MainMenu");
         // navigation.replace("MainMenu");
       })
       .catch((err) => console.log(err));
@@ -113,7 +116,9 @@ const Login = ({ navigation }) => {
           <Text style={styles.otherButtonText}>Login </Text>
         </Pressable>
         <Text style={styles.otherButtonText}>|</Text>
-        <Pressable onPress={() => navigation.navigate("SignUp")}>
+        <Pressable
+          onPress={() => navigation.reset({ routes: [{ name: "MainMenu" }] })}
+        >
           <Text style={styles.otherButtonText}> Sign Up</Text>
         </Pressable>
       </View>

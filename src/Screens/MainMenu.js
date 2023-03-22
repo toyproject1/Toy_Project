@@ -14,7 +14,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Header from "../Components/Header";
 import Dice from "../Components/Imgs/Dice111.png";
 import { useNavigation } from "@react-navigation/native";
-import restart from "./restart";
 
 const MainMenu = ({ navigation }) => {
   // const navigation = useNavigation();
@@ -50,23 +49,29 @@ const MainMenu = ({ navigation }) => {
     ]);
     return true;
   };
-
   const logout = async () => {
-    try {
-      await AsyncStorage.removeItem("userInfo");
-      restart();
-    } catch (error) {
-      console.log(error);
-    }
-
-    // 추가 한 것
-    // try {
-    //   AsyncStorage.clear();
-    //   navigation.replace("Login");
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    Alert.alert("로그아웃", "로그아웃 하시겠습니까?", [
+      {
+        text: "취소",
+        onPress: () => null,
+      },
+      {
+        text: "확인",
+        onPress: async () => {
+          await AsyncStorage.removeItem("userInfo");
+          navigation.navigate("Login");
+        },
+      },
+    ]);
   };
+
+  // 추가 한 것
+  // try {
+  //   AsyncStorage.clear();
+  //   navigation.replace("Login");
+  // } catch (error) {
+  //   console.log(error);
+  // }
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",

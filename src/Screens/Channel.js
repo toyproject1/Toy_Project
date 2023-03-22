@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   SafeAreaView,
   View,
@@ -7,17 +7,16 @@ import {
   Text,
   Pressable,
   TouchableOpacity,
-  Dimensions,
   ScrollView,
   BackHandler,
   Alert,
   goBack,
+  RefreshControl,
 } from "react-native";
-import BtnMainMenu from "../Components/Btns/BtnMainMenu";
-import BtnCreateGame from "../Components/Btns/BtnCreateGame";
 import Header from "../Components/Header";
 import ChannelButton from "../Components/Btns/ChannelButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import io, { socket } from "socket.io-client";
 
 export default function Channel({ navigation }) {
   const [gTitle, onChangeGTitle] = React.useState("");
@@ -26,6 +25,30 @@ export default function Channel({ navigation }) {
     gTitle: { gTitle },
     headCount: { HCNum },
   });
+  const wait = (timeout) => {
+    return new Promise((resolve) => setTimeout(resolve, timeout));
+  };
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
+
+  const WebSocket = useRef(null);
+
+  useEffect(() => {
+    WebSocket.current = io("http://3.38.165.165:3131/");
+    WebSocket.current.on("connect", () => {
+      console.log("connected");
+    });
+    WebSocket.current.on("refreshRoom", (data) => {
+      console.log(data);
+    });
+  }, []);
+
+  const backPress = () => {
+    navigation.goBack();
+  };
 
   return (
     <View style={styles.main}>
@@ -34,6 +57,9 @@ export default function Channel({ navigation }) {
         persistentScrollbar={true}
         showsVerticalScrollIndicator={true}
         style={styles.scrollView}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       >
         <View>
           <ChannelButton
@@ -60,22 +86,6 @@ export default function Channel({ navigation }) {
             text="03 Game Title"
             text1="Host'Name : Player03      2/4"
           />
-          <ChannelButton
-            text="03 Game Title"
-            text1="Host'Name : Player03      2/4"
-          />
-          <ChannelButton
-            text="03 Game Title"
-            text1="Host'Name : Player03      2/4"
-          />
-          <ChannelButton
-            text="03 Game Title"
-            text1="Host'Name : Player03      2/4"
-          />
-          <ChannelButton
-            text="03 Game Title"
-            text1="Host'Name : Player03      2/4"
-          />
         </View>
       </ScrollView>
       <View style={styles.btns}>
@@ -83,7 +93,10 @@ export default function Channel({ navigation }) {
           <TouchableOpacity
             style={styles.btn}
             activeOpacity={0.9}
-            onPress={() => navigation.navigate("HostGameMenu")}
+            onPress={() => {
+              WebSocket.current.close();
+              navigation.navigate("HostGameMenu");
+            }}
           >
             <Text style={styles.btnTxt}>Create Game</Text>
           </TouchableOpacity>
@@ -92,7 +105,10 @@ export default function Channel({ navigation }) {
           <TouchableOpacity
             style={styles.btn}
             activeOpacity={0.9}
-            onPress={() => navigation.navigate("MainMenu")}
+            onPress={() => {
+              WebSocket.current.close();
+              navigation.navigate("MainMenu");
+            }}
           >
             <Text style={styles.btnTxt}>Main Menu</Text>
           </TouchableOpacity>
