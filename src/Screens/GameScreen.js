@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Text, Modal, Pressable, route } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import GHeader from "../Components/GHeader";
+import PlayerNameplate from "../Components/PlayerNameplate";
+import ScoreBoard from "../Components/ScoreBoard";
+import DiceBox from "../Components/DcieBox";
+import { io } from "socket.io-client";
 
 export default function GameScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(true);
@@ -10,9 +13,22 @@ export default function GameScreen({ navigation, route }) {
   const [player, setPlayer] = useState("User Name");
   const [ready, setReady] = useState("Wait ...");
   const { gTitle, HCNum } = route.params;
+  const socket = io("http://3.38.165.165:3131");
   return (
     <View style={styles.main}>
       <GHeader />
+      <View style={styles.PNameplatesSite}>
+        <PlayerNameplate />
+      </View>
+      <View style={styles.sBoardSite}>
+        <ScoreBoard />
+      </View>
+      <View style={styles.diceBoxSite}>
+        <DiceBox />
+      </View>
+      <View style={styles.btnRollSite}>
+        <></>
+      </View>
       <View>
         <View style={styles.btnSite}>
           <Modal
@@ -73,6 +89,24 @@ export default function GameScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
   main: {
+    flex: 1,
+    width: "100%",
+    backgroundColor: "#A8D98A",
+    alignItems: "center",
+  },
+  PNameplatesSite: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginVertical: 10,
+  },
+  sBoardSite: {
+    width: "90%",
+  },
+  diceBoxSite: {
+    width: "95%",
+    alignItems: "center",
+  },
+  main2: {
     flex: 1,
     backgroundColor: "#A8D98A",
   },

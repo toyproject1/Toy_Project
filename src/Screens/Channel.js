@@ -12,19 +12,18 @@ import {
   Alert,
   goBack,
   RefreshControl,
+  Button,
+  route,
 } from "react-native";
 import Header from "../Components/Header";
 import ChannelButton from "../Components/Btns/ChannelButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import io, { socket } from "socket.io-client";
+import io from "socket.io-client";
 
-export default function Channel({ navigation }) {
-  const [gTitle, onChangeGTitle] = React.useState("");
-  const [HCNum, onChangeHCNum] = React.useState(2);
-  const [gameInfo, setGInfo] = React.useState({
-    gTitle: { gTitle },
-    headCount: { HCNum },
-  });
+const STORAGE_KEY = "@roomData";
+
+export default function Channel({ navigation, route }) {
+  const { userName } = route.params;
   const wait = (timeout) => {
     return new Promise((resolve) => setTimeout(resolve, timeout));
   };
@@ -34,23 +33,28 @@ export default function Channel({ navigation }) {
     wait(2000).then(() => setRefreshing(false));
   }, []);
 
-  const WebSocket = useRef(null);
+  const [pageLoad, setPageLoad] = useState(true);
 
-  useEffect(() => {
+  const WebSocket = useRef(null);
+  useEffect(async () => {
     WebSocket.current = io("http://3.38.165.165:3131/");
     WebSocket.current.on("connect", () => {
       console.log("connected");
     });
-    WebSocket.current.on("refreshRoom", (data) => {
-      console.log(data);
+    await WebSocket.current.on("refreshRoom", async (data) => {
+      value = await data;
+      console.log(Object.keys(value[0]));
+      setPageLoad(false);
     });
-  }, []);
+  }, [setPageLoad]);
 
   const backPress = () => {
     navigation.goBack();
   };
 
-  return (
+  return pageLoad ? (
+    ""
+  ) : (
     <View style={styles.main}>
       <Header />
       <ScrollView
@@ -62,41 +66,27 @@ export default function Channel({ navigation }) {
         }
       >
         <View>
-          <ChannelButton
-            text="01 Game Title"
-            text1="Host'Name : Player01      1/4"
-          />
-          <ChannelButton
-            text="02 Game Title"
-            text1="Host'Name : Player02      3/4"
-          />
-          <ChannelButton
-            text="03 Game Title"
-            text1="Host'Name : Player03      2/4"
-          />
-          <ChannelButton
-            text="03 Game Title"
-            text1="Host'Name : Player03      2/4"
-          />
-          <ChannelButton
-            text="03 Game Title"
-            text1="Host'Name : Player03      2/4"
-          />
-          <ChannelButton
-            text="03 Game Title"
-            text1="Host'Name : Player03      2/4"
-          />
+          {/* {value.map((value, i) => {
+            return ( */}
+          <Pressable style={styles.container}>
+            <Text style={styles.text}>
+              {value[0].room_id} {value[0].room_name}
+            </Text>
+            <Text style={styles.text1}>
+              HostName : {userName}
+              {value[0].room_user_count}/{value[0].room_max_user}
+            </Text>
+          </Pressable>
+          {/* );
+          })} */}
         </View>
       </ScrollView>
       <View style={styles.btns}>
-        <Pressable style={styles.btnCG} onPress={console.log(gameInfo)}>
+        <Pressable style={styles.btnCG}>
           <TouchableOpacity
             style={styles.btn}
             activeOpacity={0.9}
-            onPress={() => {
-              WebSocket.current.close();
-              navigation.navigate("HostGameMenu");
-            }}
+            onPress={() => navigation.navigate("HostGameMenu")}
           >
             <Text style={styles.btnTxt}>Create Game</Text>
           </TouchableOpacity>
@@ -216,5 +206,26 @@ const styles = StyleSheet.create({
   btnUpDown: {
     fontSize: 30,
     marginRight: 10,
+  },
+  container: {
+    width: "75%",
+    height: 85,
+    alignItems: "center",
+    marginTop: 10,
+    marginBottom: 10,
+    borderRadius: 10,
+    backgroundColor: "#815E06",
+    alignSelf: "center",
+    justifyContent: "center",
+  },
+  text: {
+    color: "#ffffff",
+    fontWeight: "700",
+    fontSize: 25,
+  },
+  text1: {
+    color: "#ffffff",
+    fontWeight: "700",
+    fontSize: 20,
   },
 });

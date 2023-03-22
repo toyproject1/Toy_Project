@@ -13,19 +13,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function Header() {
   const [modalVisible, setModalVisible] = useState(false);
   // const [name, setName] = useState(AsyncStorage.getItem("userData"));
-  const name = AsyncStorage.getItem("userInfo").user_name;
-  const onClick = async () => {
-    JSON.parse(await AsyncStorage.getItem("userData"));
-  };
+  AsyncStorage.getItem("userInfo");
+  AsyncStorage.getItem("userInfo").user_name;
 
   const userData = async () => {
-    JSON.stringify(await AsyncStorage.getItem("userInfo"));
+    JSON.stringify(await AsyncStorage.getItem("userInfo")).user_name;
     value = JSON.parse(await AsyncStorage.getItem("userInfo")).user_name;
   };
 
   useEffect(() => {
     userData();
-    //   name();
   });
 
   return (

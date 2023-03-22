@@ -22,17 +22,12 @@ const SignUp = ({ navigation }) => {
       .then((response) => console.log(response))
       .catch((err) => console.log(err));
     try {
-      const test = await AsyncStorage.setItem(
-        "userData",
-        JSON.stringify(Username, Email)
-      );
+      await AsyncStorage.setItem("userData", JSON.stringify(Username, Email));
       console.log(value);
     } catch (error) {}
     navigation.navigate("Start");
   };
-  const onLoginPressed = () => {
-    console.warn("onLoginPressed");
-  };
+
   const onSignUpPressed = () => {
     console.warn("onSignUpPressed");
   };

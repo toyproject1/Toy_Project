@@ -5,10 +5,6 @@ import CustomButton from "../Components/Btns/CustomButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Buffer } from "buffer";
 import axios from "axios";
-import MainMenu from "./MainMenu";
-import { CommonActions } from "@react-navigation/native";
-import AuthStack from "../../AuthStack";
-import AppStack from "../../AppStack";
 
 const Login = ({ navigation }) => {
   const onLoginPressed = () => {
@@ -37,58 +33,18 @@ const Login = ({ navigation }) => {
             ).toString()
           );
         const payload = parts[1];
-        // console.log("JWT decode", payload);
         await AsyncStorage.setItem("userInfo", payload);
         console.log(payload);
 
-        console.log(
-          JSON.parse(await AsyncStorage.getItem("userInfo")).user_name
-        );
-
-        const userInfo = JSON.parse(await AsyncStorage.getItem("userInfo"));
+        const userInfo = await AsyncStorage.getItem("userInfo");
         userInfo["access_token"] = temp.access_token;
         userInfo["refresh_token"] = temp.refresh_token;
         console.log(userInfo);
-        // navigation.popToTop();
         navigation.navigate("MainMenu");
-        // navigation.replace("MainMenu");
       })
       .catch((err) => console.log(err));
+    await AsyncStorage.setItem("userInfo", JSON.stringify());
   };
-
-  // AsyncStorage.setItem(
-  //   "userData",
-  //   JSON.stringify({
-  //     user_email: Email,
-  //     user_pw: password,
-  //   })
-  // );
-
-  // const userData = async () => {
-  //   Alert.alert(`${Email}, ${password}`);
-  //   //await AsyncStorage.setItem("token", Email);
-  //   let temp;
-  //   await axios
-  //     .post(`http://43.200.253.133:3000/api/signIn`, {
-  //       user_email: Email,
-  //       user_pw: password,
-  //     })
-  //     .then((response) => {
-  //       console.log(response.data);
-  //       temp = response.data;
-  //     })
-  //     .catch((err) => console.log(err));
-  //   console.log(temp);
-
-  //   const value = await AsyncStorage.getItem("userData");
-  //   if (value !== null) {
-  //     navigation.navigate("MainMenu");
-
-  //     console.warn("connect");
-  //   } else {
-  //     console.warn("not connect");
-  //   }
-  // };
 
   return (
     <View style={styles.container}>

@@ -19,6 +19,19 @@ const MainMenu = ({ navigation }) => {
   // const navigation = useNavigation();
   // const header = { Authorization: `Bearer ${}`,};
 
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     AsyncStorage.getItem("userInfo").then((value) => {
+  //       console.log(value);
+  //       if (value != null) {
+  //         navigation.replace("MainMenu");
+  //       } else {
+  //         navigation.replace("Login");
+  //       }
+  //     });
+  //   }, 3000);
+  // }, []);
+
   const backAction = () => {
     Alert.alert("Hold on!", "앱을 종료하시겠습니까?", [
       {
@@ -80,13 +93,15 @@ const MainMenu = ({ navigation }) => {
     return () => backHandler.remove();
   }, []);
 
-  // const userData = async () => {
-  //   console.log(JSON.parse(await AsyncStorage.getItem("userInfo")).user_name);
-  //   console.log(JSON.parse(await AsyncStorage.getItem("userInfo")));
-  // };
-  // useEffect(() => {
-  //   userData();
-  // });
+  const userData = async () => {
+    userName = JSON.parse(await AsyncStorage.getItem("userInfo")).user_name;
+    await AsyncStorage.getItem("userInfo");
+    console.log(JSON.parse(await AsyncStorage.getItem("userInfo")));
+    console.log(userName);
+  };
+  useEffect(() => {
+    userData();
+  });
 
   return (
     <View style={styles.main}>
@@ -105,7 +120,7 @@ const MainMenu = ({ navigation }) => {
         <TouchableOpacity
           style={styles.btnshg}
           activeOpacity={0.9}
-          onPress={() => navigation.navigate("Channel")}
+          onPress={() => navigation.navigate("Channel", { userName: userName })}
         >
           <Text style={styles.btnTexthg}>Join Game</Text>
         </TouchableOpacity>

@@ -9,17 +9,6 @@ import AuthStack from "./AuthStack";
 const Stack = createStackNavigator();
 
 export default function App() {
-  const [login, setLogin] = useState(false);
-  const [isModalOpened, setIsModalOpened] = useState(false);
-  const userToken = async () => {
-    console.log(JSON.parse(await AsyncStorage.getItem("userInfo")));
-    const userLogin = JSON.parse(await AsyncStorage.getItem("userInfo"));
-    if (userLogin !== null) {
-      console.log("Login Success");
-      setLogin(true);
-    }
-  };
-
   const [isLogin, setIsLogin] = useState(false);
   const getLogin = async () => {
     if ((await AsyncStorage.getItem("userInfo")) !== null) {

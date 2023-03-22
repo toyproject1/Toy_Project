@@ -9,9 +9,7 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import BtnMainMenu from "../Components/Btns/BtnMainMenu";
 import Header from "../Components/Header";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HostGameMenu({ navigation }) {
   const [gTitle, onChangeGTitle] = useState("");

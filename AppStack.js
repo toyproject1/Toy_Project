@@ -26,11 +26,6 @@ export default function AppStack() {
           />
           <Stack.Screen
             options={{ headerShown: false }}
-            name="MainMenu"
-            component={MainMenu}
-          />
-          <Stack.Screen
-            options={{ headerShown: false }}
             name="Login"
             component={Login}
           />
@@ -38,6 +33,11 @@ export default function AppStack() {
             options={{ headerShown: false }}
             name="SignUp"
             component={SignUp}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="MainMenu"
+            component={MainMenu}
           />
           <Stack.Screen
             options={{ headerShown: false }}
