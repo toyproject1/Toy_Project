@@ -43,7 +43,7 @@ const Login = ({ navigation }) => {
         navigation.navigate("MainMenu");
       })
       .catch((err) => console.log(err));
-    await AsyncStorage.setItem("userInfo");
+    // await AsyncStorage.setItem("userInfo");
   };
 
   return (

@@ -20,16 +20,32 @@ import ChannelButton from "../Components/Btns/ChannelButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import io from "socket.io-client";
 
-const STORAGE_KEY = "@roomData";
+// const STORAGE_KEY = "@roomData";
 // export const socket = io("http://3.38.165.165:3131/");
 
 export default function Channel({ navigation, route }) {
-  const { userName } = route.params;
-
+  const { user_Name } = route.params;
+  const [userID, setUserID] = useState();
+  const [userName, setUsername] = useState();
   const [refreshing, setRefreshing] = useState(false);
+  const [ready, setReady] = useState(false);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    wait(2000).then(() => setRefreshing(false));
+    // wait(2000).then(() => setRefreshing(false));
+  }, []);
+
+  useEffect(() => {
+    const getData = async () => {
+      setUserID(JSON.parse(await AsyncStorage.getItem("userInfo")).user_id);
+      setUsername(JSON.parse(await AsyncStorage.getItem("userInfo")).user_name);
+      if (userID !== null) {
+        console.log(userID);
+      } else {
+        console.log("데이터 없음");
+      }
+    };
+
+    getData();
   }, []);
 
   const [roomList, setRoomList] = useState([]);
@@ -83,23 +99,25 @@ export default function Channel({ navigation, route }) {
                 onPress={() => {
                   WebSocket.current.close();
                   navigation.navigate("GameScreen", {
-                    gTitle: room.room_name,
                     Host: "User",
                     roomNumber: room.room_id,
-                    userId: "tempId",
-                    userName: "tempName",
+                    userId: userID,
+                    userName: userName,
                   });
                 }}
               >
-                <Text style={styles.text}>
-                  {room.room_id} {room.room_name}
-                </Text>
-                <Text style={styles.text1}>
-                  HostName : {userName} |
-                  <Text style={styles.text2}>
-                    | {room.room_user_count}/{room.room_max_user}
-                  </Text>
-                </Text>
+                <View style={styles.tSite}>
+                  <View style={styles.rowTxtTop}>
+                    <Text style={styles.lTxt}>No.{room.room_id}</Text>
+                    <Text style={styles.rTxt}>{room.room_name}</Text>
+                  </View>
+                  <View style={styles.rowTxtBot}>
+                    <Text style={styles.lTxt1}>Host : {userName}</Text>
+                    <Text style={styles.rTxt1}>
+                      {room.room_user_count}/{room.room_max_user}
+                    </Text>
+                  </View>
+                </View>
               </TouchableOpacity>
             );
           })}
@@ -242,18 +260,41 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
   },
-  text: {
+
+  tSite: {
+    width: "90%",
+    justifyContent: "center",
+  },
+  rowTxtTop: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 2,
+  },
+  rowTxtBot: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 2,
+  },
+  lTxt: {
+    alignItems: "flex-start",
     color: "#ffffff",
     fontWeight: "700",
-    fontSize: 25,
+    fontSize: 23,
   },
-  text1: {
+  rTxt: {
+    alignItems: "flex-end",
+    color: "#ffffff",
+    fontWeight: "700",
+    fontSize: 23,
+  },
+  lTxt1: {
+    alignItems: "flex-start",
     color: "#ffffff",
     fontWeight: "700",
     fontSize: 20,
-    marginRight: 10,
   },
-  text2: {
+  rTxt1: {
+    alignItems: "flex-end",
     color: "#ffffff",
     fontWeight: "700",
     fontSize: 20,

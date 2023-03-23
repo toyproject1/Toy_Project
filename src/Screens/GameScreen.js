@@ -5,20 +5,19 @@ import PlayerNameplate from "../Components/PlayerNameplate";
 import ScoreBoard from "../Components/ScoreBoard";
 import DiceBox from "../Components/DcieBox";
 import { io } from "socket.io-client";
-import Toast from "react-native-toast-message";
 
 export default function GameScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(true);
   const [roomnumber, setRoomnumber] = useState("001");
   const [plCount, setPlCount] = useState(1);
   const [player, setPlayer] = useState("User Name");
-  const [ready, setReady] = useState("Wait ...");
+  // const [ready, setReady] = useState("Wait ...");
   const { gTitle, HCNum, Host, roomNumber, userId, userName } = route.params;
 
   const [userList, setUserList] = useState([]);
 
   const WebSocket = useRef(null);
-  console.log(gTitle, roomNumber, userId, userName, Host);
+  console.log(gTitle, HCNum, roomNumber, userId, userName, Host);
 
   useEffect(() => {
     WebSocket.current = io("http://3.38.165.165:3131/");
@@ -35,10 +34,11 @@ export default function GameScreen({ navigation, route }) {
         roomNumber: roomNumber,
       });
     } else {
+      // 일반유저 Host == 'User' 일 경우
       console.log(
         "========================joinUser ==============================="
       );
-      // 일반유저 Host == 'User' 일 경우
+      console.log(userId, userName, roomNumber);
       WebSocket.current.emit("joinRoom", {
         userId: userId,
         userName: userName,
@@ -69,6 +69,15 @@ export default function GameScreen({ navigation, route }) {
       setUserList((current) => {
         return tempArr;
       });
+    });
+
+    WebSocket.current.on("gameStart", (data) => {
+      console.log(data);
+      if (data.state === 1) {
+        setModalVisible(!modalVisible);
+      } else {
+        // toast message  추가
+      }
     });
   }, []);
   console.log("==============", userList);
@@ -101,13 +110,15 @@ export default function GameScreen({ navigation, route }) {
               <View style={styles.modalCard}>
                 <View style={styles.modalHeader}>
                   <View style={styles.roomlocation}>
-                    <Text style={styles.roomnumber}>{roomnumber}</Text>
+                    <Text style={styles.roomnumber}>{roomNumber}</Text>
                   </View>
                   <View style={styles.roomlocation1}>
-                    <Text style={styles.modalHeaderTitle}></Text>
+                    <Text style={styles.modalHeaderTitle}>{gTitle}</Text>
                   </View>
                   <View style={styles.roomlocation2}>
-                    <Text style={styles.peopleCount}>{plCount}/</Text>
+                    <Text style={styles.peopleCount}>
+                      {plCount}/{HCNum}
+                    </Text>
                   </View>
                 </View>
                 {/* <View style={styles.playerBox}>
@@ -123,7 +134,11 @@ export default function GameScreen({ navigation, route }) {
                   );
                 })}
                 <View style={styles.btnOp}>
-                  <Pressable onPress={() => setReady(true)}>
+                  <Pressable
+                    onPress={() => {
+                      WebSocket.current.emit("gameReadyBtn");
+                    }}
+                  >
                     <Text style={styles.btnClose}>Ready</Text>
                   </Pressable>
                   <Pressable

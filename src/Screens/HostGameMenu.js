@@ -14,7 +14,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HostGameMenu({ navigation }) {
-  let [gTitle, onChangeGTitle] = useState("");
+  const [gTitle, onChangeGTitle] = useState("");
   let gTitlePH = "Player10's Game";
   let [HCNum, onChangeHCNum] = useState(2);
   const [userID, setUserID] = useState();
@@ -125,6 +125,7 @@ export default function HostGameMenu({ navigation }) {
                 onPress={async () => {
                   const tempPostData = await postGData();
                   navigation.navigate("GameScreen", {
+                    gTitle: gTitle,
                     Host: Host,
                     roomNumber: tempPostData.room_id,
                     userId: tempPostData.user_id,
