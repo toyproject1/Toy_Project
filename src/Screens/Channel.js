@@ -21,38 +21,48 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import io from "socket.io-client";
 
 const STORAGE_KEY = "@roomData";
+// export const socket = io("http://3.38.165.165:3131/");
 
 export default function Channel({ navigation, route }) {
   const { userName } = route.params;
-  const wait = (timeout) => {
-    return new Promise((resolve) => setTimeout(resolve, timeout));
-  };
+
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     wait(2000).then(() => setRefreshing(false));
   }, []);
 
-  const [pageLoad, setPageLoad] = useState(true);
+  const [roomList, setRoomList] = useState([]);
 
   const WebSocket = useRef(null);
+
   useEffect(async () => {
     WebSocket.current = io("http://3.38.165.165:3131/");
     WebSocket.current.on("connect", () => {
       console.log("connected");
     });
-    await WebSocket.current.on("refreshRoom", async (data) => {
-      value = await data;
-      console.log(Object.keys(value[0]));
-      setPageLoad(false);
-    });
-  }, [setPageLoad]);
 
+    WebSocket.current.on("refreshRoom", (data) => {
+      setRoomList([]);
+      data.map((mapData) => {
+        const tempData = {
+          room_id: mapData["room_id"],
+          room_name: mapData["room_name"],
+          room_state: mapData["room_state"],
+          room_max_user: mapData["room_max_user"],
+          room_user_count: mapData["room_user_count"],
+        };
+        setRoomList((current) => {
+          return [tempData, ...current];
+        });
+      });
+    });
+  }, []);
   const backPress = () => {
     navigation.goBack();
   };
 
-  return pageLoad ? (
+  return roomList.length <= 0 ? (
     ""
   ) : (
     <View style={styles.main}>
@@ -66,19 +76,24 @@ export default function Channel({ navigation, route }) {
         }
       >
         <View>
-          {/* {value.map((value, i) => {
-            return ( */}
-          <Pressable style={styles.container}>
-            <Text style={styles.text}>
-              {value[0].room_id} {value[0].room_name}
-            </Text>
-            <Text style={styles.text1}>
-              HostName : {userName}
-              {value[0].room_user_count}/{value[0].room_max_user}
-            </Text>
-          </Pressable>
-          {/* );
-          })} */}
+          {roomList.map((room) => {
+            return (
+              <TouchableOpacity
+                style={styles.container}
+                onPress={() => navigation.navigate("GameScreen")}
+              >
+                <Text style={styles.text}>
+                  {room.room_id} {room.room_name}
+                </Text>
+                <Text style={styles.text1}>
+                  HostName : {userName} |
+                  <Text style={styles.text2}>
+                    | {room.room_user_count}/{room.room_max_user}
+                  </Text>
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </ScrollView>
       <View style={styles.btns}>
@@ -224,6 +239,12 @@ const styles = StyleSheet.create({
     fontSize: 25,
   },
   text1: {
+    color: "#ffffff",
+    fontWeight: "700",
+    fontSize: 20,
+    marginRight: 10,
+  },
+  text2: {
     color: "#ffffff",
     fontWeight: "700",
     fontSize: 20,
