@@ -5,6 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
 import AppStack from "./AppStack";
 import AuthStack from "./AuthStack";
+// import { RootSiblingParent } from "react-native-root-siblings";
 
 const Stack = createStackNavigator();
 
@@ -21,6 +22,7 @@ export default function App() {
   });
   return (
     <>
+      {/* <RootSiblingParent> */}
       <StatusBar hidden={true} />
       <NavigationContainer independent={true}>
         <Stack.Navigator>
@@ -43,6 +45,7 @@ export default function App() {
           )}
         </Stack.Navigator>
       </NavigationContainer>
+      {/* </RootSiblingParent> */}
     </>
   );
 }

@@ -8,22 +8,9 @@ import {
   Pressable,
 } from "react-native";
 import HeaderBtnRule from "./Btns/HeaderBtnRule";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Header() {
   const [modalVisible, setModalVisible] = useState(false);
-  // const [name, setName] = useState(AsyncStorage.getItem("userData"));
-  AsyncStorage.getItem("userInfo");
-  AsyncStorage.getItem("userInfo").user_name;
-
-  const userData = async () => {
-    JSON.stringify(await AsyncStorage.getItem("userInfo")).user_name;
-    value = JSON.parse(await AsyncStorage.getItem("userInfo")).user_name;
-  };
-
-  useEffect(() => {
-    userData();
-  });
 
   return (
     <View style={styles.header}>
@@ -53,7 +40,7 @@ export default function Header() {
                 </View>
                 {/* {value} */}
                 <View style={styles.profileContents}>
-                  <Text style={styles.profileTexts}>Your Name : </Text>
+                  <Text style={styles.profileTexts}>Your Name :</Text>
                   <Text style={styles.profileTexts}>Win :</Text>
                   <Text style={styles.profileTexts}>Lose :</Text>
                   <Text style={styles.profileTexts}>Win Rate :</Text>

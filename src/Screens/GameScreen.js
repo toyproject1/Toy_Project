@@ -5,18 +5,16 @@ import PlayerNameplate from "../Components/PlayerNameplate";
 import ScoreBoard from "../Components/ScoreBoard";
 import DiceBox from "../Components/DcieBox";
 import { io } from "socket.io-client";
+// import Toast from "react-native-root-toast";
+import Toast from "react-native-easy-toast";
 
 export default function GameScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(true);
-  const [roomnumber, setRoomnumber] = useState("001");
-  const [plCount, setPlCount] = useState(1);
-  const [player, setPlayer] = useState("User Name");
-  // const [ready, setReady] = useState("Wait ...");
   const { gTitle, HCNum, Host, roomNumber, userId, userName } = route.params;
-
   const [userList, setUserList] = useState([]);
-
   const WebSocket = useRef(null);
+  const toastRef = useRef();
+
   console.log(gTitle, HCNum, roomNumber, userId, userName, Host);
 
   useEffect(() => {
@@ -24,8 +22,6 @@ export default function GameScreen({ navigation, route }) {
     WebSocket.current.on("connect", () => {
       console.log("connected");
     });
-
-    // userData();
 
     if (Host == "Host") {
       WebSocket.current.emit("hostCreateRoom", {
@@ -35,10 +31,6 @@ export default function GameScreen({ navigation, route }) {
       });
     } else {
       // 일반유저 Host == 'User' 일 경우
-      console.log(
-        "========================joinUser ==============================="
-      );
-      console.log(userId, userName, roomNumber);
       WebSocket.current.emit("joinRoom", {
         userId: userId,
         userName: userName,
@@ -48,6 +40,12 @@ export default function GameScreen({ navigation, route }) {
 
     WebSocket.current.on("userJoinRoom", (data) => {
       console.log(data);
+      // const toast = Toast.show("유저님이 들어오셨습니다.");
+      // setTimeout(function () {
+      //   Toast.hide(toast);
+      // }, 3000);
+
+      toastRef.current.show("유저님이 들어오셨습니다123.");
     });
 
     WebSocket.current.on("refreshUserList", (data) => {
@@ -61,10 +59,6 @@ export default function GameScreen({ navigation, route }) {
           userRole: usermap.userRole,
         };
         tempArr.push(tempList);
-
-        // setUserList((current) => {
-        //   return [tempList, ...current];
-        // });
       });
       setUserList((current) => {
         return tempArr;
@@ -77,10 +71,30 @@ export default function GameScreen({ navigation, route }) {
         setModalVisible(!modalVisible);
       } else {
         // toast message  추가
+        const toast = Toast.show("아직 모두 준비를 하지 않았습니다.");
+        setTimeout(function () {
+          Toast.hide(toast);
+        }, 3000);
       }
     });
+
+    WebSocket.current.on("disconnectHost", () => {
+      const toast = Toast.show("호스트의 연결이 끊어졌습니다.");
+      setTimeout(function () {
+        Toast.hide(toast);
+      }, 3000);
+      navigation.navigate("MainMenu");
+    });
+
+    WebSocket.current.on("disconnectUser", (data) => {
+      console.log(data);
+      const toast = Toast.show("유저가 나갔습니다.");
+      setTimeout(function () {
+        Toast.hide(toast);
+      }, 3000);
+      console.log(toast);
+    });
   }, []);
-  console.log("==============", userList);
   return (
     <View style={styles.main}>
       <GHeader />
@@ -108,6 +122,16 @@ export default function GameScreen({ navigation, route }) {
           >
             <View style={styles.modalBG}>
               <View style={styles.modalCard}>
+                <Toast
+                  ref={toastRef}
+                  positionValue={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  fadeInDuration={200}
+                  fadeOutDuration={3000}
+                  style={{ backgroundColor: "#ffffff" }}
+                />
                 <View style={styles.modalHeader}>
                   <View style={styles.roomlocation}>
                     <Text style={styles.roomnumber}>{roomNumber}</Text>
@@ -117,14 +141,10 @@ export default function GameScreen({ navigation, route }) {
                   </View>
                   <View style={styles.roomlocation2}>
                     <Text style={styles.peopleCount}>
-                      {plCount}/{HCNum}
+                      {userList.length}/{HCNum}
                     </Text>
                   </View>
                 </View>
-                {/* <View style={styles.playerBox}>
-                  <Text style={styles.player}>{player}</Text>
-                  <Text style={styles.player}>{ready}</Text>
-                </View> */}
                 {userList.map((list) => {
                   return (
                     <View style={styles.playerBox}>

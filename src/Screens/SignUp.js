@@ -24,7 +24,9 @@ const SignUp = ({ navigation }) => {
     try {
       await AsyncStorage.setItem("userData", JSON.stringify(Username, Email));
       console.log(value);
-    } catch (error) {}
+    } catch (error) {
+      console.log("error");
+    }
     navigation.navigate("Start");
   };
 

@@ -103,6 +103,8 @@ export default function Channel({ navigation, route }) {
                     roomNumber: room.room_id,
                     userId: userID,
                     userName: userName,
+                    gTitle: room.room_name,
+                    HCNum: room.room_max_user,
                   });
                 }}
               >
