@@ -10,6 +10,7 @@ import MainMenu from "./src/Screens/MainMenu";
 import HostGameMenu from "./src/Screens/HostGameMenu";
 import Channel from "./src/Screens/Channel";
 import GameScreen from "./src/Screens/GameScreen";
+import JoinGameScreen from "./src/Screens/JoinGameScreen";
 
 const Stack = createStackNavigator();
 
@@ -53,6 +54,11 @@ export default function AppStack() {
             options={{ headerShown: false }}
             name="GameScreen"
             component={GameScreen}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="JoinGameScreen"
+            component={JoinGameScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>

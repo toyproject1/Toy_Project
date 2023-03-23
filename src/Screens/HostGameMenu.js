@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   View,
@@ -10,10 +10,31 @@ import {
   Alert,
 } from "react-native";
 import Header from "../Components/Header";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HostGameMenu({ navigation }) {
-  const [gTitle, onChangeGTitle] = useState("");
-  const [HCNum, onChangeHCNum] = useState(2);
+  let [gTitle, onChangeGTitle] = useState("");
+  let gTitlePH = "Player10's Game";
+  let [HCNum, onChangeHCNum] = useState(2);
+  const [userID, setUserID] = useState();
+  const [userName, setUsername] = useState();
+  const [Host, setHost] = useState("Host");
+  // const [Room, setRoom] = useState({});
+  useEffect(() => {
+    const getData = async () => {
+      setUserID(JSON.parse(await AsyncStorage.getItem("userInfo")).user_id);
+      setUsername(JSON.parse(await AsyncStorage.getItem("userInfo")).user_name);
+      if (userID !== null) {
+        console.log(userID);
+      } else {
+        console.log("데이터 없음");
+      }
+    };
+
+    getData();
+  }, []);
+
   // const onSubmit = async () => {
   //   await AsyncStorage.setItem("gameTitle", gTitle);
   //   navigation.navigate("GameScreen", {
@@ -22,6 +43,43 @@ export default function HostGameMenu({ navigation }) {
   //   });
   //   console.log(`${gTitle}, ${HCNum}`);
   // };
+
+  async function postGData() {
+    let tempData;
+    try {
+      if (gTitle == "") {
+        onChangeGTitle((gTitle = gTitlePH));
+      }
+      const response = await axios.post(
+        "http://3.38.165.165:3000/api/createRoom",
+        {
+          user_id: userID,
+          roomName: gTitle,
+          room_max_user: HCNum,
+        }
+      );
+      console.log("응답 성공");
+      tempData = {
+        room_id: response.data.room_id,
+        room_name: response.data.room_name,
+        room_state: response.data.room_state,
+        room_user_count: response.data.room_user_count,
+        room_max_user: response.data.room_max_user,
+        user_id: response.data.user_id,
+      };
+      // await setRoom({
+      //   room_id: response.data.room_id,
+      //   room_name: response.data.room_name,
+      //   room_state: response.data.room_state,
+      //   room_user_count: response.data.room_user_count,
+      //   room_max_user: response.data.room_max_user,
+      //   user_id: response.data.user_id,
+      // });
+    } catch (error) {
+      console.log("응답 실패");
+    }
+    return tempData;
+  }
 
   return (
     <View style={styles.main}>
@@ -64,12 +122,16 @@ export default function HostGameMenu({ navigation }) {
                 style={styles.btn}
                 activeOpacity={0.9}
                 // onPress={onSubmit}
-                onPress={() =>
+                onPress={async () => {
+                  const tempPostData = await postGData();
                   navigation.navigate("GameScreen", {
-                    gTitle: gTitle,
-                    HCNum: HCNum,
-                  })
-                }
+                    Host: Host,
+                    roomNumber: tempPostData.room_id,
+                    userId: tempPostData.user_id,
+                    userName: userName,
+                  });
+                }}
+                // postGData(); 방 생성 요청.
               >
                 <Text style={styles.btnTxt}>Create Game</Text>
               </TouchableOpacity>

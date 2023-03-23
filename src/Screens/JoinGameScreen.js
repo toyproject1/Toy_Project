@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, Text, Modal, Pressable } from "react-native";
 import GHeader from "../Components/GHeader";
 import PlayerNameplate from "../Components/PlayerNameplate";
@@ -12,8 +12,15 @@ export default function GameScreen({ navigation, route }) {
   const [plCount, setPlCount] = useState(1);
   const [player, setPlayer] = useState("User Name");
   const [ready, setReady] = useState("Wait ...");
-  const { gTitle, HCNum } = route.params;
-  const socket = io("http://3.38.165.165:3131");
+
+  const WebSocket = useRef(null);
+
+  useEffect(async () => {
+    WebSocket.current = io("http://3.38.165.165:3131/");
+    WebSocket.current.on("connect", () => {
+      console.log("connected");
+    });
+  }, []);
   return (
     <View style={styles.main}>
       <GHeader />
@@ -46,12 +53,10 @@ export default function GameScreen({ navigation, route }) {
                     <Text style={styles.roomnumber}>{roomnumber}</Text>
                   </View>
                   <View style={styles.roomlocation1}>
-                    <Text style={styles.modalHeaderTitle}>{gTitle}</Text>
+                    <Text style={styles.modalHeaderTitle}></Text>
                   </View>
                   <View style={styles.roomlocation2}>
-                    <Text style={styles.peopleCount}>
-                      {plCount}/{JSON.parse(HCNum)}
-                    </Text>
+                    <Text style={styles.peopleCount}>{plCount}/4</Text>
                   </View>
                 </View>
                 <View style={styles.playerBox}>

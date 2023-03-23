@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Text, Modal, Pressable } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { View, StyleSheet, Text, Modal, Pressable, Alert } from "react-native";
 import GHeader from "../Components/GHeader";
 import PlayerNameplate from "../Components/PlayerNameplate";
 import ScoreBoard from "../Components/ScoreBoard";
 import DiceBox from "../Components/DcieBox";
 import { io } from "socket.io-client";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
 
 export default function GameScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(true);
@@ -12,8 +14,63 @@ export default function GameScreen({ navigation, route }) {
   const [plCount, setPlCount] = useState(1);
   const [player, setPlayer] = useState("User Name");
   const [ready, setReady] = useState("Wait ...");
-  const { gTitle, HCNum } = route.params;
-  const socket = io("http://3.38.165.165:3131");
+  const { gTitle, HCNum, Host, roomNumber, userId, userName } = route.params;
+
+  const [userList, setUserList] = useState([]);
+
+  const WebSocket = useRef(null);
+
+  // const userData = async () => {
+  //   JSON.parse(await AsyncStorage.getItem("userInfo"));
+  //   userName = JSON.parse(await AsyncStorage.getItem("userInfo")).user_name;
+  //   userId = JSON.parse(await AsyncStorage.getItem("userInfo")).user_id;
+  //   await AsyncStorage.getItem("userInfo");
+  //   console.log(JSON.parse(await AsyncStorage.getItem("userInfo")));
+  //   console.log(userName);
+  //   console.log(userId);
+  // };
+  console.log(roomNumber, userId, userName, Host);
+
+  useEffect(() => {
+    WebSocket.current = io("http://3.38.165.165:3131/");
+    WebSocket.current.on("connect", () => {
+      console.log("connected");
+    });
+
+    // userData();
+
+    if (Host == "Host") {
+      WebSocket.current.emit("hostCreateRoom", {
+        userId: userId,
+        userName: userName,
+        roomNumber: roomNumber,
+      });
+    } else {
+      // 일반유저 Host == 'User' 일 경우
+    }
+
+    WebSocket.current.on("userJoinRoom", (data) => {
+      console.log(data);
+    });
+
+    WebSocket.current.on("refreshUserList", (data) => {
+      // console.log(data);
+      setUserList([]);
+      data.map((usermap) => {
+        const tempList = {
+          userName: usermap.userInfo.userName,
+          userState: usermap.userInfo.userState,
+          userRole: usermap.userInfo.userRole,
+        };
+
+        setUserList((current) => {
+          return [tempList, ...current];
+        });
+      });
+    });
+  }, []);
+  console.log("==============", userList);
+  // const socket = io("http://3.38.165.165:3131");
   return (
     <View style={styles.main}>
       <GHeader />
@@ -46,12 +103,10 @@ export default function GameScreen({ navigation, route }) {
                     <Text style={styles.roomnumber}>{roomnumber}</Text>
                   </View>
                   <View style={styles.roomlocation1}>
-                    <Text style={styles.modalHeaderTitle}>{gTitle}</Text>
+                    <Text style={styles.modalHeaderTitle}></Text>
                   </View>
                   <View style={styles.roomlocation2}>
-                    <Text style={styles.peopleCount}>
-                      {plCount}/{JSON.parse(HCNum)}
-                    </Text>
+                    <Text style={styles.peopleCount}>{plCount}/</Text>
                   </View>
                 </View>
                 <View style={styles.playerBox}>

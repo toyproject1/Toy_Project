@@ -10,6 +10,7 @@ import GameScreen from "./src/Screens/GameScreen";
 import AppStack from "./AppStack";
 import Login from "./src/Screens/Login";
 import SignUp from "./src/Screens/SignUp";
+import JoinGameScreen from "./src/Screens/JoinGameScreen";
 
 const Stack = createStackNavigator();
 
@@ -38,6 +39,11 @@ export default function AuthStack() {
             options={{ headerShown: false }}
             name="GameScreen"
             component={GameScreen}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="JoinGameScreen"
+            component={JoinGameScreen}
           />
           <Stack.Screen
             options={{ headerShown: false }}

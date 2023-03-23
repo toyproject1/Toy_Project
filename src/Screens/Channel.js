@@ -80,7 +80,10 @@ export default function Channel({ navigation, route }) {
             return (
               <TouchableOpacity
                 style={styles.container}
-                onPress={() => navigation.navigate("GameScreen")}
+                onPress={() => {
+                  WebSocket.current.close();
+                  navigation.navigate("JoinGameScreen");
+                }}
               >
                 <Text style={styles.text}>
                   {room.room_id} {room.room_name}
