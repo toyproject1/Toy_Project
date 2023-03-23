@@ -82,7 +82,13 @@ export default function Channel({ navigation, route }) {
                 style={styles.container}
                 onPress={() => {
                   WebSocket.current.close();
-                  navigation.navigate("JoinGameScreen");
+                  navigation.navigate("GameScreen", {
+                    gTitle: room.room_name,
+                    Host: "User",
+                    roomNumber: room.room_id,
+                    userId: "tempId",
+                    userName: "tempName",
+                  });
                 }}
               >
                 <Text style={styles.text}>

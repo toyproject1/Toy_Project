@@ -5,7 +5,6 @@ import PlayerNameplate from "../Components/PlayerNameplate";
 import ScoreBoard from "../Components/ScoreBoard";
 import DiceBox from "../Components/DcieBox";
 import { io } from "socket.io-client";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 
 export default function GameScreen({ navigation, route }) {
@@ -19,17 +18,7 @@ export default function GameScreen({ navigation, route }) {
   const [userList, setUserList] = useState([]);
 
   const WebSocket = useRef(null);
-
-  // const userData = async () => {
-  //   JSON.parse(await AsyncStorage.getItem("userInfo"));
-  //   userName = JSON.parse(await AsyncStorage.getItem("userInfo")).user_name;
-  //   userId = JSON.parse(await AsyncStorage.getItem("userInfo")).user_id;
-  //   await AsyncStorage.getItem("userInfo");
-  //   console.log(JSON.parse(await AsyncStorage.getItem("userInfo")));
-  //   console.log(userName);
-  //   console.log(userId);
-  // };
-  console.log(roomNumber, userId, userName, Host);
+  console.log(gTitle, roomNumber, userId, userName, Host);
 
   useEffect(() => {
     WebSocket.current = io("http://3.38.165.165:3131/");
@@ -46,7 +35,15 @@ export default function GameScreen({ navigation, route }) {
         roomNumber: roomNumber,
       });
     } else {
+      console.log(
+        "========================joinUser ==============================="
+      );
       // 일반유저 Host == 'User' 일 경우
+      WebSocket.current.emit("joinRoom", {
+        userId: userId,
+        userName: userName,
+        roomNumber: roomNumber,
+      });
     }
 
     WebSocket.current.on("userJoinRoom", (data) => {
@@ -56,21 +53,25 @@ export default function GameScreen({ navigation, route }) {
     WebSocket.current.on("refreshUserList", (data) => {
       // console.log(data);
       setUserList([]);
-      data.map((usermap) => {
+      const tempArr = [];
+      data.userInfo.map((usermap) => {
         const tempList = {
-          userName: usermap.userInfo.userName,
-          userState: usermap.userInfo.userState,
-          userRole: usermap.userInfo.userRole,
+          userName: usermap.userName,
+          userState: usermap.userState,
+          userRole: usermap.userRole,
         };
+        tempArr.push(tempList);
 
-        setUserList((current) => {
-          return [tempList, ...current];
-        });
+        // setUserList((current) => {
+        //   return [tempList, ...current];
+        // });
+      });
+      setUserList((current) => {
+        return tempArr;
       });
     });
   }, []);
   console.log("==============", userList);
-  // const socket = io("http://3.38.165.165:3131");
   return (
     <View style={styles.main}>
       <GHeader />
@@ -109,27 +110,28 @@ export default function GameScreen({ navigation, route }) {
                     <Text style={styles.peopleCount}>{plCount}/</Text>
                   </View>
                 </View>
-                <View style={styles.playerBox}>
+                {/* <View style={styles.playerBox}>
                   <Text style={styles.player}>{player}</Text>
                   <Text style={styles.player}>{ready}</Text>
-                </View>
-                <View style={styles.playerBox}>
-                  <Text style={styles.player}>{player}</Text>
-                  <Text style={styles.player}>{ready}</Text>
-                </View>
-                <View style={styles.playerBox}>
-                  <Text style={styles.player}>{player}</Text>
-                  <Text style={styles.player}>{ready}</Text>
-                </View>
-                <View style={styles.playerBox}>
-                  <Text style={styles.player}>{player}</Text>
-                  <Text style={styles.player}>{ready}</Text>
-                </View>
+                </View> */}
+                {userList.map((list) => {
+                  return (
+                    <View style={styles.playerBox}>
+                      <Text style={styles.player}>{list.userName}</Text>
+                      <Text style={styles.player}>{list.userState}</Text>
+                    </View>
+                  );
+                })}
                 <View style={styles.btnOp}>
                   <Pressable onPress={() => setReady(true)}>
                     <Text style={styles.btnClose}>Ready</Text>
                   </Pressable>
-                  <Pressable onPress={() => navigation.navigate("MainMenu")}>
+                  <Pressable
+                    onPress={() => {
+                      WebSocket.current.close();
+                      navigation.navigate("MainMenu");
+                    }}
+                  >
                     <Text style={styles.btnSave}>Exit</Text>
                   </Pressable>
                 </View>
