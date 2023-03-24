@@ -62,6 +62,11 @@ export default function Channel({ navigation }) {
       console.log("connected");
     });
 
+    WebSocket.current.on("joinError", () => {
+      console.log("참여 제한");
+      navigation.replace("Channel");
+    });
+
     WebSocket.current.on("refreshRoom", (data) => {
       setRoomList([]);
       data.map((mapData) => {

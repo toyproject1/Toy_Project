@@ -18,8 +18,10 @@ import Toast from "react-native-simple-toast";
 
 export default function GameScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(true);
+  const [modalRankVisible, setModalRankVisible] = useState(false);
   const { gTitle, HCNum, Host, roomNumber, userId, userName } = route.params;
   const [userList, setUserList] = useState([]);
+  const [rankList, setRankList] = useState([]);
   const WebSocket = useRef(null);
 
   console.log(gTitle, HCNum, roomNumber, userId, userName, Host);
@@ -91,6 +93,23 @@ export default function GameScreen({ navigation, route }) {
         Toast.BOTTOM
       );
       navigation.navigate("MainMenu");
+    });
+
+    WebSocket.current.on("gameEnd", (data) => {
+      console.log(data);
+      setModalRankVisible(!modalRankVisible);
+      setRankList([]);
+      const rankArr = [];
+      data.userInfo.map((rankmap) => {
+        const rankList = {
+          userName: rankmap.userName,
+          userScore: rankmap.userScore,
+        };
+        rankArr.push(rankList);
+      });
+      setUserList((current) => {
+        return rankArr;
+      });
     });
 
     WebSocket.current.on("disconnectUser", (data) => {
@@ -168,6 +187,48 @@ export default function GameScreen({ navigation, route }) {
           </Modal>
         </View>
       </View>
+      <View>
+        <View style={styles.btnSite}>
+          <Modal
+            animationType="none"
+            transparent={true}
+            visible={modalRankVisible}
+            onRequestClose={() => {
+              setModalRankVisible(!modalRankVisible);
+            }}
+          >
+            <View style={styles.modalBG}>
+              <View style={styles.modalCard}>
+                <View style={styles.modalHeader}>
+                  <Text style={styles.rankHeader}>Ranking</Text>
+                </View>
+                {rankList.map((list) => {
+                  return (
+                    <View style={styles.playerBox}>
+                      <Text style={styles.player}>{list.length}</Text>
+                      <Text style={styles.player}>{list.userName}</Text>
+                      <Text style={styles.player}>{list.userScore}</Text>
+                    </View>
+                  );
+                })}
+                <View style={styles.btnOp}>
+                  <Pressable>
+                    <Text style={styles.btnClose}></Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => {
+                      WebSocket.current.close();
+                      navigation.navigate("MainMenu");
+                    }}
+                  >
+                    <Text style={styles.btnSave}>Exit</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </View>
+          </Modal>
+        </View>
+      </View>
     </View>
   );
 }
@@ -178,6 +239,10 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "#A8D98A",
     alignItems: "center",
+  },
+  rankHeader: {
+    fontSize: 30,
+    color: "#FFFFFF",
   },
   PNameplatesSite: {
     flexDirection: "row",

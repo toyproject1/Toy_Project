@@ -68,15 +68,15 @@ const MainMenu = ({ navigation }) => {
     return () => backHandler.remove();
   }, []);
 
-  // const userData = async () => {
-  //   userName = JSON.parse(await AsyncStorage.getItem("userInfo")).user_name;
-  //   await AsyncStorage.getItem("userInfo");
-  //   console.log(JSON.parse(await AsyncStorage.getItem("userInfo")));
-  //   console.log(userName);
-  // };
-  // useEffect(() => {
-  //   userData();
-  // });
+  const userData = async () => {
+    userName = JSON.parse(await AsyncStorage.getItem("userInfo")).user_name;
+    await AsyncStorage.getItem("userInfo");
+    console.log(JSON.parse(await AsyncStorage.getItem("userInfo")));
+    console.log(userName);
+  };
+  useEffect(() => {
+    userData();
+  });
 
   return (
     <View style={styles.main}>
