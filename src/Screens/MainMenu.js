@@ -14,22 +14,6 @@ import Header from "../Components/Header";
 import Dice from "../Components/Imgs/Dice111.png";
 
 const MainMenu = ({ navigation }) => {
-  // const navigation = useNavigation();
-  // const header = { Authorization: `Bearer ${}`,};
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     AsyncStorage.getItem("userInfo").then((value) => {
-  //       console.log(value);
-  //       if (value != null) {
-  //         navigation.replace("MainMenu");
-  //       } else {
-  //         navigation.replace("Login");
-  //       }
-  //     });
-  //   }, 3000);
-  // }, []);
-
   const backAction = () => {
     Alert.alert("Hold on!", "앱을 종료하시겠습니까?", [
       {
@@ -84,15 +68,15 @@ const MainMenu = ({ navigation }) => {
     return () => backHandler.remove();
   }, []);
 
-  const userData = async () => {
-    userName = JSON.parse(await AsyncStorage.getItem("userInfo")).user_name;
-    await AsyncStorage.getItem("userInfo");
-    console.log(JSON.parse(await AsyncStorage.getItem("userInfo")));
-    console.log(userName);
-  };
-  useEffect(() => {
-    userData();
-  });
+  // const userData = async () => {
+  //   userName = JSON.parse(await AsyncStorage.getItem("userInfo")).user_name;
+  //   await AsyncStorage.getItem("userInfo");
+  //   console.log(JSON.parse(await AsyncStorage.getItem("userInfo")));
+  //   console.log(userName);
+  // };
+  // useEffect(() => {
+  //   userData();
+  // });
 
   return (
     <View style={styles.main}>

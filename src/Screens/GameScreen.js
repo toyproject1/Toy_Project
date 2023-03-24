@@ -1,19 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, StyleSheet, Text, Modal, Pressable, Alert } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Modal,
+  Pressable,
+  Alert,
+  Button,
+  ToastAndroid,
+} from "react-native";
 import GHeader from "../Components/GHeader";
 import PlayerNameplate from "../Components/PlayerNameplate";
 import ScoreBoard from "../Components/ScoreBoard";
 import DiceBox from "../Components/DcieBox";
 import { io } from "socket.io-client";
-// import Toast from "react-native-root-toast";
-import Toast from "react-native-easy-toast";
+import Toast from "react-native-simple-toast";
 
 export default function GameScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(true);
   const { gTitle, HCNum, Host, roomNumber, userId, userName } = route.params;
   const [userList, setUserList] = useState([]);
   const WebSocket = useRef(null);
-  const toastRef = useRef();
 
   console.log(gTitle, HCNum, roomNumber, userId, userName, Host);
 
@@ -40,12 +47,11 @@ export default function GameScreen({ navigation, route }) {
 
     WebSocket.current.on("userJoinRoom", (data) => {
       console.log(data);
-      // const toast = Toast.show("유저님이 들어오셨습니다.");
-      // setTimeout(function () {
-      //   Toast.hide(toast);
-      // }, 3000);
-
-      toastRef.current.show("유저님이 들어오셨습니다123.");
+      Toast.showWithGravity(
+        "유저님이 입장하였습니다.",
+        Toast.LONG,
+        Toast.BOTTOM
+      );
     });
 
     WebSocket.current.on("refreshUserList", (data) => {
@@ -70,29 +76,26 @@ export default function GameScreen({ navigation, route }) {
       if (data.state === 1) {
         setModalVisible(!modalVisible);
       } else {
-        // toast message  추가
-        const toast = Toast.show("아직 모두 준비를 하지 않았습니다.");
-        setTimeout(function () {
-          Toast.hide(toast);
-        }, 3000);
+        Toast.showWithGravity(
+          "아직 모든 유저들이 준비가 되지 않았습니다.",
+          Toast.LONG,
+          Toast.BOTTOM
+        );
       }
     });
 
     WebSocket.current.on("disconnectHost", () => {
-      const toast = Toast.show("호스트의 연결이 끊어졌습니다.");
-      setTimeout(function () {
-        Toast.hide(toast);
-      }, 3000);
+      Toast.showWithGravity(
+        "호스트와의 연결이 끊어졌습니다.",
+        Toast.LONG,
+        Toast.BOTTOM
+      );
       navigation.navigate("MainMenu");
     });
 
     WebSocket.current.on("disconnectUser", (data) => {
       console.log(data);
-      const toast = Toast.show("유저가 나갔습니다.");
-      setTimeout(function () {
-        Toast.hide(toast);
-      }, 3000);
-      console.log(toast);
+      Toast.showWithGravity("유저가 나갔습니다.", Toast.LONG, Toast.BOTTOM);
     });
   }, []);
   return (
@@ -122,16 +125,6 @@ export default function GameScreen({ navigation, route }) {
           >
             <View style={styles.modalBG}>
               <View style={styles.modalCard}>
-                <Toast
-                  ref={toastRef}
-                  positionValue={{
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                  fadeInDuration={200}
-                  fadeOutDuration={3000}
-                  style={{ backgroundColor: "#ffffff" }}
-                />
                 <View style={styles.modalHeader}>
                   <View style={styles.roomlocation}>
                     <Text style={styles.roomnumber}>{roomNumber}</Text>

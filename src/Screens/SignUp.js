@@ -12,12 +12,12 @@ const SignUp = ({ navigation }) => {
   const [password2, setPassword2] = useState("");
   const onSignInPressed = async () => {
     Alert.alert(`${Username}, ${Email}, ${password}, ${password2}`);
-    // const header = { Authorization: `Bearer ${TOKEN.accessToken}` };
+    const header = { Authorization: `Bearer ${TOKEN.accessToken}` };
     axios
       .post(
         `http://3.38.165.165:3000/api/signUp`,
-        { user_name: Username, user_email: Email, user_pw: password }
-        // { header }
+        { user_name: Username, user_email: Email, user_pw: password },
+        { header }
       )
       .then((response) => console.log(response))
       .catch((err) => console.log(err));

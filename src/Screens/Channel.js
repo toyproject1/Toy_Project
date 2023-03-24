@@ -23,12 +23,10 @@ import io from "socket.io-client";
 // const STORAGE_KEY = "@roomData";
 // export const socket = io("http://3.38.165.165:3131/");
 
-export default function Channel({ navigation, route }) {
-  const { user_Name } = route.params;
+export default function Channel({ navigation }) {
   const [userID, setUserID] = useState();
   const [userName, setUsername] = useState();
   const [refreshing, setRefreshing] = useState(false);
-  const [ready, setReady] = useState(false);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     // wait(2000).then(() => setRefreshing(false));
@@ -36,12 +34,18 @@ export default function Channel({ navigation, route }) {
 
   useEffect(() => {
     const getData = async () => {
-      setUserID(JSON.parse(await AsyncStorage.getItem("userInfo")).user_id);
-      setUsername(JSON.parse(await AsyncStorage.getItem("userInfo")).user_name);
-      if (userID !== null) {
-        console.log(userID);
-      } else {
-        console.log("데이터 없음");
+      try {
+        setUserID(JSON.parse(await AsyncStorage.getItem("userInfo")).user_id);
+        setUsername(
+          JSON.parse(await AsyncStorage.getItem("userInfo")).user_name
+        );
+        if (userID !== null) {
+          console.log(userID);
+        } else {
+          console.log("데이터 없음");
+        }
+      } catch (error) {
+        console.log(error);
       }
     };
 

@@ -23,15 +23,20 @@ export default function HostGameMenu({ navigation }) {
   // const [Room, setRoom] = useState({});
   useEffect(() => {
     const getData = async () => {
-      setUserID(JSON.parse(await AsyncStorage.getItem("userInfo")).user_id);
-      setUsername(JSON.parse(await AsyncStorage.getItem("userInfo")).user_name);
-      if (userID !== null) {
-        console.log(userID);
-      } else {
-        console.log("데이터 없음");
+      try {
+        setUserID(JSON.parse(await AsyncStorage.getItem("userInfo")).user_id);
+        setUsername(
+          JSON.parse(await AsyncStorage.getItem("userInfo")).user_name
+        );
+        if (userID !== null) {
+          console.log(userID);
+        } else {
+          console.log("데이터 없음");
+        }
+      } catch (error) {
+        console.log(error);
       }
     };
-
     getData();
   }, []);
 

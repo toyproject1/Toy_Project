@@ -1,7 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import React from "react"; // , { useContext }
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import SignUp from "./src/Screens/SignUp";
 import Login from "./src/Screens/Login";
 import Start from "./src/Screens/Start";
@@ -10,7 +9,6 @@ import MainMenu from "./src/Screens/MainMenu";
 import HostGameMenu from "./src/Screens/HostGameMenu";
 import Channel from "./src/Screens/Channel";
 import GameScreen from "./src/Screens/GameScreen";
-import JoinGameScreen from "./src/Screens/JoinGameScreen";
 
 const Stack = createStackNavigator();
 
@@ -54,11 +52,6 @@ export default function AppStack() {
             options={{ headerShown: false }}
             name="GameScreen"
             component={GameScreen}
-          />
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="JoinGameScreen"
-            component={JoinGameScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>
