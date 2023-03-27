@@ -95,7 +95,7 @@ const MainMenu = ({ navigation }) => {
         <TouchableOpacity
           style={styles.btnshg}
           activeOpacity={0.9}
-          onPress={() => navigation.navigate("Channel", { userName: userName })}
+          onPress={() => navigation.navigate("Channel")}
         >
           <Text style={styles.btnTexthg}>Join Game</Text>
         </TouchableOpacity>

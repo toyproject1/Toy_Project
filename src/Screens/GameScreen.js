@@ -112,6 +112,10 @@ export default function GameScreen({ navigation, route }) {
       });
     });
 
+    WebSocket.current.on("changeHost", () => {
+      WebSocket.current.emit("changeHost");
+    });
+
     WebSocket.current.on("disconnectUser", (data) => {
       console.log(data);
       Toast.showWithGravity("유저가 나갔습니다.", Toast.LONG, Toast.BOTTOM);

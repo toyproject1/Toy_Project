@@ -20,13 +20,20 @@ export default function HostGameMenu({ navigation }) {
   const [userID, setUserID] = useState();
   const [userName, setUsername] = useState();
   const [Host, setHost] = useState("Host");
-  // const [Room, setRoom] = useState({});
+  const [Room, setRoom] = useState({});
   useEffect(() => {
     const getData = async () => {
       try {
         setUserID(JSON.parse(await AsyncStorage.getItem("userInfo")).user_id);
         setUsername(
-          JSON.parse(await AsyncStorage.getItem("userInfo")).user_name
+          JSON.parse(
+            await AsyncStorage.getItem("userInfo", (error, result) => {
+              if (error) console.error("Something went wrong!");
+              else if (result)
+                console.log("Getting key was successfull", result);
+              else if (result === null) console.log("Key does not exists!");
+            })
+          ).user_name
         );
         if (userID !== null) {
           console.log(userID);
@@ -34,7 +41,7 @@ export default function HostGameMenu({ navigation }) {
           console.log("데이터 없음");
         }
       } catch (error) {
-        console.log(error);
+        console.log("error");
       }
     };
     getData();

@@ -20,9 +20,6 @@ import ChannelButton from "../Components/Btns/ChannelButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import io from "socket.io-client";
 
-// const STORAGE_KEY = "@roomData";
-// export const socket = io("http://3.38.165.165:3131/");
-
 export default function Channel({ navigation }) {
   const [userID, setUserID] = useState();
   const [userName, setUsername] = useState();
@@ -33,11 +30,27 @@ export default function Channel({ navigation }) {
   }, []);
 
   useEffect(() => {
-    const getData = async () => {
+    async function getData() {
       try {
-        setUserID(JSON.parse(await AsyncStorage.getItem("userInfo")).user_id);
+        setUserID(
+          JSON.parse(
+            await AsyncStorage.getItem("userInfo", (error, result) => {
+              if (error) console.error("Something went wrong!");
+              else if (result)
+                console.log("Getting key was successfull", result);
+              else if (result === null) console.log("Key does not exists!");
+            })
+          ).user_id
+        );
         setUsername(
-          JSON.parse(await AsyncStorage.getItem("userInfo")).user_name
+          JSON.parse(
+            await AsyncStorage.getItem("userInfo", (error, result) => {
+              if (error) console.error("Something went wrong!");
+              else if (result)
+                console.log("Getting key was successfull", result);
+              else if (result === null) console.log("Key does not exists!");
+            })
+          ).user_name
         );
         if (userID !== null) {
           console.log(userID);
@@ -45,9 +58,9 @@ export default function Channel({ navigation }) {
           console.log("데이터 없음");
         }
       } catch (error) {
-        console.log(error);
+        console.log("error");
       }
-    };
+    }
 
     getData();
   }, []);
@@ -110,8 +123,7 @@ export default function Channel({ navigation }) {
                   navigation.navigate("GameScreen", {
                     Host: "User",
                     roomNumber: room.room_id,
-                    userId: userID,
-                    userName: userName,
+
                     gTitle: room.room_name,
                     HCNum: room.room_max_user,
                   });
