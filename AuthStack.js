@@ -24,6 +24,16 @@ export default function AuthStack() {
           />
           <Stack.Screen
             options={{ headerShown: false }}
+            name="Login"
+            component={Login}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="SignUp"
+            component={SignUp}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
             name="HostGameMenu"
             component={HostGameMenu}
           />
@@ -36,16 +46,6 @@ export default function AuthStack() {
             options={{ headerShown: false }}
             name="GameScreen"
             component={GameScreen}
-          />
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="Login"
-            component={Login}
-          />
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="SignUp"
-            component={SignUp}
           />
         </Stack.Navigator>
       </NavigationContainer>

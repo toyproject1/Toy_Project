@@ -14,16 +14,34 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState("");
 
   const onSubmit = async () => {
-    console.log(Email);
     let temp;
+    // const header = { Authorization: `Bearer ${access_token}` };
+    // console.log(header);
     await axios
-      .post(`http://3.38.165.165:3000/api/signIn`, {
-        user_email: Email,
-        user_pw: password,
-      })
+      .post(
+        `http://3.38.165.165:3000/api/signIn`,
+        {
+          user_email: Email,
+          user_pw: password,
+        }
+        // { header }
+      )
       .then(async (response) => {
         temp = response.data;
-        console.log(response.data);
+        console.log(temp);
+        access_token = response.data.access_token;
+        console.log(access_token);
+        refresh_token = response.data.refresh_token;
+        console.log(refresh_token);
+
+        await AsyncStorage.setItem("access_token", access_token);
+        const ac_token = await AsyncStorage.getItem("access_token");
+        console.log(ac_token);
+
+        await AsyncStorage.setItem("refresh_token", refresh_token);
+        const rf_token = await AsyncStorage.getItem("refresh_token");
+        console.log(rf_token);
+
         const parts = temp.access_token
           .split(".")
           .map((part) =>
@@ -37,9 +55,10 @@ const Login = ({ navigation }) => {
         console.log(payload);
 
         const userInfo = await AsyncStorage.getItem("userInfo");
+        console.log(userInfo);
         userInfo["access_token"] = temp.access_token;
         userInfo["refresh_token"] = temp.refresh_token;
-        console.log(userInfo);
+
         navigation.navigate("MainMenu");
       })
       .catch((err) => console.log("err"));

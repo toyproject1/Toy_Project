@@ -54,7 +54,7 @@ const MainMenu = ({ navigation }) => {
         text: "확인",
         onPress: async () => {
           await AsyncStorage.removeItem("userInfo");
-          navigation.navigate("Login");
+          navigation.reset({ routes: [{ name: "Login" }] });
         },
       },
     ]);
