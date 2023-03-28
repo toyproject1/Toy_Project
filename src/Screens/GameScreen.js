@@ -15,18 +15,19 @@ import ScoreBoard from "../Components/ScoreBoard";
 import DiceBox from "../Components/DcieBox";
 import { io } from "socket.io-client";
 import Toast from "react-native-simple-toast";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function GameScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(true);
   const [modalRankVisible, setModalRankVisible] = useState(false);
-  const { gTitle, HCNum, Host, roomNumber, userId, userName } = route.params;
+  const { gTitle, HCNum, Host, roomNumber, userId } = route.params;
   const [userList, setUserList] = useState([]);
   const [rankList, setRankList] = useState([]);
   const WebSocket = useRef(null);
 
   console.log(gTitle, HCNum, roomNumber, userId, userName, Host);
 
-  useEffect(() => {
+  useEffect(async () => {
     WebSocket.current = io("http://3.38.165.165:3131/");
     WebSocket.current.on("connect", () => {
       console.log("connected");

@@ -123,7 +123,8 @@ export default function Channel({ navigation }) {
                   navigation.navigate("GameScreen", {
                     Host: "User",
                     roomNumber: room.room_id,
-
+                    userID: userID,
+                    userName: userName,
                     gTitle: room.room_name,
                     HCNum: room.room_max_user,
                   });
