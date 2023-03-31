@@ -20,7 +20,7 @@ export default function HostGameMenu({ navigation }) {
   const [userID, setUserID] = useState();
   const [userName, setUsername] = useState();
   const [Host, setHost] = useState("Host");
-  const [Room, setRoom] = useState({});
+  // const [Room, setRoom] = useState({});
   useEffect(() => {
     const getData = async () => {
       try {
@@ -47,15 +47,6 @@ export default function HostGameMenu({ navigation }) {
     getData();
   }, []);
 
-  // const onSubmit = async () => {
-  //   await AsyncStorage.setItem("gameTitle", gTitle);
-  //   navigation.navigate("GameScreen", {
-  //     gTitle: gTitle,
-  //     HCNum: HCNum,
-  //   });
-  //   console.log(`${gTitle}, ${HCNum}`);
-  // };
-
   async function postGData() {
     let tempData;
     try {
@@ -79,14 +70,6 @@ export default function HostGameMenu({ navigation }) {
         room_max_user: response.data.room_max_user,
         user_id: response.data.user_id,
       };
-      // await setRoom({
-      //   room_id: response.data.room_id,
-      //   room_name: response.data.room_name,
-      //   room_state: response.data.room_state,
-      //   room_user_count: response.data.room_user_count,
-      //   room_max_user: response.data.room_max_user,
-      //   user_id: response.data.user_id,
-      // });
     } catch (error) {
       console.log("응답 실패");
     }

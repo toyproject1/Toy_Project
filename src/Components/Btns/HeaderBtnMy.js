@@ -11,22 +11,22 @@ import {
 export default function HeaderBtnMy() {
   const [modalVisible, setModalVisible] = useState(false);
 
-  const name = async () => {
-    JSON.parse(await AsyncStorage.getItem("userInfo")).user_name;
-  };
+  // const name = async () => {
+  //   JSON.parse(await AsyncStorage.getItem("userInfo")).user_name;
+  // };
 
-  const userData = async () => {
-    JSON.stringify(await AsyncStorage.getItem("userInfo"));
-    console.log(JSON.parse(await AsyncStorage.getItem("userInfo")).user_name);
-    // console.log(
-    //   JSON.stringify(await AsyncStorage.getItem("userInfo")).user_name
-    // );
-  };
+  // const userData = async () => {
+  //   JSON.stringify(await AsyncStorage.getItem("userInfo"));
+  //   console.log(JSON.parse(await AsyncStorage.getItem("userInfo")).user_name);
+  //   // console.log(
+  //   //   JSON.stringify(await AsyncStorage.getItem("userInfo")).user_name
+  //   // );
+  // };
 
-  useEffect(() => {
-    userData();
-    name();
-  });
+  // useEffect(() => {
+  //   userData();
+  //   name();
+  // });
 
   return (
     <View style={styles.btnSite}>
@@ -47,7 +47,8 @@ export default function HeaderBtnMy() {
               </Pressable>
             </View>
             <View style={styles.profileContents}>
-              <Text style={styles.profileTexts}>Your Name : {name}</Text>
+              <Text style={styles.profileTexts}>Your Name : </Text>
+              {/* {name} */}
               <Text style={styles.profileTexts}>Win :</Text>
               <Text style={styles.profileTexts}>Lose :</Text>
               <Text style={styles.profileTexts}>Win Rate :</Text>

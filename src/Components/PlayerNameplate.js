@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import players from "../players.json";
 import { io } from "socket.io-client";
 
 export default function PlayerNameplate() {

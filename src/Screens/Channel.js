@@ -28,6 +28,9 @@ export default function Channel({ navigation }) {
     setRefreshing(true);
     // wait(2000).then(() => setRefreshing(false));
   }, []);
+  const [roomList, setRoomList] = useState([]);
+
+  const WebSocket = useRef(null);
 
   useEffect(() => {
     async function getData() {
@@ -61,23 +64,11 @@ export default function Channel({ navigation }) {
         console.log("error");
       }
     }
-
     getData();
-  }, []);
 
-  const [roomList, setRoomList] = useState([]);
-
-  const WebSocket = useRef(null);
-
-  useEffect(async () => {
     WebSocket.current = io("http://3.38.165.165:3131/");
     WebSocket.current.on("connect", () => {
       console.log("connected");
-    });
-
-    WebSocket.current.on("joinError", () => {
-      console.log("참여 제한");
-      navigation.replace("Channel");
     });
 
     WebSocket.current.on("refreshRoom", (data) => {
@@ -127,8 +118,10 @@ export default function Channel({ navigation }) {
                     userName: userName,
                     gTitle: room.room_name,
                     HCNum: room.room_max_user,
+                    // plCount: room.room_user_count,
                   });
                 }}
+                key={room.room_id}
               >
                 <View style={styles.tSite}>
                   <View style={styles.rowTxtTop}>

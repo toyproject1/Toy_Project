@@ -70,9 +70,11 @@ const MainMenu = ({ navigation }) => {
 
   const userData = async () => {
     userName = JSON.parse(await AsyncStorage.getItem("userInfo")).user_name;
+    userId = JSON.parse(await AsyncStorage.getItem("userInfo")).user_id;
     await AsyncStorage.getItem("userInfo");
     console.log(JSON.parse(await AsyncStorage.getItem("userInfo")));
     console.log(userName);
+    console.log(userId);
   };
   useEffect(() => {
     userData();
