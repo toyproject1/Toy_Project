@@ -24,13 +24,13 @@ export default function AuthStack() {
           />
           <Stack.Screen
             options={{ headerShown: false }}
-            name="Login"
-            component={Login}
+            name="SignUp"
+            component={SignUp}
           />
           <Stack.Screen
             options={{ headerShown: false }}
-            name="SignUp"
-            component={SignUp}
+            name="Login"
+            component={Login}
           />
           <Stack.Screen
             options={{ headerShown: false }}

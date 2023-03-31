@@ -32,7 +32,9 @@ export default function GameScreen({ navigation, route }) {
   const [rollChance, setChanceCount] = useState(2);
   // const [ready, setReady] = useState("Wait ...");
   const { gTitle, HCNum, Host, roomNumber, userId, userName } = route.params;
-
+  const [abc, setAbc] = useState("0");
+  const [abcd, setAbcd] = useState("1");
+  const [abcde, setAbcde] = useState("2");
   const [userList, setUserList] = useState([]);
   const [scoreList, setScoreList] = useState([]);
 
@@ -98,14 +100,14 @@ export default function GameScreen({ navigation, route }) {
       console.log(data);
       Toast.showWithGravity(
         "유저님이 입장하였습니다.",
-        Toast.LONG,
+        Toast.SHORT,
         Toast.BOTTOM
       );
     });
 
     WebSocket.current.on("joinError", () => {
       console.log("참여 제한");
-      Toast.showWithGravity("방이 꽉 찼습니다.", Toast.LONG, Toast.BOTTOM);
+      Toast.showWithGravity("방이 꽉 찼습니다.", Toast.SHORT, Toast.BOTTOM);
       navigation.reset({ routes: [{ name: "Channel" }] });
     });
 
@@ -170,7 +172,7 @@ export default function GameScreen({ navigation, route }) {
       } else {
         Toast.showWithGravity(
           "아직 모든 유저들이 준비가 되지 않았습니다.",
-          Toast.LONG,
+          Toast.SHORT,
           Toast.BOTTOM
         );
       }
@@ -183,7 +185,7 @@ export default function GameScreen({ navigation, route }) {
     WebSocket.current.on("disconnectHost", () => {
       Toast.showWithGravity(
         "호스트의 연결이 끊어졌습니다.",
-        Toast.LONG,
+        Toast.SHORT,
         Toast.BOTTOM
       );
       // navigation.navigate("MainMenu");
@@ -191,7 +193,7 @@ export default function GameScreen({ navigation, route }) {
 
     WebSocket.current.on("disconnectUser", (data) => {
       console.log(data);
-      Toast.showWithGravity("유저가 나갔습니다.", Toast.LONG, Toast.BOTTOM);
+      Toast.showWithGravity("유저가 나갔습니다.", Toast.SHORT, Toast.BOTTOM);
     });
 
     WebSocket.current.on("changeHost", () => {
@@ -206,70 +208,70 @@ export default function GameScreen({ navigation, route }) {
     WebSocket.current.on("throwDice", (data) => {
       console.log(data);
       if (data.state === 0) {
-        Toast.showWithGravity(
-          `${data.message} 입니다.`,
-          Toast.LONG,
-          Toast.BOTTOM
-        );
+        Toast.showWithGravity(`${data.message}`, Toast.SHORT, Toast.BOTTOM);
       } else {
+        console.log(data.diceResult.message);
+        setTemp({
+          dice01: data.diceResult.firstDice,
+          dice02: data.diceResult.secDice,
+          dice03: data.diceResult.trdDice,
+          dice04: data.diceResult.fothDice,
+          dice05: data.diceResult.fithDice,
+        });
+        setDiceResult(data.diceResult);
+        setPicked(data.scoreBoard.picked);
+        setScoreValue({
+          Ones: data.scoreBoard.scoreValue.ones,
+          Twos: data.scoreBoard.scoreValue.twos,
+          Threes: data.scoreBoard.scoreValue.threes,
+          Fours: data.scoreBoard.scoreValue.fours,
+          Fives: data.scoreBoard.scoreValue.fives,
+          Sixes: data.scoreBoard.scoreValue.sixes,
+          Bonus: data.scoreBoard.scoreValue.bonus,
+          Triple: data.scoreBoard.scoreValue.triple,
+          Four_card: data.scoreBoard.scoreValue.four_card,
+          Full_house: data.scoreBoard.scoreValue.full_house,
+          Small_straight: data.scoreBoard.scoreValue.small_straight,
+          Large_straight: data.scoreBoard.scoreValue.large_straight,
+          Yahtzee: data.scoreBoard.scoreValue.yahtzee,
+          Chance: data.scoreBoard.scoreValue.chance,
+        });
+        setState(data.scoreBoard.state);
       }
-      console.log(data.diceResult.message);
-      setTemp({
-        dice01: data.diceResult.firstDice,
-        dice02: data.diceResult.secDice,
-        dice03: data.diceResult.trdDice,
-        dice04: data.diceResult.fothDice,
-        dice05: data.diceResult.fithDice,
-      });
-      setDiceResult(data.diceResult);
-      setPicked(data.scoreBoard.picked);
-      setScoreValue({
-        Ones: data.scoreBoard.scoreValue.ones,
-        Twos: data.scoreBoard.scoreValue.twos,
-        Threes: data.scoreBoard.scoreValue.threes,
-        Fours: data.scoreBoard.scoreValue.fours,
-        Fives: data.scoreBoard.scoreValue.fives,
-        Sixes: data.scoreBoard.scoreValue.sixes,
-        Bonus: data.scoreBoard.scoreValue.bonus,
-        Triple: data.scoreBoard.scoreValue.triple,
-        Four_card: data.scoreBoard.scoreValue.four_card,
-        Full_house: data.scoreBoard.scoreValue.full_house,
-        Small_straight: data.scoreBoard.scoreValue.small_straight,
-        Large_straight: data.scoreBoard.scoreValue.large_straight,
-        Yahtzee: data.scoreBoard.scoreValue.yahtzee,
-        Chance: data.scoreBoard.scoreValue.chance,
-      });
-      setState(data.scoreBoard.state);
     });
 
     WebSocket.current.on("putDice", (data) => {
       console.log(data);
-      setTemp({
-        dice01: data.diceResult.firstDice,
-        dice02: data.diceResult.secDice,
-        dice03: data.diceResult.trdDice,
-        dice04: data.diceResult.fothDice,
-        dice05: data.diceResult.fithDice,
-      });
-      setDiceResult(data.diceResult);
-      setPicked(data.scoreBoard.picked);
-      setScoreValue({
-        Ones: data.scoreBoard.scoreValue.ones,
-        Twos: data.scoreBoard.scoreValue.twos,
-        Threes: data.scoreBoard.scoreValue.threes,
-        Fours: data.scoreBoard.scoreValue.fours,
-        Fives: data.scoreBoard.scoreValue.fives,
-        Sixes: data.scoreBoard.scoreValue.sixes,
-        Bonus: data.scoreBoard.scoreValue.bonus,
-        Triple: data.scoreBoard.scoreValue.triple,
-        Four_card: data.scoreBoard.scoreValue.four_card,
-        Full_house: data.scoreBoard.scoreValue.full_house,
-        Small_straight: data.scoreBoard.scoreValue.small_straight,
-        Large_straight: data.scoreBoard.scoreValue.large_straight,
-        Yahtzee: data.scoreBoard.scoreValue.yahtzee,
-        Chance: data.scoreBoard.scoreValue.chance,
-      });
-      setState(data.scoreBoard.state);
+      if (data.state === 0) {
+        Toast.showWithGravity(`${data.message}`, Toast.SHORT, Toast.BOTTOM);
+      } else {
+        setTemp({
+          dice01: data.diceResult.firstDice,
+          dice02: data.diceResult.secDice,
+          dice03: data.diceResult.trdDice,
+          dice04: data.diceResult.fothDice,
+          dice05: data.diceResult.fithDice,
+        });
+        setDiceResult(data.diceResult);
+        setPicked(data.scoreBoard.picked);
+        setScoreValue({
+          Ones: data.scoreBoard.scoreValue.ones,
+          Twos: data.scoreBoard.scoreValue.twos,
+          Threes: data.scoreBoard.scoreValue.threes,
+          Fours: data.scoreBoard.scoreValue.fours,
+          Fives: data.scoreBoard.scoreValue.fives,
+          Sixes: data.scoreBoard.scoreValue.sixes,
+          Bonus: data.scoreBoard.scoreValue.bonus,
+          Triple: data.scoreBoard.scoreValue.triple,
+          Four_card: data.scoreBoard.scoreValue.four_card,
+          Full_house: data.scoreBoard.scoreValue.full_house,
+          Small_straight: data.scoreBoard.scoreValue.small_straight,
+          Large_straight: data.scoreBoard.scoreValue.large_straight,
+          Yahtzee: data.scoreBoard.scoreValue.yahtzee,
+          Chance: data.scoreBoard.scoreValue.chance,
+        });
+        setState(data.scoreBoard.state);
+      }
     });
   }, []);
 
@@ -424,10 +426,10 @@ export default function GameScreen({ navigation, route }) {
     <View style={styles.main}>
       <GHeader />
       <View style={styles.PNameplatesSite}>
-        {userList.map((list) => {
+        {userList.map((list, idx1) => {
           if (userScore == true) {
             return (
-              <View style={styles.PNameplateSite}>
+              <View style={styles.PNameplateSite} key={idx1}>
                 <View style={styles.PNameplate}>
                   <Text style={styles.plateTxt}>{list.userName}</Text>
                 </View>
@@ -435,7 +437,7 @@ export default function GameScreen({ navigation, route }) {
             );
           } else {
             return (
-              <View style={styles.PNameplateSite}>
+              <View style={styles.PNameplateSite} key={idx1}>
                 <View style={styles.PNameplate}>
                   <Text style={styles.plateTxt}>{list.userName}</Text>
                 </View>
@@ -448,9 +450,9 @@ export default function GameScreen({ navigation, route }) {
         })}
       </View>
       <View style={styles.PNameplatesSite}>
-        {scoreList.map((score) => {
+        {scoreList.map((score, idx3) => {
           return (
-            <View style={styles.PNameplateSite}>
+            <View style={styles.PNameplateSite} key={idx3}>
               <View style={styles.PScoreplate}>
                 <Text style={styles.scoreTxt}>{score.userScore}</Text>
               </View>
@@ -557,9 +559,9 @@ export default function GameScreen({ navigation, route }) {
                     </Text>
                   </View>
                 </View>
-                {userList.map((list) => {
+                {userList.map((list, idx) => {
                   return (
-                    <View style={styles.playerBox} key={list.userId}>
+                    <View style={styles.playerBox} key={idx}>
                       <Text style={styles.player}>{list.userName}</Text>
                       <Text style={styles.player}>{list.userState}</Text>
                     </View>
