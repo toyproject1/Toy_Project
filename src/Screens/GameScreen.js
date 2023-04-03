@@ -31,7 +31,8 @@ export default function GameScreen({ navigation, route }) {
   // const [player, setPlayer] = useState("User Name");
   const [rollChance, setChanceCount] = useState(2);
   // const [ready, setReady] = useState("Wait ...");
-  const { gTitle, HCNum, Host, roomNumber, userID, userName } = route.params;
+  const { gTitle, HCNum, Host, roomNumber, userID, userName, userId } =
+    route.params;
   const [userList, setUserList] = useState([]);
   const [scoreList, setScoreList] = useState([]);
   const [rankList, setRankList] = useState([]);
@@ -81,10 +82,11 @@ export default function GameScreen({ navigation, route }) {
 
     if (Host == "Host") {
       WebSocket.current.emit("hostCreateRoom", {
-        userId: userID,
+        userId: userId,
         userName: userName,
         roomNumber: roomNumber,
       });
+      console.log(userId, userName, roomNumber);
     } else {
       // 일반유저 Host == 'User' 일 경우
       console.log(
@@ -95,7 +97,7 @@ export default function GameScreen({ navigation, route }) {
         userName: userName,
         roomNumber: roomNumber,
       });
-      console.log(userID, userName, roomNumber);
+      // console.log(userID, userName, roomNumber);
     }
 
     WebSocket.current.on("userJoinRoom", (data) => {
@@ -1005,7 +1007,7 @@ export default function GameScreen({ navigation, route }) {
                 {rankList.map((rank, idx4) => {
                   return (
                     <View style={styles.playerBox} key={idx4}>
-                      <Text style={styles.player}>{rank.length}등</Text>
+                      {/* <Text style={styles.player}>{rank.idx4}등</Text> */}
                       <Text style={styles.player}>{rank.userName}</Text>
                       <Text style={styles.player}>{rank.userScore}</Text>
                     </View>

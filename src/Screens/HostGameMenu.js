@@ -61,7 +61,6 @@ export default function HostGameMenu({ navigation }) {
           room_max_user: HCNum,
         }
       );
-      console.log("응답 성공");
       tempData = {
         room_id: response.data.room_id,
         room_name: response.data.room_name,
@@ -70,6 +69,7 @@ export default function HostGameMenu({ navigation }) {
         room_max_user: response.data.room_max_user,
         user_id: response.data.user_id,
       };
+      console.log(tempData);
     } catch (error) {
       console.log("응답 실패");
     }
