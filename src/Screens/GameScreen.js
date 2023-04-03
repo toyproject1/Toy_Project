@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Image,
   TouchableHighlight,
+  BackHandler,
 } from "react-native";
 import GHeader from "../Components/GHeader";
 import GameBtnRule from "../Components/Btns/GameBtnRule";
@@ -20,7 +21,6 @@ import Dice4 from "../Components/Imgs/Dice04.png";
 import Dice5 from "../Components/Imgs/Dice05.png";
 import Dice6 from "../Components/Imgs/Dice06.png";
 import Toast from "react-native-simple-toast";
-import { configureProps } from "react-native-reanimated/lib/reanimated2/core";
 
 export default function GameScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(true);
@@ -208,8 +208,9 @@ export default function GameScreen({ navigation, route }) {
     });
 
     WebSocket.current.on("diceTurn", (data) => {
-      console.log("주사위 굴릴 사람 : ", data.diceTurn);
-      setTurn(data.diceTurn);
+      console.log(data);
+      console.log("주사위 굴릴 사람 : ", data.diceTurnName);
+      setTurn(data.diceTurnName);
     });
 
     WebSocket.current.on("throwDice", (data) => {
@@ -225,6 +226,7 @@ export default function GameScreen({ navigation, route }) {
           dice04: data.diceResult.fothDice,
           dice05: data.diceResult.fithDice,
         });
+        setChanceCount(data.diceCount);
         setDiceResult(data.diceResult);
         setPicked(data.scoreBoard.picked);
         setScoreValue({
@@ -259,6 +261,7 @@ export default function GameScreen({ navigation, route }) {
           dice04: data.diceResult.fothDice,
           dice05: data.diceResult.fithDice,
         });
+        setChanceCount(data.diceCount);
         setDiceResult(data.diceResult);
         setPicked(data.scoreBoard.picked);
         setScoreValue({
@@ -301,6 +304,26 @@ export default function GameScreen({ navigation, route }) {
         Chance: data.scoreBoard.chance,
       });
     });
+    const backAction = () => {
+      Alert.alert("Hold on!", "게임을 종료하시겠습니까?", [
+        {
+          text: "취소",
+          onPress: () => null,
+        },
+        {
+          text: "확인",
+          onPress: () => {
+            navigation.navigate("MainMenu");
+            WebSocket.current.close();
+          },
+        },
+      ]);
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
   }, []);
 
   useEffect(() => {
@@ -439,7 +462,6 @@ export default function GameScreen({ navigation, route }) {
       scoreType: "ones",
       // scoreValue: pickedScore
     });
-    setChanceCount(2);
   };
   const inputTwos = () => {
     // setPicked_c("twos");
@@ -448,7 +470,6 @@ export default function GameScreen({ navigation, route }) {
       scoreType: "twos",
       // scoreValue: pickedScore
     });
-    setChanceCount(2);
   };
   const inputThrees = () => {
     // setPicked_c("threes");
@@ -457,7 +478,6 @@ export default function GameScreen({ navigation, route }) {
       scoreType: "threes",
       // scoreValue: pickedScore
     });
-    setChanceCount(2);
   };
   const inputFours = () => {
     // setPicked_c("fours");
@@ -467,7 +487,6 @@ export default function GameScreen({ navigation, route }) {
       // scoreValue: pickedScore
     });
     setPicked([]);
-    setChanceCount(2);
   };
   const inputFives = () => {
     // setPicked_c("fives");
@@ -476,7 +495,6 @@ export default function GameScreen({ navigation, route }) {
       scoreType: "fives",
       // scoreValue: pickedScore
     });
-    setChanceCount(2);
   };
   const inputSixes = () => {
     // setPicked_c("sixes");
@@ -485,16 +503,14 @@ export default function GameScreen({ navigation, route }) {
       scoreType: "sixes",
       // scoreValue: pickedScore
     });
-    setChanceCount(2);
-  };
-  const inputBonus = () => {
-    // setPicked_c("bonus");
-    // setPickedScore_c(ScoreValue.Bonus);
-    WebSocket.current.emit("saveScore", {
-      scoreType: "bonus",
-      // scoreValue: pickedScore
-    });
-    setChanceCount(2);
+    // };
+    // const inputBonus = () => {
+    //   // setPicked_c("bonus");
+    //   // setPickedScore_c(ScoreValue.Bonus);
+    //   WebSocket.current.emit("saveScore", {
+    //     scoreType: "bonus",
+    //     // scoreValue: pickedScore
+    //   });
   };
   const inputTriple = () => {
     // setPicked_c("triple");
@@ -503,7 +519,6 @@ export default function GameScreen({ navigation, route }) {
       scoreType: "triple",
       // scoreValue: pickedScore
     });
-    setChanceCount(2);
   };
   const inputFour_card = () => {
     // setPicked_c("four_card");
@@ -512,7 +527,6 @@ export default function GameScreen({ navigation, route }) {
       scoreType: "four_card",
       // scoreValue: pickedScore
     });
-    setChanceCount(2);
   };
   const inputFull_house = () => {
     // setPicked_c("full_house");
@@ -521,7 +535,6 @@ export default function GameScreen({ navigation, route }) {
       scoreType: "full_house",
       // scoreValue: pickedScore
     });
-    setChanceCount(2);
   };
   const inputSmall_straight = () => {
     // setPicked_c("small_straight");
@@ -530,7 +543,6 @@ export default function GameScreen({ navigation, route }) {
       scoreType: "small_straight",
       // scoreValue: pickedScore
     });
-    setChanceCount(2);
   };
   const inputLarge_straight = () => {
     // setPicked_c("large_straight");
@@ -539,7 +551,6 @@ export default function GameScreen({ navigation, route }) {
       scoreType: "large_straight",
       // scoreValue: pickedScore
     });
-    setChanceCount(2);
   };
   const inputYahtzee = () => {
     // setPicked_c("yahtzee");
@@ -548,7 +559,6 @@ export default function GameScreen({ navigation, route }) {
       scoreType: "yahtzee",
       // scoreValue: pickedScore
     });
-    setChanceCount(2);
   };
   const inputChance = () => {
     // setPicked_c("chance");
@@ -557,7 +567,6 @@ export default function GameScreen({ navigation, route }) {
       scoreType: "chance",
       // scoreValue: pickedScore
     });
-    setChanceCount(2);
   };
 
   useEffect(() => {
@@ -627,7 +636,7 @@ export default function GameScreen({ navigation, route }) {
         <View style={styles.boardTop}>
           <View style={styles.nowTurnSite}>
             <View style={styles.nowTurn}>
-              <Text style={styles.nowTurnTxt}>Who's Turn?</Text>
+              <Text style={styles.nowTurnTxt}>{turn}'s Turn</Text>
             </View>
           </View>
           <View style={styles.btnRuleSite}>
@@ -731,11 +740,10 @@ export default function GameScreen({ navigation, route }) {
               <TouchableOpacity
                 activeOpacity={0.9}
                 style={
-                  Picked.includes("bonus") == false
+                  Picked.i == false
                     ? styles.userScoreCell
                     : styles.savedUserScoreCell
                 }
-                onPress={() => inputBonus()}
               >
                 <Text>{ScoreValue.Bonus}</Text>
               </TouchableOpacity>
@@ -917,7 +925,7 @@ export default function GameScreen({ navigation, route }) {
           activeOpacity={0.9}
           onPress={() => {
             reRollDice();
-            setChanceCount(rollChance > 0 ? rollChance - 1 : rollChance);
+            // setChanceCount(rollChance > 0 ? rollChance - 1 : rollChance);
           }}
         >
           <Text style={styles.btnRollTxt}>Re Roll</Text>
@@ -968,7 +976,7 @@ export default function GameScreen({ navigation, route }) {
                   <Pressable
                     onPress={() => {
                       WebSocket.current.close();
-                      navigation.navigate("MainMenu");
+                      navigation.reset({ routes: [{ name: "MainMenu" }] });
                     }}
                   >
                     <Text style={styles.btnSave}>Exit</Text>
