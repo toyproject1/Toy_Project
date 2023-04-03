@@ -20,21 +20,21 @@ import Dice4 from "../Components/Imgs/Dice04.png";
 import Dice5 from "../Components/Imgs/Dice05.png";
 import Dice6 from "../Components/Imgs/Dice06.png";
 import Toast from "react-native-simple-toast";
+import { configureProps } from "react-native-reanimated/lib/reanimated2/core";
 
 export default function GameScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(true);
   const [modalRankVisible, setModalRankVisible] = useState(false);
   // const [roomnumber, setRoomnumber] = useState("001");
   const [plCount, setPlCount] = useState(1);
+  const [scoreNum, setScoreNum] = useState(0);
   // const [player, setPlayer] = useState("User Name");
   const [rollChance, setChanceCount] = useState(2);
   // const [ready, setReady] = useState("Wait ...");
-  const { gTitle, HCNum, Host, roomNumber, userId, userName } = route.params;
-  const [abc, setAbc] = useState("0");
-  const [abcd, setAbcd] = useState("1");
-  const [abcde, setAbcde] = useState("2");
+  const { gTitle, HCNum, Host, roomNumber, userID, userName } = route.params;
   const [userList, setUserList] = useState([]);
   const [scoreList, setScoreList] = useState([]);
+  const [rankList, setRankList] = useState([]);
 
   const WebSocket = useRef(null);
   //console.log(gTitle, HCNum, roomNumber, userId, userName, Host);
@@ -53,8 +53,6 @@ export default function GameScreen({ navigation, route }) {
   const [putD03, setPutD03] = useState(false);
   const [putD04, setPutD04] = useState(false);
   const [putD05, setPutD05] = useState(false);
-
-  const [rankList, setRankList] = useState([]);
 
   let [temp, setTemp] = useState({});
 
@@ -83,7 +81,7 @@ export default function GameScreen({ navigation, route }) {
 
     if (Host == "Host") {
       WebSocket.current.emit("hostCreateRoom", {
-        userId: userId,
+        userId: userID,
         userName: userName,
         roomNumber: roomNumber,
       });
@@ -92,12 +90,12 @@ export default function GameScreen({ navigation, route }) {
       console.log(
         "========================joinUser ==============================="
       );
-      console.log(userId, userName, roomNumber);
       WebSocket.current.emit("joinRoom", {
-        userId: userId,
+        userId: userID,
         userName: userName,
         roomNumber: roomNumber,
       });
+      console.log(userID, userName, roomNumber);
     }
 
     WebSocket.current.on("userJoinRoom", (data) => {
@@ -117,6 +115,7 @@ export default function GameScreen({ navigation, route }) {
 
     WebSocket.current.on("refreshUserList", (data) => {
       console.log(data);
+
       setUserList([]);
       const tempArr = [];
       data.userInfo.map((usermap) => {
@@ -154,17 +153,21 @@ export default function GameScreen({ navigation, route }) {
 
     WebSocket.current.on("gameEnd", (data) => {
       console.log(data);
+      console.log(data.length);
+      console.log(data.length);
+      console.log(data.length);
       setModalRankVisible(!modalRankVisible);
       setRankList([]);
       const rankArr = [];
-      data.userInfo.map((rankmap) => {
-        const rankList = {
+      data.map((rankmap) => {
+        const rankScore = {
+          length: rankmap.length,
           userName: rankmap.userName,
           userScore: rankmap.userScore,
         };
-        rankArr.push(rankList);
+        rankArr.push(rankScore);
       });
-      setUserList((current) => {
+      setRankList((current) => {
         return rankArr;
       });
     });
@@ -430,129 +433,129 @@ export default function GameScreen({ navigation, route }) {
   };
 
   const inputOnes = () => {
-    setPicked_c("ones");
-    setPickedScore_c(ScoreValue.Ones);
+    // setPicked_c("ones");
+    // setPickedScore_c(ScoreValue.Ones);
     WebSocket.current.emit("saveScore", {
       scoreType: "ones",
-      scoreValue: pickedScore,
+      // scoreValue: pickedScore
     });
     setChanceCount(2);
   };
   const inputTwos = () => {
-    setPicked_c("twos");
-    setPickedScore_c(ScoreValue.Twos);
+    // setPicked_c("twos");
+    // setPickedScore_c(ScoreValue.Twos);
     WebSocket.current.emit("saveScore", {
       scoreType: "twos",
-      scoreValue: pickedScore,
+      // scoreValue: pickedScore
     });
     setChanceCount(2);
   };
   const inputThrees = () => {
-    setPicked_c("threes");
-    setPickedScore_c(ScoreValue.Threes);
+    // setPicked_c("threes");
+    // setPickedScore_c(ScoreValue.Threes);
     WebSocket.current.emit("saveScore", {
       scoreType: "threes",
-      scoreValue: pickedScore,
+      // scoreValue: pickedScore
     });
     setChanceCount(2);
   };
   const inputFours = () => {
-    setPicked_c("fours");
-    setPickedScore_c(ScoreValue.Fours);
+    // setPicked_c("fours");
+    // setPickedScore_c(ScoreValue.Fours);
     WebSocket.current.emit("saveScore", {
       scoreType: "fours",
-      scoreValue: pickedScore,
+      // scoreValue: pickedScore
     });
     setPicked([]);
     setChanceCount(2);
   };
   const inputFives = () => {
-    setPicked_c("fives");
-    setPickedScore_c(ScoreValue.Fives);
+    // setPicked_c("fives");
+    // setPickedScore_c(ScoreValue.Fives);
     WebSocket.current.emit("saveScore", {
       scoreType: "fives",
-      scoreValue: pickedScore,
+      // scoreValue: pickedScore
     });
     setChanceCount(2);
   };
   const inputSixes = () => {
-    setPicked_c("sixes");
-    setPickedScore_c(ScoreValue.Sixes);
+    // setPicked_c("sixes");
+    // setPickedScore_c(ScoreValue.Sixes);
     WebSocket.current.emit("saveScore", {
       scoreType: "sixes",
-      scoreValue: pickedScore,
+      // scoreValue: pickedScore
     });
     setChanceCount(2);
   };
   const inputBonus = () => {
-    setPicked_c("bonus");
-    setPickedScore_c(ScoreValue.Bonus);
+    // setPicked_c("bonus");
+    // setPickedScore_c(ScoreValue.Bonus);
     WebSocket.current.emit("saveScore", {
       scoreType: "bonus",
-      scoreValue: pickedScore,
+      // scoreValue: pickedScore
     });
     setChanceCount(2);
   };
   const inputTriple = () => {
-    setPicked_c("triple");
-    setPickedScore_c(ScoreValue.Triple);
+    // setPicked_c("triple");
+    // setPickedScore_c(ScoreValue.Triple);
     WebSocket.current.emit("saveScore", {
       scoreType: "triple",
-      scoreValue: pickedScore,
+      // scoreValue: pickedScore
     });
     setChanceCount(2);
   };
   const inputFour_card = () => {
-    setPicked_c("four_card");
-    setPickedScore_c(ScoreValue.Four_card);
+    // setPicked_c("four_card");
+    // setPickedScore_c(ScoreValue.Four_card);
     WebSocket.current.emit("saveScore", {
       scoreType: "four_card",
-      scoreValue: pickedScore,
+      // scoreValue: pickedScore
     });
     setChanceCount(2);
   };
   const inputFull_house = () => {
-    setPicked_c("full_house");
-    setPickedScore_c(ScoreValue.Full_house);
+    // setPicked_c("full_house");
+    // setPickedScore_c(ScoreValue.Full_house);
     WebSocket.current.emit("saveScore", {
       scoreType: "full_house",
-      scoreValue: pickedScore,
+      // scoreValue: pickedScore
     });
     setChanceCount(2);
   };
   const inputSmall_straight = () => {
-    setPicked_c("small_straight");
-    setPickedScore_c(ScoreValue.Small_straight);
+    // setPicked_c("small_straight");
+    // setPickedScore_c(ScoreValue.Small_straight);
     WebSocket.current.emit("saveScore", {
       scoreType: "small_straight",
-      scoreValue: pickedScore,
+      // scoreValue: pickedScore
     });
     setChanceCount(2);
   };
   const inputLarge_straight = () => {
-    setPicked_c("large_straight");
-    setPickedScore_c(ScoreValue.Large_straight);
+    // setPicked_c("large_straight");
+    // setPickedScore_c(ScoreValue.Large_straight);
     WebSocket.current.emit("saveScore", {
       scoreType: "large_straight",
-      scoreValue: pickedScore,
+      // scoreValue: pickedScore
     });
     setChanceCount(2);
   };
   const inputYahtzee = () => {
-    setPicked_c("yahtzee");
-    setPickedScore_c(ScoreValue.Yahtzee);
+    // setPicked_c("yahtzee");
+    // setPickedScore_c(ScoreValue.Yahtzee);
     WebSocket.current.emit("saveScore", {
       scoreType: "yahtzee",
-      scoreValue: pickedScore,
+      // scoreValue: pickedScore
     });
     setChanceCount(2);
   };
   const inputChance = () => {
-    setPicked_c("chance");
-    setPickedScore_c(ScoreValue.Chance);
+    // setPicked_c("chance");
+    // setPickedScore_c(ScoreValue.Chance);
     WebSocket.current.emit("saveScore", {
       scoreType: "chance",
-      scoreValue: pickedScore,
+      // scoreValue: pickedScore
     });
     setChanceCount(2);
   };
@@ -575,12 +578,12 @@ export default function GameScreen({ navigation, route }) {
     }
   }, [dIndex]);
 
-  useEffect(() => {
-    // console.log("Picked 타입 : ", typeof picked);
-    // console.log("Picked : ", picked);
-    // console.log("PickedScore 타입 : ", typeof pickedScore);
-    // console.log("PickedScore : ", pickedScore);
-  }, [picked]);
+  // useEffect(()=>{
+  //   console.log("Picked 타입 : ", typeof picked);
+  //   console.log("Picked : ", picked);
+  //   console.log("PickedScore 타입 : ", typeof pickedScore);
+  //   console.log("PickedScore : ", pickedScore);
+  // },[picked]);
 
   return (
     <View style={styles.main}>
@@ -666,10 +669,7 @@ export default function GameScreen({ navigation, route }) {
                     ? styles.userScoreCell
                     : styles.savedUserScoreCell
                 }
-                onPress={() => {
-                  inputOnes();
-                  setPicked([]);
-                }}
+                onPress={() => inputOnes()}
               >
                 <Text>{ScoreValue.Ones}</Text>
               </TouchableOpacity>
@@ -680,10 +680,7 @@ export default function GameScreen({ navigation, route }) {
                     ? styles.userScoreCell
                     : styles.savedUserScoreCell
                 }
-                onPress={() => {
-                  inputTwos();
-                  setPicked([]);
-                }}
+                onPress={() => inputTwos()}
               >
                 <Text>{ScoreValue.Twos}</Text>
               </TouchableOpacity>
@@ -694,10 +691,7 @@ export default function GameScreen({ navigation, route }) {
                     ? styles.userScoreCell
                     : styles.savedUserScoreCell
                 }
-                onPress={() => {
-                  inputThrees();
-                  setPicked([]);
-                }}
+                onPress={() => inputThrees()}
               >
                 <Text>{ScoreValue.Threes}</Text>
               </TouchableOpacity>
@@ -708,10 +702,7 @@ export default function GameScreen({ navigation, route }) {
                     ? styles.userScoreCell
                     : styles.savedUserScoreCell
                 }
-                onPress={() => {
-                  inputFours();
-                  setPicked([]);
-                }}
+                onPress={() => inputFours()}
               >
                 <Text>{ScoreValue.Fours}</Text>
               </TouchableOpacity>
@@ -722,10 +713,7 @@ export default function GameScreen({ navigation, route }) {
                     ? styles.userScoreCell
                     : styles.savedUserScoreCell
                 }
-                onPress={() => {
-                  inputFives();
-                  setPicked([]);
-                }}
+                onPress={() => inputFives()}
               >
                 <Text>{ScoreValue.Fives}</Text>
               </TouchableOpacity>
@@ -736,10 +724,7 @@ export default function GameScreen({ navigation, route }) {
                     ? styles.userScoreCell
                     : styles.savedUserScoreCell
                 }
-                onPress={() => {
-                  inputSixes();
-                  setPicked([]);
-                }}
+                onPress={() => inputSixes()}
               >
                 <Text>{ScoreValue.Sixes}</Text>
               </TouchableOpacity>
@@ -750,10 +735,7 @@ export default function GameScreen({ navigation, route }) {
                     ? styles.userScoreCell
                     : styles.savedUserScoreCell
                 }
-                onPress={() => {
-                  inputBonus();
-                  setPicked([]);
-                }}
+                onPress={() => inputBonus()}
               >
                 <Text>{ScoreValue.Bonus}</Text>
               </TouchableOpacity>
@@ -789,10 +771,7 @@ export default function GameScreen({ navigation, route }) {
                     ? styles.userScoreCell
                     : styles.savedUserScoreCell
                 }
-                onPress={() => {
-                  inputTriple();
-                  setPicked([]);
-                }}
+                onPress={() => inputTriple()}
               >
                 <Text>{ScoreValue.Triple}</Text>
               </TouchableOpacity>
@@ -803,10 +782,7 @@ export default function GameScreen({ navigation, route }) {
                     ? styles.userScoreCell
                     : styles.savedUserScoreCell
                 }
-                onPress={() => {
-                  inputFour_card();
-                  setPicked([]);
-                }}
+                onPress={() => inputFour_card()}
               >
                 <Text>{ScoreValue.Four_card}</Text>
               </TouchableOpacity>
@@ -817,10 +793,7 @@ export default function GameScreen({ navigation, route }) {
                     ? styles.userScoreCell
                     : styles.savedUserScoreCell
                 }
-                onPress={() => {
-                  inputFull_house();
-                  setPicked([]);
-                }}
+                onPress={() => inputFull_house()}
               >
                 <Text>{ScoreValue.Full_house}</Text>
               </TouchableOpacity>
@@ -831,10 +804,7 @@ export default function GameScreen({ navigation, route }) {
                     ? styles.userScoreCell
                     : styles.savedUserScoreCell
                 }
-                onPress={() => {
-                  inputSmall_straight();
-                  setPicked([]);
-                }}
+                onPress={() => inputSmall_straight()}
               >
                 <Text>{ScoreValue.Small_straight}</Text>
               </TouchableOpacity>
@@ -845,10 +815,7 @@ export default function GameScreen({ navigation, route }) {
                     ? styles.userScoreCell
                     : styles.savedUserScoreCell
                 }
-                onPress={() => {
-                  inputLarge_straight();
-                  setPicked([]);
-                }}
+                onPress={() => inputLarge_straight()}
               >
                 <Text>{ScoreValue.Large_straight}</Text>
               </TouchableOpacity>
@@ -859,10 +826,7 @@ export default function GameScreen({ navigation, route }) {
                     ? styles.userScoreCell
                     : styles.savedUserScoreCell
                 }
-                onPress={() => {
-                  inputYahtzee();
-                  setPicked([]);
-                }}
+                onPress={() => inputYahtzee()}
               >
                 <Text>{ScoreValue.Yahtzee}</Text>
               </TouchableOpacity>
@@ -873,10 +837,7 @@ export default function GameScreen({ navigation, route }) {
                     ? styles.userScoreCell
                     : styles.savedUserScoreCell
                 }
-                onPress={() => {
-                  inputChance();
-                  setPicked([]);
-                }}
+                onPress={() => inputChance()}
               >
                 <Text>{ScoreValue.Chance}</Text>
               </TouchableOpacity>
@@ -1033,12 +994,12 @@ export default function GameScreen({ navigation, route }) {
                 <View style={styles.modalHeader}>
                   <Text style={styles.rankHeader}>Ranking</Text>
                 </View>
-                {rankList.map((list) => {
+                {rankList.map((rank, idx4) => {
                   return (
-                    <View style={styles.playerBox}>
-                      <Text style={styles.player}>{list.length}</Text>
-                      <Text style={styles.player}>{list.userName}</Text>
-                      <Text style={styles.player}>{list.userScore}</Text>
+                    <View style={styles.playerBox} key={idx4}>
+                      <Text style={styles.player}>{rank.length}등</Text>
+                      <Text style={styles.player}>{rank.userName}</Text>
+                      <Text style={styles.player}>{rank.userScore}</Text>
                     </View>
                   );
                 })}
@@ -1065,10 +1026,6 @@ export default function GameScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  rankHeader: {
-    fontSize: 30,
-    color: "#FFFFFF",
-  },
   PNameplateSite: {
     alignItems: "center",
   },
@@ -1486,5 +1443,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
     borderWidth: 1,
+  },
+  rankHeader: {
+    fontSize: 30,
+    color: "#FFFFFF",
   },
 });
