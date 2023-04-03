@@ -10,6 +10,7 @@ import {
   Image,
   TouchableHighlight,
   BackHandler,
+  Animated,
 } from "react-native";
 import GHeader from "../Components/GHeader";
 import GameBtnRule from "../Components/Btns/GameBtnRule";
@@ -71,6 +72,24 @@ export default function GameScreen({ navigation, route }) {
 
   let [turnId, setTurnId] = useState();
   let [turnName, setTurnName] = useState();
+
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const fadeIn = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 5000,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const fadeOut = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 3000,
+      useNativeDriver: true,
+    }).start();
+  };
 
   useEffect(() => {
     WebSocket.current = io("http://3.38.165.165:3131/");
@@ -156,8 +175,6 @@ export default function GameScreen({ navigation, route }) {
     WebSocket.current.on("gameEnd", (data) => {
       console.log(data);
       console.log(data.length);
-      console.log(data.length);
-      console.log(data.length);
       setModalRankVisible(!modalRankVisible);
       setRankList([]);
       const rankArr = [];
@@ -212,13 +229,18 @@ export default function GameScreen({ navigation, route }) {
     WebSocket.current.on("diceTurn", (data) => {
       console.log(data);
       console.log("주사위 굴릴 사람 : ", data.diceTurnName);
+      Toast.showWithGravity(
+        `${data.diceTurnName}의 차례`,
+        Toast.SHORT,
+        Toast.BOTTOM
+      );
       setTurn(data.diceTurnName);
     });
 
     WebSocket.current.on("throwDice", (data) => {
       console.log(data);
       if (data.state === 0) {
-        Toast.showWithGravity(`${data.message}`, Toast.SHORT, Toast.BOTTOM);
+        Toast.showWithGravity(`${data.message}`, Toast.SHORT, Toast.CENTER);
       } else {
         console.log(data.diceResult.message);
         setTemp({
@@ -1036,6 +1058,12 @@ export default function GameScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
+  block: {},
+  rectangle: {
+    width: 100,
+    height: 100,
+    backgroundColor: "black",
+  },
   PNameplateSite: {
     alignItems: "center",
   },

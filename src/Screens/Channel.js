@@ -73,6 +73,7 @@ export default function Channel({ navigation }) {
 
     WebSocket.current.on("refreshRoom", (data) => {
       setRoomList([]);
+      console.log(data);
       data.map((mapData) => {
         const tempData = {
           room_id: mapData["room_id"],
@@ -80,6 +81,7 @@ export default function Channel({ navigation }) {
           room_state: mapData["room_state"],
           room_max_user: mapData["room_max_user"],
           room_user_count: mapData["room_user_count"],
+          user_name: mapData["user_name"],
         };
         setRoomList((current) => {
           return [tempData, ...current];
@@ -129,7 +131,7 @@ export default function Channel({ navigation }) {
                     <Text style={styles.rTxt}>{room.room_name}</Text>
                   </View>
                   <View style={styles.rowTxtBot}>
-                    <Text style={styles.lTxt1}>Host : {userName}</Text>
+                    <Text style={styles.lTxt1}>Host : {room.user_name}</Text>
                     <Text style={styles.rTxt1}>
                       {room.room_user_count}/{room.room_max_user}
                     </Text>
