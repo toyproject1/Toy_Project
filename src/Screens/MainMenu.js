@@ -17,23 +17,36 @@ import Dice from "../Components/Imgs/Dice111.png";
 
 const MainMenu = ({ navigation }) => {
   // const start1 = () => {
-  //   const startValue = useRef(new Animated.Value(1)).current;
-  //   const endValue = 0;
-  //   const duration = 1000;
-  //   useEffect(() => {
-  //     Animated.delay(10000),
-  //       Animated.timing(startValue, {
-  //         toValue: endValue,
-  //         duration: duration,
-  //         useNativeDriver: true,
-  //       }).start();
-  //   }, [startValue]);
-  //   return (
-  //     <Animated.Image
-  //       source={require("../Components/Imgs/direroll1.gif")}
-  //       style={[{ opacity: startValue }]}
-  //     />
-  //   );
+  const startValue = useRef(new Animated.Value(0)).current;
+  const endValue = 1;
+  const duration = 2000;
+
+  const fadeInOut = () => {
+    Animated.sequence([
+      Animated.timing(startValue, {
+        toValue: endValue,
+        duration: duration,
+        useNativeDriver: true,
+      }),
+      Animated.timing(startValue, {
+        toValue: 0,
+        duration: duration,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  // useEffect(() => {
+  //   Animated.delay(10000),
+  //     Animated.timing(startValue, {
+  //       toValue: endValue,
+  //       duration: duration,
+  //       useNativeDriver: true,
+  //     }).start();
+  // }, [startValue]);
+  // return (
+
+  // );
   // };
 
   const backAction = () => {
@@ -106,7 +119,34 @@ const MainMenu = ({ navigation }) => {
     <View style={styles.main}>
       <Header />
       <View style={styles.image}>
-        <Image source={Dice} />
+        <View
+          style={{
+            position: "absolute",
+            backgroundColor: "#FFFFFF",
+            right: 30,
+            bottom: 30,
+            height: 30,
+            width: 30,
+          }}
+        ></View>
+        <View
+          style={{
+            position: "absolute",
+            backgroundColor: "#AAAAAA",
+            right: 40,
+            bottom: 40,
+            height: 30,
+            width: 30,
+          }}
+        ></View>
+        {/* <Image source={Dice} /> */}
+        {/* <Animated.Image
+          source={require("../Components/Imgs/direroll1.gif")}
+          style={[{ opacity: startValue }]}
+        />
+        <TouchableOpacity onPress={fadeInOut}>
+          <Text>dice</Text>
+        </TouchableOpacity> */}
       </View>
       <View style={styles.btns}>
         <TouchableOpacity

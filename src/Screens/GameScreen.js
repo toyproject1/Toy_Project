@@ -26,16 +26,24 @@ import Toast from "react-native-simple-toast";
 export default function GameScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(true);
   const [modalRankVisible, setModalRankVisible] = useState(false);
+  const [modalPlayerVisible, setModalPlayerVisible] = useState(false);
+
+  // const [roomnumber, setRoomnumber] = useState("001");
   const [plCount, setPlCount] = useState(1);
   const [scoreNum, setScoreNum] = useState(0);
+  // const [player, setPlayer] = useState("User Name");
   const [rollChance, setChanceCount] = useState(2);
+  // const [ready, setReady] = useState("Wait ...");
   const { gTitle, HCNum, Host, roomNumber, userID, userName, userId } =
     route.params;
   const [userList, setUserList] = useState([]);
   const [scoreList, setScoreList] = useState([]);
   const [rankList, setRankList] = useState([]);
 
+  const [playerSBoard, setPlayerSBoard] = useState({});
+
   const WebSocket = useRef(null);
+  //console.log(gTitle, HCNum, roomNumber, userId, userName, Host);
 
   let [turn, setTurn] = useState();
 
@@ -69,14 +77,23 @@ export default function GameScreen({ navigation, route }) {
   let [turnId, setTurnId] = useState();
   let [turnName, setTurnName] = useState();
 
-  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const startValue = useRef(new Animated.Value(0)).current;
+  const endValue = 1;
+  const duration = 2000;
 
-  const fadeOut = () => {
-    Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration: 3000,
-      useNativeDriver: true,
-    }).start();
+  const fadeInOut = () => {
+    Animated.sequence([
+      Animated.timing(startValue, {
+        toValue: endValue,
+        duration: duration,
+        useNativeDriver: true,
+      }),
+      Animated.timing(startValue, {
+        toValue: 0,
+        duration: duration,
+        useNativeDriver: true,
+      }),
+    ]).start();
   };
 
   useEffect(() => {
@@ -85,13 +102,14 @@ export default function GameScreen({ navigation, route }) {
       console.log("connected");
     });
 
+    // userData();
+
     if (Host == "Host") {
       WebSocket.current.emit("hostCreateRoom", {
         userId: userId,
         userName: userName,
         roomNumber: roomNumber,
       });
-      console.log(userId, userName, roomNumber);
     } else {
       // 일반유저 Host == 'User' 일 경우
       console.log(
@@ -102,20 +120,17 @@ export default function GameScreen({ navigation, route }) {
         userName: userName,
         roomNumber: roomNumber,
       });
+      console.log(userID, userName, roomNumber);
     }
 
     WebSocket.current.on("userJoinRoom", (data) => {
       console.log(data);
-      Toast.showWithGravity(
-        "유저님이 입장하였습니다.",
-        Toast.SHORT,
-        Toast.BOTTOM
-      );
+      Toast.showWithGravity("유저님이 입장하였습니다.", Toast.SHORT, Toast.TOP);
     });
 
     WebSocket.current.on("joinError", () => {
       console.log("참여 제한");
-      Toast.showWithGravity("방이 꽉 찼습니다.", Toast.SHORT, Toast.BOTTOM);
+      Toast.showWithGravity("방이 꽉 찼습니다.", Toast.SHORT, Toast.TOP);
       navigation.reset({ routes: [{ name: "Channel" }] });
     });
 
@@ -160,6 +175,8 @@ export default function GameScreen({ navigation, route }) {
     WebSocket.current.on("gameEnd", (data) => {
       console.log(data);
       console.log(data.length);
+      console.log(data.length);
+      console.log(data.length);
       setModalRankVisible(!modalRankVisible);
       setRankList([]);
       const rankArr = [];
@@ -184,7 +201,7 @@ export default function GameScreen({ navigation, route }) {
         Toast.showWithGravity(
           "아직 모든 유저들이 준비가 되지 않았습니다.",
           Toast.SHORT,
-          Toast.BOTTOM
+          Toast.TOP
         );
       }
     });
@@ -197,13 +214,14 @@ export default function GameScreen({ navigation, route }) {
       Toast.showWithGravity(
         "호스트의 연결이 끊어졌습니다.",
         Toast.SHORT,
-        Toast.BOTTOM
+        Toast.TOP
       );
+      // navigation.navigate("MainMenu");
     });
 
     WebSocket.current.on("disconnectUser", (data) => {
       console.log(data);
-      Toast.showWithGravity("유저가 나갔습니다.", Toast.SHORT, Toast.BOTTOM);
+      Toast.showWithGravity("유저가 나갔습니다.", Toast.SHORT, Toast.TOP);
     });
 
     WebSocket.current.on("changeHost", () => {
@@ -213,14 +231,19 @@ export default function GameScreen({ navigation, route }) {
     WebSocket.current.on("diceTurn", (data) => {
       console.log(data);
       console.log("주사위 굴릴 사람 : ", data.diceTurnName);
-      Toast.show(`${data.diceTurnName}의 차례`, Toast.SHORT, Toast.CENTER);
+      Toast.show(`${data.diceTurnName}의 차례`, Toast.SHORT);
       setTurn(data.diceTurnName);
+      setRolledDice01();
+      setRolledDice02();
+      setRolledDice03();
+      setRolledDice04();
+      setRolledDice05();
     });
 
     WebSocket.current.on("throwDice", (data) => {
       console.log(data);
       if (data.state === 0) {
-        Toast.showWithGravity(`${data.message}`, Toast.SHORT, Toast.CENTER);
+        Toast.showWithGravity(`${data.message}`, Toast.SHORT, Toast.TOP);
       } else {
         console.log(data.diceResult.message);
         setTemp({
@@ -256,7 +279,7 @@ export default function GameScreen({ navigation, route }) {
     WebSocket.current.on("putDice", (data) => {
       console.log(data);
       if (data.state === 0) {
-        Toast.showWithGravity(`${data.message}`, Toast.SHORT, Toast.BOTTOM);
+        Toast.showWithGravity(`${data.message}`, Toast.SHORT, Toast.TOP);
       } else {
         setTemp({
           dice01: data.diceResult.firstDice,
@@ -308,6 +331,26 @@ export default function GameScreen({ navigation, route }) {
         Chance: data.scoreBoard.chance,
       });
     });
+    WebSocket.current.on("getUSerScoreBoard", (data) => {
+      console.log("++++++++++++", data, "++++++++++++");
+      setPlayerSBoard({
+        modal_userId: data.userId,
+        modal_ones: data.ones,
+        modal_twos: data.twos,
+        modal_threes: data.threes,
+        modal_fours: data.fours,
+        modal_fives: data.fives,
+        modal_sixes: data.sixes,
+        modal_bonus: data.bonus,
+        modal_triple: data.triple,
+        modal_four_card: data.four_card,
+        modal_full_house: data.full_house,
+        modal_small_straight: data.small_straight,
+        modal_large_straight: data.large_straight,
+        modal_yahtzee: data.yahtzee,
+        modal_chance: data.chance,
+      });
+    });
     const backAction = () => {
       Alert.alert("Hold on!", "게임을 종료하시겠습니까?", [
         {
@@ -328,9 +371,18 @@ export default function GameScreen({ navigation, route }) {
       "hardwareBackPress",
       backAction
     );
+    return () => backHandler.remove();
   }, []);
 
   useEffect(() => {
+    // console.log("==================================");
+    // console.log(typeof temp.dice01);
+    // console.log("dice01 :" + temp.dice01);
+    // console.log("dice02 :" + temp.dice02);
+    // console.log("dice03 :" + temp.dice03);
+    // console.log("dice04 :" + temp.dice04);
+    // console.log("dice05 :" + temp.dice05);
+    // console.log("==================================");
     switch (temp.dice01) {
       case 1:
         setRolledDice01(Dice1);
@@ -452,69 +504,116 @@ export default function GameScreen({ navigation, route }) {
   };
 
   const inputOnes = () => {
+    // setPicked_c("ones");
+    // setPickedScore_c(ScoreValue.Ones);
     WebSocket.current.emit("saveScore", {
       scoreType: "ones",
+      // scoreValue: pickedScore
     });
   };
   const inputTwos = () => {
+    // setPicked_c("twos");
+    // setPickedScore_c(ScoreValue.Twos);
     WebSocket.current.emit("saveScore", {
       scoreType: "twos",
+      // scoreValue: pickedScore
     });
   };
   const inputThrees = () => {
+    // setPicked_c("threes");
+    // setPickedScore_c(ScoreValue.Threes);
     WebSocket.current.emit("saveScore", {
       scoreType: "threes",
+      // scoreValue: pickedScore
     });
   };
   const inputFours = () => {
+    // setPicked_c("fours");
+    // setPickedScore_c(ScoreValue.Fours);
     WebSocket.current.emit("saveScore", {
       scoreType: "fours",
+      // scoreValue: pickedScore
     });
     setPicked([]);
   };
   const inputFives = () => {
+    // setPicked_c("fives");
+    // setPickedScore_c(ScoreValue.Fives);
     WebSocket.current.emit("saveScore", {
       scoreType: "fives",
+      // scoreValue: pickedScore
     });
   };
   const inputSixes = () => {
+    // setPicked_c("sixes");
+    // setPickedScore_c(ScoreValue.Sixes);
     WebSocket.current.emit("saveScore", {
       scoreType: "sixes",
+      // scoreValue: pickedScore
     });
+    // };
+    // const inputBonus = () => {
+    //   // setPicked_c("bonus");
+    //   // setPickedScore_c(ScoreValue.Bonus);
+    //   WebSocket.current.emit("saveScore", {
+    //     scoreType: "bonus",
+    //     // scoreValue: pickedScore
+    //   });
   };
   const inputTriple = () => {
+    // setPicked_c("triple");
+    // setPickedScore_c(ScoreValue.Triple);
     WebSocket.current.emit("saveScore", {
       scoreType: "triple",
+      // scoreValue: pickedScore
     });
   };
   const inputFour_card = () => {
+    // setPicked_c("four_card");
+    // setPickedScore_c(ScoreValue.Four_card);
     WebSocket.current.emit("saveScore", {
       scoreType: "four_card",
+      // scoreValue: pickedScore
     });
   };
   const inputFull_house = () => {
+    // setPicked_c("full_house");
+    // setPickedScore_c(ScoreValue.Full_house);
     WebSocket.current.emit("saveScore", {
       scoreType: "full_house",
+      // scoreValue: pickedScore
     });
   };
   const inputSmall_straight = () => {
+    // setPicked_c("small_straight");
+    // setPickedScore_c(ScoreValue.Small_straight);
     WebSocket.current.emit("saveScore", {
       scoreType: "small_straight",
+      // scoreValue: pickedScore
     });
   };
   const inputLarge_straight = () => {
+    // setPicked_c("large_straight");
+    // setPickedScore_c(ScoreValue.Large_straight);
     WebSocket.current.emit("saveScore", {
       scoreType: "large_straight",
+      // scoreValue: pickedScore
     });
   };
   const inputYahtzee = () => {
+    // setPicked_c("yahtzee");
+    // setPickedScore_c(ScoreValue.Yahtzee);
     WebSocket.current.emit("saveScore", {
       scoreType: "yahtzee",
+      // scoreValue: pickedScore
     });
   };
   const inputChance = () => {
+    // setPicked_c("chance");
+    // setPickedScore_c(ScoreValue.Chance);
     WebSocket.current.emit("saveScore", {
       scoreType: "chance",
+      // scoreValue: pickedScore
     });
   };
 
@@ -536,6 +635,13 @@ export default function GameScreen({ navigation, route }) {
     }
   }, [dIndex]);
 
+  // useEffect(()=>{
+  //   console.log("Picked 타입 : ", typeof picked);
+  //   console.log("Picked : ", picked);
+  //   console.log("PickedScore 타입 : ", typeof pickedScore);
+  //   console.log("PickedScore : ", pickedScore);
+  // },[picked]);
+
   return (
     <View style={styles.main}>
       <GHeader />
@@ -544,17 +650,45 @@ export default function GameScreen({ navigation, route }) {
           if (userScore == true) {
             return (
               <View style={styles.PNameplateSite} key={idx1}>
-                <View style={styles.PNameplate}>
+                <TouchableOpacity
+                  style={styles.PNameplate}
+                  activeOpacity={0.9}
+                  onPress={() => {
+                    WebSocket.current.emit("getUserScoreBoard", {
+                      userId: list.userId,
+                    });
+                    setModalPlayerVisible(true);
+                    console.log("선택한 유저의 태그 아이디 : ", list.userId);
+                    console.log(
+                      "유저의 점수판을 가져옴 : ",
+                      playerSBoard.modal_ones
+                    );
+                  }}
+                >
                   <Text style={styles.plateTxt}>{list.userName}</Text>
-                </View>
+                </TouchableOpacity>
               </View>
             );
           } else {
             return (
               <View style={styles.PNameplateSite} key={idx1}>
-                <View style={styles.PNameplate}>
+                <TouchableOpacity
+                  style={styles.PNameplate}
+                  activeOpacity={0.9}
+                  onPress={() => {
+                    WebSocket.current.emit("getUserScoreBoard", {
+                      userId: list.userId,
+                    });
+                    setModalPlayerVisible(true);
+                    console.log("선택한 유저의 태그 아이디 : ", list.userId);
+                    console.log(
+                      "유저의 점수판을 가져옴 : ",
+                      playerSBoard.modal_ones
+                    );
+                  }}
+                >
                   <Text style={styles.plateTxt}>{list.userName}</Text>
-                </View>
+                </TouchableOpacity>
                 <View style={styles.PScoreplate}>
                   <Text style={styles.scoreTxt2}>0</Text>
                 </View>
@@ -574,6 +708,190 @@ export default function GameScreen({ navigation, route }) {
           );
         })}
       </View>
+      <Modal // 플레이어 태그 터치 시에 나오는 모달
+        animationType="none"
+        transparent={true}
+        visible={modalPlayerVisible}
+        onRequestClose={() => {
+          setModalPlayerVisible(!modalPlayerVisible);
+        }}
+      >
+        <View style={styles.modalBG}>
+          <View style={styles.PModalCard}>
+            <View style={styles.PModalHeader}>
+              <Text style={styles.PModalHeaderTitle}>{userList.userName}</Text>
+            </View>
+            <View style={styles.MSBoardSite}>
+              <View style={styles.sBoardV}>
+                <View style={styles.sBoard}>
+                  <View style={styles.sNameColumn}>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Aces</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Twos</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Threes</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Fours</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Fives</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Sixes</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Bonus</Text>
+                    </View>
+                  </View>
+                  <View style={styles.userScoreColumn}>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_ones}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_twos}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_threes}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_fours}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_fives}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_sixes}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.savedUserScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_Bonus}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.sNameColumn}>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Three of A Kind</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Four of A Kind</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Full House</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Small Straight</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Large Straight</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Yahtzee</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Chance</Text>
+                    </View>
+                  </View>
+                  <View style={styles.userScoreColumn}>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_triple}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_four_card}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_full_house}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_small_straight}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_large_straight}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_yahtzee}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_chance}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
       <View style={styles.sBoardSite}>
         <View style={styles.boardTop}>
           <View style={styles.nowTurnSite}>
@@ -591,25 +909,25 @@ export default function GameScreen({ navigation, route }) {
           <View style={styles.sBoard}>
             <View style={styles.sNameColumn}>
               <View style={styles.sNameCell}>
-                <Text>Aces</Text>
+                <Text style={styles.sNameTxt}>Aces</Text>
               </View>
               <View style={styles.sNameCell}>
-                <Text>Twos</Text>
+                <Text style={styles.sNameTxt}>Twos</Text>
               </View>
               <View style={styles.sNameCell}>
-                <Text>Threes</Text>
+                <Text style={styles.sNameTxt}>Threes</Text>
               </View>
               <View style={styles.sNameCell}>
-                <Text>Fours</Text>
+                <Text style={styles.sNameTxt}>Fours</Text>
               </View>
               <View style={styles.sNameCell}>
-                <Text>Fives</Text>
+                <Text style={styles.sNameTxt}>Fives</Text>
               </View>
               <View style={styles.sNameCell}>
-                <Text>Sixes</Text>
+                <Text style={styles.sNameTxt}>Sixes</Text>
               </View>
               <View style={styles.sNameCell}>
-                <Text>Bonus</Text>
+                <Text style={styles.sNameTxt}>Bonus</Text>
               </View>
             </View>
             <View style={styles.userScoreColumn}>
@@ -622,7 +940,15 @@ export default function GameScreen({ navigation, route }) {
                 }
                 onPress={() => inputOnes()}
               >
-                <Text>{ScoreValue.Ones}</Text>
+                <Text
+                  style={
+                    Picked.includes("ones") == false
+                      ? styles.unsavedScoreTxt
+                      : styles.savedScoreTxt
+                  }
+                >
+                  {ScoreValue.Ones}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.9}
@@ -633,7 +959,15 @@ export default function GameScreen({ navigation, route }) {
                 }
                 onPress={() => inputTwos()}
               >
-                <Text>{ScoreValue.Twos}</Text>
+                <Text
+                  style={
+                    Picked.includes("twos") == false
+                      ? styles.unsavedScoreTxt
+                      : styles.savedScoreTxt
+                  }
+                >
+                  {ScoreValue.Twos}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.9}
@@ -644,7 +978,15 @@ export default function GameScreen({ navigation, route }) {
                 }
                 onPress={() => inputThrees()}
               >
-                <Text>{ScoreValue.Threes}</Text>
+                <Text
+                  style={
+                    Picked.includes("threes") == false
+                      ? styles.unsavedScoreTxt
+                      : styles.savedScoreTxt
+                  }
+                >
+                  {ScoreValue.Threes}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.9}
@@ -655,7 +997,15 @@ export default function GameScreen({ navigation, route }) {
                 }
                 onPress={() => inputFours()}
               >
-                <Text>{ScoreValue.Fours}</Text>
+                <Text
+                  style={
+                    Picked.includes("fours") == false
+                      ? styles.unsavedScoreTxt
+                      : styles.savedScoreTxt
+                  }
+                >
+                  {ScoreValue.Fours}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.9}
@@ -666,7 +1016,15 @@ export default function GameScreen({ navigation, route }) {
                 }
                 onPress={() => inputFives()}
               >
-                <Text>{ScoreValue.Fives}</Text>
+                <Text
+                  style={
+                    Picked.includes("fives") == false
+                      ? styles.unsavedScoreTxt
+                      : styles.savedScoreTxt
+                  }
+                >
+                  {ScoreValue.Fives}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.9}
@@ -677,7 +1035,15 @@ export default function GameScreen({ navigation, route }) {
                 }
                 onPress={() => inputSixes()}
               >
-                <Text>{ScoreValue.Sixes}</Text>
+                <Text
+                  style={
+                    Picked.includes("sixes") == false
+                      ? styles.unsavedScoreTxt
+                      : styles.savedScoreTxt
+                  }
+                >
+                  {ScoreValue.Sixes}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.9}
@@ -687,30 +1053,30 @@ export default function GameScreen({ navigation, route }) {
                     : styles.savedUserScoreCell
                 }
               >
-                <Text>{ScoreValue.Bonus}</Text>
+                <Text style={styles.savedScoreTxt}>{ScoreValue.Bonus}</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.sNameColumn}>
               <View style={styles.sNameCell}>
-                <Text>Three of A Kind</Text>
+                <Text style={styles.sNameTxt}>Three of A Kind</Text>
               </View>
               <View style={styles.sNameCell}>
-                <Text>Four of A Kind</Text>
+                <Text style={styles.sNameTxt}>Four of A Kind</Text>
               </View>
               <View style={styles.sNameCell}>
-                <Text>Full House</Text>
+                <Text style={styles.sNameTxt}>Full House</Text>
               </View>
               <View style={styles.sNameCell}>
-                <Text>Small Straight</Text>
+                <Text style={styles.sNameTxt}>Small Straight</Text>
               </View>
               <View style={styles.sNameCell}>
-                <Text>Large Straight</Text>
+                <Text style={styles.sNameTxt}>Large Straight</Text>
               </View>
               <View style={styles.sNameCell}>
-                <Text>Yahtzee</Text>
+                <Text style={styles.sNameTxt}>Yahtzee</Text>
               </View>
               <View style={styles.sNameCell}>
-                <Text>Chance</Text>
+                <Text style={styles.sNameTxt}>Chance</Text>
               </View>
             </View>
             <View style={styles.userScoreColumn}>
@@ -723,7 +1089,15 @@ export default function GameScreen({ navigation, route }) {
                 }
                 onPress={() => inputTriple()}
               >
-                <Text>{ScoreValue.Triple}</Text>
+                <Text
+                  style={
+                    Picked.includes("triple") == false
+                      ? styles.unsavedScoreTxt
+                      : styles.savedScoreTxt
+                  }
+                >
+                  {ScoreValue.Triple}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.9}
@@ -734,7 +1108,15 @@ export default function GameScreen({ navigation, route }) {
                 }
                 onPress={() => inputFour_card()}
               >
-                <Text>{ScoreValue.Four_card}</Text>
+                <Text
+                  style={
+                    Picked.includes("four_card") == false
+                      ? styles.unsavedScoreTxt
+                      : styles.savedScoreTxt
+                  }
+                >
+                  {ScoreValue.Four_card}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.9}
@@ -745,7 +1127,15 @@ export default function GameScreen({ navigation, route }) {
                 }
                 onPress={() => inputFull_house()}
               >
-                <Text>{ScoreValue.Full_house}</Text>
+                <Text
+                  style={
+                    Picked.includes("full_house") == false
+                      ? styles.unsavedScoreTxt
+                      : styles.savedScoreTxt
+                  }
+                >
+                  {ScoreValue.Full_house}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.9}
@@ -756,7 +1146,15 @@ export default function GameScreen({ navigation, route }) {
                 }
                 onPress={() => inputSmall_straight()}
               >
-                <Text>{ScoreValue.Small_straight}</Text>
+                <Text
+                  style={
+                    Picked.includes("small_straight") == false
+                      ? styles.unsavedScoreTxt
+                      : styles.savedScoreTxt
+                  }
+                >
+                  {ScoreValue.Small_straight}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.9}
@@ -767,7 +1165,15 @@ export default function GameScreen({ navigation, route }) {
                 }
                 onPress={() => inputLarge_straight()}
               >
-                <Text>{ScoreValue.Large_straight}</Text>
+                <Text
+                  style={
+                    Picked.includes("large_straight") == false
+                      ? styles.unsavedScoreTxt
+                      : styles.savedScoreTxt
+                  }
+                >
+                  {ScoreValue.Large_straight}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.9}
@@ -778,7 +1184,15 @@ export default function GameScreen({ navigation, route }) {
                 }
                 onPress={() => inputYahtzee()}
               >
-                <Text>{ScoreValue.Yahtzee}</Text>
+                <Text
+                  style={
+                    Picked.includes("yahtzee") == false
+                      ? styles.unsavedScoreTxt
+                      : styles.savedScoreTxt
+                  }
+                >
+                  {ScoreValue.Yahtzee}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.9}
@@ -789,66 +1203,91 @@ export default function GameScreen({ navigation, route }) {
                 }
                 onPress={() => inputChance()}
               >
-                <Text>{ScoreValue.Chance}</Text>
+                <Text
+                  style={
+                    Picked.includes("chance") == false
+                      ? styles.unsavedScoreTxt
+                      : styles.savedScoreTxt
+                  }
+                >
+                  {ScoreValue.Chance}
+                </Text>
               </TouchableOpacity>
-            </View>
-          </View>
-          <View style={styles.totalScoreRow}>
-            <View style={styles.totalCell}>
-              <Text>Total</Text>
-            </View>
-            <View style={styles.totalScoreCell}>
-              <Text></Text>
             </View>
           </View>
         </View>
       </View>
       <View style={styles.diceBoxSite}>
         <View style={styles.diceBox}>
-          <View style={styles.boxSquare}>
-            <View style={putD01 == true ? styles.putDice : styles.diceImg}>
+          <View>
+            <View style={styles.boxSquare}>
               <TouchableHighlight
+                style={putD01 == true ? styles.putDice : styles.diceImg}
                 onPress={() => setPutD01(putD01 == false ? true : false)}
               >
                 {2 >= rollChance > 0 ? <Image source={rolledDice01} /> : <></>}
               </TouchableHighlight>
             </View>
+            <Animated.Image
+              source={require("../Components/Imgs/direroll1.gif")}
+              style={[styles.diceSquare, { opacity: startValue }]}
+            />
           </View>
-          <View style={styles.boxSquare}>
-            <View style={putD02 == true ? styles.putDice : styles.diceImg}>
+          <View>
+            <View style={styles.boxSquare}>
               <TouchableHighlight
+                style={putD02 == true ? styles.putDice : styles.diceImg}
                 onPress={() => setPutD02(putD02 == false ? true : false)}
               >
                 {2 >= rollChance > 0 ? <Image source={rolledDice02} /> : <></>}
               </TouchableHighlight>
             </View>
+            <Animated.Image
+              source={require("../Components/Imgs/direroll1.gif")}
+              style={[styles.diceSquare, { opacity: startValue }]}
+            />
           </View>
-          <View style={styles.boxSquare}>
-            <View style={putD03 == true ? styles.putDice : styles.diceImg}>
+          <View>
+            <View style={styles.boxSquare}>
               <TouchableHighlight
+                style={putD03 == true ? styles.putDice : styles.diceImg}
                 onPress={() => setPutD03(putD03 == false ? true : false)}
               >
                 {2 >= rollChance > 0 ? <Image source={rolledDice03} /> : <></>}
               </TouchableHighlight>
             </View>
+            <Animated.Image
+              source={require("../Components/Imgs/direroll1.gif")}
+              style={[styles.diceSquare, { opacity: startValue }]}
+            />
           </View>
-          <View style={styles.boxSquare}>
-            <View style={putD04 == true ? styles.putDice : styles.diceImg}>
+          <View>
+            <View style={styles.boxSquare}>
               <TouchableHighlight
+                style={putD04 == true ? styles.putDice : styles.diceImg}
                 onPress={() => setPutD04(putD04 == false ? true : false)}
               >
                 {2 >= rollChance > 0 ? <Image source={rolledDice04} /> : <></>}
               </TouchableHighlight>
             </View>
+            <Animated.Image
+              source={require("../Components/Imgs/direroll1.gif")}
+              style={[styles.diceSquare, { opacity: startValue }]}
+            />
           </View>
-          <View style={styles.boxSquare}>
-            <View style={putD05 == true ? styles.putDice : styles.diceImg}>
+          <View>
+            <View style={styles.boxSquare}>
               <TouchableHighlight
+                style={putD05 == true ? styles.putDice : styles.diceImg}
                 onPress={() => setPutD05(putD05 == false ? true : false)}
               >
                 {2 >= rollChance > 0 ? <Image source={rolledDice05} /> : <></>}
               </TouchableHighlight>
             </View>
+            <Animated.Image
+              source={require("../Components/Imgs/direroll1.gif")}
+              style={[styles.diceSquare, { opacity: startValue }]}
+            />
           </View>
         </View>
       </View>
@@ -858,6 +1297,7 @@ export default function GameScreen({ navigation, route }) {
           activeOpacity={0.9}
           onPress={() => {
             rollDice();
+            fadeInOut();
           }}
         >
           <Text style={styles.btnRollTxt}>Roll</Text>
@@ -867,6 +1307,8 @@ export default function GameScreen({ navigation, route }) {
           activeOpacity={0.9}
           onPress={() => {
             reRollDice();
+            fadeInOut();
+            // setChanceCount(rollChance > 0 ? rollChance - 1 : rollChance);
           }}
         >
           <Text style={styles.btnRollTxt}>Re Roll</Text>
@@ -946,7 +1388,7 @@ export default function GameScreen({ navigation, route }) {
                 {rankList.map((rank, idx4) => {
                   return (
                     <View style={styles.playerBox} key={idx4}>
-                      {/* <Text style={styles.player}>{rank.idx4}등</Text> */}
+                      <Text style={styles.player}>{rank.length}등</Text>
                       <Text style={styles.player}>{rank.userName}</Text>
                       <Text style={styles.player}>{rank.userScore}</Text>
                     </View>
@@ -975,13 +1417,6 @@ export default function GameScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  fadingContainer: {
-    padding: 20,
-    backgroundColor: "powderblue",
-  },
-  fadingText: {
-    fontSize: 28,
-  },
   PNameplateSite: {
     alignItems: "center",
   },
@@ -1046,6 +1481,8 @@ const styles = StyleSheet.create({
   },
   sBoardSite: {
     width: "90%",
+    marginTop: 10,
+    marginBottom: 10,
   },
   diceBoxSite: {
     width: "95%",
@@ -1274,6 +1711,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  diceSquare: {
+    position: "absolute",
+  },
   diceImg: {
     width: "auto",
     height: "auto",
@@ -1357,8 +1797,12 @@ const styles = StyleSheet.create({
     height: 50,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#D3D3D3",
-    borderWidth: 1,
+    backgroundColor: "#815E06",
+    borderWidth: 0.25,
+    borderColor: "#000000",
+  },
+  sNameTxt: {
+    color: "#FFFFFF",
   },
   userScoreColumn: {
     width: "28%",
@@ -1369,39 +1813,58 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
-    borderWidth: 1,
+    borderWidth: 0.25,
     textAlign: "center",
+    borderColor: "#000000",
   },
   savedUserScoreCell: {
     height: 50,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#D3D3D3",
-    borderWidth: 1,
+    backgroundColor: "#B4923D",
+    borderWidth: 0.25,
     textAlign: "center",
+    borderColor: "#000000",
   },
-  totalScoreRow: {
-    width: "100%",
-    flexDirection: "row",
+  unsavedScoreTxt: {
+    color: "#000000",
   },
-  totalCell: {
-    width: "22%",
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#D3D3D3",
-    borderWidth: 1,
-  },
-  totalScoreCell: {
-    width: "78%",
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
+  savedScoreTxt: {
+    color: "#FFFFFF",
   },
   rankHeader: {
     fontSize: 30,
     color: "#FFFFFF",
+  },
+  PModalCard: {
+    flex: 0.6,
+    alignItems: "center",
+    width: "80%",
+    backgroundColor: "#A8D98A",
+  },
+  PModalHeader: {
+    width: "100%",
+    backgroundColor: "#7EB85A",
+    height: 54,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  PModalHeaderTitle: {
+    fontSize: 25,
+    color: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  MSBoardSite: {
+    width: "90%",
+    marginVertical: 20,
+  },
+  MSNameTxt: {
+    fontSize: 10,
+    color: "#FFFFFF",
+  },
+  MScoreTxt: {
+    fontSize: 10,
+    color: "#000000",
   },
 });
