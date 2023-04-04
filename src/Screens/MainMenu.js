@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,6 +7,8 @@ import {
   Image,
   Alert,
   BackHandler,
+  Animated,
+  Button,
 } from "react-native";
 import BtnOption from "../Components/Btns/BtnOption";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -14,6 +16,26 @@ import Header from "../Components/Header";
 import Dice from "../Components/Imgs/Dice111.png";
 
 const MainMenu = ({ navigation }) => {
+  // const start1 = () => {
+  //   const startValue = useRef(new Animated.Value(1)).current;
+  //   const endValue = 0;
+  //   const duration = 1000;
+  //   useEffect(() => {
+  //     Animated.delay(10000),
+  //       Animated.timing(startValue, {
+  //         toValue: endValue,
+  //         duration: duration,
+  //         useNativeDriver: true,
+  //       }).start();
+  //   }, [startValue]);
+  //   return (
+  //     <Animated.Image
+  //       source={require("../Components/Imgs/direroll1.gif")}
+  //       style={[{ opacity: startValue }]}
+  //     />
+  //   );
+  // };
+
   const backAction = () => {
     Alert.alert("Hold on!", "앱을 종료하시겠습니까?", [
       {

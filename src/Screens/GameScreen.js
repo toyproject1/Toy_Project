@@ -26,12 +26,9 @@ import Toast from "react-native-simple-toast";
 export default function GameScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(true);
   const [modalRankVisible, setModalRankVisible] = useState(false);
-  // const [roomnumber, setRoomnumber] = useState("001");
   const [plCount, setPlCount] = useState(1);
   const [scoreNum, setScoreNum] = useState(0);
-  // const [player, setPlayer] = useState("User Name");
   const [rollChance, setChanceCount] = useState(2);
-  // const [ready, setReady] = useState("Wait ...");
   const { gTitle, HCNum, Host, roomNumber, userID, userName, userId } =
     route.params;
   const [userList, setUserList] = useState([]);
@@ -39,7 +36,6 @@ export default function GameScreen({ navigation, route }) {
   const [rankList, setRankList] = useState([]);
 
   const WebSocket = useRef(null);
-  //console.log(gTitle, HCNum, roomNumber, userId, userName, Host);
 
   let [turn, setTurn] = useState();
 
@@ -73,15 +69,7 @@ export default function GameScreen({ navigation, route }) {
   let [turnId, setTurnId] = useState();
   let [turnName, setTurnName] = useState();
 
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  const fadeIn = () => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 5000,
-      useNativeDriver: true,
-    }).start();
-  };
+  const fadeAnim = useRef(new Animated.Value(1)).current;
 
   const fadeOut = () => {
     Animated.timing(fadeAnim, {
@@ -96,8 +84,6 @@ export default function GameScreen({ navigation, route }) {
     WebSocket.current.on("connect", () => {
       console.log("connected");
     });
-
-    // userData();
 
     if (Host == "Host") {
       WebSocket.current.emit("hostCreateRoom", {
@@ -116,7 +102,6 @@ export default function GameScreen({ navigation, route }) {
         userName: userName,
         roomNumber: roomNumber,
       });
-      // console.log(userID, userName, roomNumber);
     }
 
     WebSocket.current.on("userJoinRoom", (data) => {
@@ -214,7 +199,6 @@ export default function GameScreen({ navigation, route }) {
         Toast.SHORT,
         Toast.BOTTOM
       );
-      // navigation.navigate("MainMenu");
     });
 
     WebSocket.current.on("disconnectUser", (data) => {
@@ -229,11 +213,7 @@ export default function GameScreen({ navigation, route }) {
     WebSocket.current.on("diceTurn", (data) => {
       console.log(data);
       console.log("주사위 굴릴 사람 : ", data.diceTurnName);
-      Toast.showWithGravity(
-        `${data.diceTurnName}의 차례`,
-        Toast.SHORT,
-        Toast.BOTTOM
-      );
+      Toast.show(`${data.diceTurnName}의 차례`, Toast.SHORT, Toast.CENTER);
       setTurn(data.diceTurnName);
     });
 
@@ -351,14 +331,6 @@ export default function GameScreen({ navigation, route }) {
   }, []);
 
   useEffect(() => {
-    // console.log("==================================");
-    // console.log(typeof temp.dice01);
-    // console.log("dice01 :" + temp.dice01);
-    // console.log("dice02 :" + temp.dice02);
-    // console.log("dice03 :" + temp.dice03);
-    // console.log("dice04 :" + temp.dice04);
-    // console.log("dice05 :" + temp.dice05);
-    // console.log("==================================");
     switch (temp.dice01) {
       case 1:
         setRolledDice01(Dice1);
@@ -480,116 +452,69 @@ export default function GameScreen({ navigation, route }) {
   };
 
   const inputOnes = () => {
-    // setPicked_c("ones");
-    // setPickedScore_c(ScoreValue.Ones);
     WebSocket.current.emit("saveScore", {
       scoreType: "ones",
-      // scoreValue: pickedScore
     });
   };
   const inputTwos = () => {
-    // setPicked_c("twos");
-    // setPickedScore_c(ScoreValue.Twos);
     WebSocket.current.emit("saveScore", {
       scoreType: "twos",
-      // scoreValue: pickedScore
     });
   };
   const inputThrees = () => {
-    // setPicked_c("threes");
-    // setPickedScore_c(ScoreValue.Threes);
     WebSocket.current.emit("saveScore", {
       scoreType: "threes",
-      // scoreValue: pickedScore
     });
   };
   const inputFours = () => {
-    // setPicked_c("fours");
-    // setPickedScore_c(ScoreValue.Fours);
     WebSocket.current.emit("saveScore", {
       scoreType: "fours",
-      // scoreValue: pickedScore
     });
     setPicked([]);
   };
   const inputFives = () => {
-    // setPicked_c("fives");
-    // setPickedScore_c(ScoreValue.Fives);
     WebSocket.current.emit("saveScore", {
       scoreType: "fives",
-      // scoreValue: pickedScore
     });
   };
   const inputSixes = () => {
-    // setPicked_c("sixes");
-    // setPickedScore_c(ScoreValue.Sixes);
     WebSocket.current.emit("saveScore", {
       scoreType: "sixes",
-      // scoreValue: pickedScore
     });
-    // };
-    // const inputBonus = () => {
-    //   // setPicked_c("bonus");
-    //   // setPickedScore_c(ScoreValue.Bonus);
-    //   WebSocket.current.emit("saveScore", {
-    //     scoreType: "bonus",
-    //     // scoreValue: pickedScore
-    //   });
   };
   const inputTriple = () => {
-    // setPicked_c("triple");
-    // setPickedScore_c(ScoreValue.Triple);
     WebSocket.current.emit("saveScore", {
       scoreType: "triple",
-      // scoreValue: pickedScore
     });
   };
   const inputFour_card = () => {
-    // setPicked_c("four_card");
-    // setPickedScore_c(ScoreValue.Four_card);
     WebSocket.current.emit("saveScore", {
       scoreType: "four_card",
-      // scoreValue: pickedScore
     });
   };
   const inputFull_house = () => {
-    // setPicked_c("full_house");
-    // setPickedScore_c(ScoreValue.Full_house);
     WebSocket.current.emit("saveScore", {
       scoreType: "full_house",
-      // scoreValue: pickedScore
     });
   };
   const inputSmall_straight = () => {
-    // setPicked_c("small_straight");
-    // setPickedScore_c(ScoreValue.Small_straight);
     WebSocket.current.emit("saveScore", {
       scoreType: "small_straight",
-      // scoreValue: pickedScore
     });
   };
   const inputLarge_straight = () => {
-    // setPicked_c("large_straight");
-    // setPickedScore_c(ScoreValue.Large_straight);
     WebSocket.current.emit("saveScore", {
       scoreType: "large_straight",
-      // scoreValue: pickedScore
     });
   };
   const inputYahtzee = () => {
-    // setPicked_c("yahtzee");
-    // setPickedScore_c(ScoreValue.Yahtzee);
     WebSocket.current.emit("saveScore", {
       scoreType: "yahtzee",
-      // scoreValue: pickedScore
     });
   };
   const inputChance = () => {
-    // setPicked_c("chance");
-    // setPickedScore_c(ScoreValue.Chance);
     WebSocket.current.emit("saveScore", {
       scoreType: "chance",
-      // scoreValue: pickedScore
     });
   };
 
@@ -610,13 +535,6 @@ export default function GameScreen({ navigation, route }) {
       dIndex.push(4);
     }
   }, [dIndex]);
-
-  // useEffect(()=>{
-  //   console.log("Picked 타입 : ", typeof picked);
-  //   console.log("Picked : ", picked);
-  //   console.log("PickedScore 타입 : ", typeof pickedScore);
-  //   console.log("PickedScore : ", pickedScore);
-  // },[picked]);
 
   return (
     <View style={styles.main}>
@@ -949,7 +867,6 @@ export default function GameScreen({ navigation, route }) {
           activeOpacity={0.9}
           onPress={() => {
             reRollDice();
-            // setChanceCount(rollChance > 0 ? rollChance - 1 : rollChance);
           }}
         >
           <Text style={styles.btnRollTxt}>Re Roll</Text>
@@ -1058,11 +975,12 @@ export default function GameScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  block: {},
-  rectangle: {
-    width: 100,
-    height: 100,
-    backgroundColor: "black",
+  fadingContainer: {
+    padding: 20,
+    backgroundColor: "powderblue",
+  },
+  fadingText: {
+    fontSize: 28,
   },
   PNameplateSite: {
     alignItems: "center",
