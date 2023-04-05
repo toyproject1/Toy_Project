@@ -76,6 +76,7 @@ export default function GameScreen({ navigation, route }) {
 
   let [turnId, setTurnId] = useState();
   let [turnName, setTurnName] = useState();
+  const [fadedice, setFadedice] = useState(false);
 
   const startValue = useRef(new Animated.Value(0)).current;
   const fadeOutValue = useRef(new Animated.Value(0)).current;
@@ -106,8 +107,14 @@ export default function GameScreen({ navigation, route }) {
   const fadeInOut = () => {
     Animated.sequence([fadeIn, fadeOut, Animfade]).start();
   };
+  const fadeInOutR = () => {
+    Animated.sequence([fadeIn, fadeOut, Animfade]).reset();
+  };
   const fadeOutIn = () => {
     Animated.sequence([AnimfadeOut, fadeIn, fadeOut, Animfade]).start();
+  };
+  const fadeOutInR = () => {
+    Animated.sequence([AnimfadeOut, fadeIn, fadeOut, Animfade]).reset();
   };
 
   useEffect(() => {
@@ -243,6 +250,8 @@ export default function GameScreen({ navigation, route }) {
     });
 
     WebSocket.current.on("diceTurn", (data) => {
+      fadeInOutR();
+      fadeOutInR();
       console.log(data);
       console.log("주사위 굴릴 사람 : ", data.diceTurnName);
       Toast.show(`${data.diceTurnName}의 차례`, Toast.SHORT);
@@ -259,7 +268,7 @@ export default function GameScreen({ navigation, route }) {
       if (data.state === 0) {
         Toast.showWithGravity(`${data.message}`, Toast.SHORT, Toast.TOP);
       } else {
-        console.log(data.diceResult.message);
+        fadeInOut();
         setTemp({
           dice01: data.diceResult.firstDice,
           dice02: data.diceResult.secDice,
@@ -295,6 +304,7 @@ export default function GameScreen({ navigation, route }) {
       if (data.state === 0) {
         Toast.showWithGravity(`${data.message}`, Toast.SHORT, Toast.TOP);
       } else {
+        fadeOutIn();
         setTemp({
           dice01: data.diceResult.firstDice,
           dice02: data.diceResult.secDice,
@@ -389,14 +399,6 @@ export default function GameScreen({ navigation, route }) {
   }, []);
 
   useEffect(() => {
-    // console.log("==================================");
-    // console.log(typeof temp.dice01);
-    // console.log("dice01 :" + temp.dice01);
-    // console.log("dice02 :" + temp.dice02);
-    // console.log("dice03 :" + temp.dice03);
-    // console.log("dice04 :" + temp.dice04);
-    // console.log("dice05 :" + temp.dice05);
-    // console.log("==================================");
     switch (temp.dice01) {
       case 1:
         setRolledDice01(Dice1);
@@ -1249,10 +1251,15 @@ export default function GameScreen({ navigation, route }) {
           </View>
           <View>
             <View style={styles.boxSquare}>
-              <Animated.Image
-                source={require("../Components/Imgs/direroll1.gif")}
-                style={[styles.diceSquare, { opacity: startValue }]}
-              />
+              {putD02 == false ? (
+                <></>
+              ) : (
+                <Animated.Image
+                  source={require("../Components/Imgs/direroll1.gif")}
+                  style={[styles.diceSquare, { opacity: startValue }]}
+                />
+              )}
+
               <Animated.View style={[{ opacity: fadeOutValue }]}>
                 <TouchableHighlight
                   style={putD02 == true ? styles.putDice : styles.diceImg}
@@ -1335,7 +1342,6 @@ export default function GameScreen({ navigation, route }) {
           activeOpacity={0.9}
           onPress={() => {
             rollDice();
-            fadeInOut();
           }}
         >
           <Text style={styles.btnRollTxt}>Roll</Text>
@@ -1345,7 +1351,6 @@ export default function GameScreen({ navigation, route }) {
           activeOpacity={0.9}
           onPress={() => {
             reRollDice();
-            fadeOutIn();
             // setChanceCount(rollChance > 0 ? rollChance - 1 : rollChance);
           }}
         >
