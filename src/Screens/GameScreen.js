@@ -22,6 +22,7 @@ import Dice4 from "../Components/Imgs/Dice04.png";
 import Dice5 from "../Components/Imgs/Dice05.png";
 import Dice6 from "../Components/Imgs/Dice06.png";
 import Toast from "react-native-simple-toast";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function GameScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(true);
@@ -103,6 +104,11 @@ export default function GameScreen({ navigation, route }) {
     duration: 100,
     useNativeDriver: true,
   });
+  const hide = Animated.timing(fadeOutValue, {
+    toValue: endValue,
+    duration: 0,
+    useNativeDriver: true,
+  });
 
   const fadeInOut = () => {
     Animated.sequence([fadeIn, fadeOut, Animfade]).start();
@@ -116,9 +122,15 @@ export default function GameScreen({ navigation, route }) {
   const fadeOutInR = () => {
     Animated.sequence([AnimfadeOut, fadeIn, fadeOut, Animfade]).reset();
   };
+  const hideIn = () => {
+    Animated.sequence([hide]).start();
+  };
+
+  
 
   useEffect(() => {
     WebSocket.current = io("http://3.38.165.165:3131/");
+
     WebSocket.current.on("connect", () => {
       console.log("connected");
     });
@@ -1251,15 +1263,10 @@ export default function GameScreen({ navigation, route }) {
           </View>
           <View>
             <View style={styles.boxSquare}>
-              {putD02 == false ? (
-                <></>
-              ) : (
-                <Animated.Image
-                  source={require("../Components/Imgs/direroll1.gif")}
-                  style={[styles.diceSquare, { opacity: startValue }]}
-                />
-              )}
-
+              <Animated.Image
+                source={require("../Components/Imgs/direroll1.gif")}
+                style={[styles.diceSquare, { opacity: startValue }]}
+              />
               <Animated.View style={[{ opacity: fadeOutValue }]}>
                 <TouchableHighlight
                   style={putD02 == true ? styles.putDice : styles.diceImg}

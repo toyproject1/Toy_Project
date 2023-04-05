@@ -66,7 +66,18 @@ export default function Channel({ navigation }) {
     }
     getData();
 
-    WebSocket.current = io("http://3.38.165.165:3131/");
+    // const token = AsyncStorage.getItem("userInfo");
+    // console.log(token);
+
+    WebSocket.current = io(
+      "http://3.38.165.165:3131/"
+      // , {
+      //   query: {
+      //     token: token,
+      //   },
+      // }
+    );
+
     WebSocket.current.on("connect", () => {
       console.log("connected");
     });

@@ -53,13 +53,16 @@ export default function HostGameMenu({ navigation }) {
       if (gTitle == "") {
         onChangeGTitle((gTitle = gTitlePH));
       }
+      const header = { Authorization: `Bearer ${access_token}` };
+      console.log(header);
       const response = await axios.post(
         "http://3.38.165.165:3000/api/createRoom",
         {
           user_id: userID,
           roomName: gTitle,
           room_max_user: HCNum,
-        }
+        },
+        { header }
       );
       tempData = {
         room_id: response.data.room_id,
