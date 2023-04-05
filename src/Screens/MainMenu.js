@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -16,39 +16,6 @@ import Header from "../Components/Header";
 import Dice from "../Components/Imgs/Dice111.png";
 
 const MainMenu = ({ navigation }) => {
-  // const start1 = () => {
-  const startValue = useRef(new Animated.Value(0)).current;
-  const endValue = 1;
-  const duration = 2000;
-
-  const fadeInOut = () => {
-    Animated.sequence([
-      Animated.timing(startValue, {
-        toValue: endValue,
-        duration: duration,
-        useNativeDriver: true,
-      }),
-      Animated.timing(startValue, {
-        toValue: 0,
-        duration: duration,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
-
-  // useEffect(() => {
-  //   Animated.delay(10000),
-  //     Animated.timing(startValue, {
-  //       toValue: endValue,
-  //       duration: duration,
-  //       useNativeDriver: true,
-  //     }).start();
-  // }, [startValue]);
-  // return (
-
-  // );
-  // };
-
   const backAction = () => {
     Alert.alert("Hold on!", "앱을 종료하시겠습니까?", [
       {
@@ -119,34 +86,7 @@ const MainMenu = ({ navigation }) => {
     <View style={styles.main}>
       <Header />
       <View style={styles.image}>
-        <View
-          style={{
-            position: "absolute",
-            backgroundColor: "#FFFFFF",
-            right: 30,
-            bottom: 30,
-            height: 30,
-            width: 30,
-          }}
-        ></View>
-        <View
-          style={{
-            position: "absolute",
-            backgroundColor: "#AAAAAA",
-            right: 40,
-            bottom: 40,
-            height: 30,
-            width: 30,
-          }}
-        ></View>
-        {/* <Image source={Dice} /> */}
-        {/* <Animated.Image
-          source={require("../Components/Imgs/direroll1.gif")}
-          style={[{ opacity: startValue }]}
-        />
-        <TouchableOpacity onPress={fadeInOut}>
-          <Text>dice</Text>
-        </TouchableOpacity> */}
+        <Image source={Dice} />
       </View>
       <View style={styles.btns}>
         <TouchableOpacity
@@ -186,6 +126,14 @@ const MainMenu = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  fadeAnim: {
+    position: "absolute",
+    backgroundColor: "#FFFFFF",
+    right: 30,
+    bottom: 30,
+    height: 30,
+    width: 30,
+  },
   main: {
     flex: 1,
     width: "100%",

@@ -78,22 +78,36 @@ export default function GameScreen({ navigation, route }) {
   let [turnName, setTurnName] = useState();
 
   const startValue = useRef(new Animated.Value(0)).current;
+  const fadeOutValue = useRef(new Animated.Value(0)).current;
   const endValue = 1;
   const duration = 2000;
 
+  const fadeIn = Animated.timing(startValue, {
+    toValue: endValue,
+    duration: duration,
+    useNativeDriver: true,
+  });
+  const fadeOut = Animated.timing(startValue, {
+    toValue: 0,
+    duration: 100,
+    useNativeDriver: true,
+  });
+  const Animfade = Animated.timing(fadeOutValue, {
+    toValue: endValue,
+    duration: 500,
+    useNativeDriver: true,
+  });
+  const AnimfadeOut = Animated.timing(fadeOutValue, {
+    toValue: 0,
+    duration: 100,
+    useNativeDriver: true,
+  });
+
   const fadeInOut = () => {
-    Animated.sequence([
-      Animated.timing(startValue, {
-        toValue: endValue,
-        duration: duration,
-        useNativeDriver: true,
-      }),
-      Animated.timing(startValue, {
-        toValue: 0,
-        duration: duration,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    Animated.sequence([fadeIn, fadeOut, Animfade]).start();
+  };
+  const fadeOutIn = () => {
+    Animated.sequence([AnimfadeOut, fadeIn, fadeOut, Animfade]).start();
   };
 
   useEffect(() => {
@@ -1219,75 +1233,99 @@ export default function GameScreen({ navigation, route }) {
       </View>
       <View style={styles.diceBoxSite}>
         <View style={styles.diceBox}>
-          <View>
-            <View style={styles.boxSquare}>
+          <View style={styles.boxSquare}>
+            <Animated.Image
+              source={require("../Components/Imgs/direroll1.gif")}
+              style={[styles.diceSquare, { opacity: startValue }]}
+            />
+            <Animated.View style={[{ opacity: fadeOutValue }]}>
               <TouchableHighlight
                 style={putD01 == true ? styles.putDice : styles.diceImg}
                 onPress={() => setPutD01(putD01 == false ? true : false)}
               >
                 {2 >= rollChance > 0 ? <Image source={rolledDice01} /> : <></>}
               </TouchableHighlight>
-            </View>
-            <Animated.Image
-              source={require("../Components/Imgs/direroll1.gif")}
-              style={[styles.diceSquare, { opacity: startValue }]}
-            />
+            </Animated.View>
           </View>
           <View>
             <View style={styles.boxSquare}>
-              <TouchableHighlight
-                style={putD02 == true ? styles.putDice : styles.diceImg}
-                onPress={() => setPutD02(putD02 == false ? true : false)}
-              >
-                {2 >= rollChance > 0 ? <Image source={rolledDice02} /> : <></>}
-              </TouchableHighlight>
+              <Animated.Image
+                source={require("../Components/Imgs/direroll1.gif")}
+                style={[styles.diceSquare, { opacity: startValue }]}
+              />
+              <Animated.View style={[{ opacity: fadeOutValue }]}>
+                <TouchableHighlight
+                  style={putD02 == true ? styles.putDice : styles.diceImg}
+                  onPress={() => setPutD02(putD02 == false ? true : false)}
+                >
+                  {2 >= rollChance > 0 ? (
+                    <Image source={rolledDice02} />
+                  ) : (
+                    <></>
+                  )}
+                </TouchableHighlight>
+              </Animated.View>
             </View>
-            <Animated.Image
-              source={require("../Components/Imgs/direroll1.gif")}
-              style={[styles.diceSquare, { opacity: startValue }]}
-            />
           </View>
           <View>
             <View style={styles.boxSquare}>
-              <TouchableHighlight
-                style={putD03 == true ? styles.putDice : styles.diceImg}
-                onPress={() => setPutD03(putD03 == false ? true : false)}
-              >
-                {2 >= rollChance > 0 ? <Image source={rolledDice03} /> : <></>}
-              </TouchableHighlight>
+              <Animated.Image
+                source={require("../Components/Imgs/direroll1.gif")}
+                style={[styles.diceSquare, { opacity: startValue }]}
+              />
+              <Animated.View style={[{ opacity: fadeOutValue }]}>
+                <TouchableHighlight
+                  style={putD03 == true ? styles.putDice : styles.diceImg}
+                  onPress={() => setPutD03(putD03 == false ? true : false)}
+                >
+                  {2 >= rollChance > 0 ? (
+                    <Image source={rolledDice03} />
+                  ) : (
+                    <></>
+                  )}
+                </TouchableHighlight>
+              </Animated.View>
             </View>
-            <Animated.Image
-              source={require("../Components/Imgs/direroll1.gif")}
-              style={[styles.diceSquare, { opacity: startValue }]}
-            />
           </View>
           <View>
             <View style={styles.boxSquare}>
-              <TouchableHighlight
-                style={putD04 == true ? styles.putDice : styles.diceImg}
-                onPress={() => setPutD04(putD04 == false ? true : false)}
-              >
-                {2 >= rollChance > 0 ? <Image source={rolledDice04} /> : <></>}
-              </TouchableHighlight>
+              <Animated.Image
+                source={require("../Components/Imgs/direroll1.gif")}
+                style={[styles.diceSquare, { opacity: startValue }]}
+              />
+              <Animated.View style={[{ opacity: fadeOutValue }]}>
+                <TouchableHighlight
+                  style={putD04 == true ? styles.putDice : styles.diceImg}
+                  onPress={() => setPutD04(putD04 == false ? true : false)}
+                >
+                  {2 >= rollChance > 0 ? (
+                    <Image source={rolledDice04} />
+                  ) : (
+                    <></>
+                  )}
+                </TouchableHighlight>
+              </Animated.View>
             </View>
-            <Animated.Image
-              source={require("../Components/Imgs/direroll1.gif")}
-              style={[styles.diceSquare, { opacity: startValue }]}
-            />
           </View>
           <View>
             <View style={styles.boxSquare}>
-              <TouchableHighlight
-                style={putD05 == true ? styles.putDice : styles.diceImg}
-                onPress={() => setPutD05(putD05 == false ? true : false)}
-              >
-                {2 >= rollChance > 0 ? <Image source={rolledDice05} /> : <></>}
-              </TouchableHighlight>
+              <Animated.Image
+                source={require("../Components/Imgs/direroll1.gif")}
+                style={[styles.diceSquare, { opacity: startValue }]}
+              />
+              <Animated.View style={[{ opacity: fadeOutValue }]}>
+                <TouchableHighlight
+                  style={putD05 == true ? styles.putDice : styles.diceImg}
+                  onPress={() => setPutD05(putD05 == false ? true : false)}
+                >
+                  {2 >= rollChance > 0 ? (
+                    <Image source={rolledDice05} />
+                  ) : (
+                    <></>
+                  )}
+                </TouchableHighlight>
+              </Animated.View>
             </View>
-            <Animated.Image
-              source={require("../Components/Imgs/direroll1.gif")}
-              style={[styles.diceSquare, { opacity: startValue }]}
-            />
           </View>
         </View>
       </View>
@@ -1307,7 +1345,7 @@ export default function GameScreen({ navigation, route }) {
           activeOpacity={0.9}
           onPress={() => {
             reRollDice();
-            fadeInOut();
+            fadeOutIn();
             // setChanceCount(rollChance > 0 ? rollChance - 1 : rollChance);
           }}
         >
