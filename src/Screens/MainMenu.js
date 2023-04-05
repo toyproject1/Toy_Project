@@ -13,7 +13,7 @@ import {
 import BtnOption from "../Components/Btns/BtnOption";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Header from "../Components/Header";
-import Dice from "../Components/Imgs/Dice111.png";
+import Dice from "../Components/Imgs/DiceNew03.png";
 
 const MainMenu = ({ navigation }) => {
   const backAction = () => {

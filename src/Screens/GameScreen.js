@@ -21,8 +21,8 @@ import Dice3 from "../Components/Imgs/Dice03.png";
 import Dice4 from "../Components/Imgs/Dice04.png";
 import Dice5 from "../Components/Imgs/Dice05.png";
 import Dice6 from "../Components/Imgs/Dice06.png";
+import ReRoll from "../Components/Imgs/ReRoll.png";
 import Toast from "react-native-simple-toast";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function GameScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(true);
@@ -125,8 +125,6 @@ export default function GameScreen({ navigation, route }) {
   const hideIn = () => {
     Animated.sequence([hide]).start();
   };
-
-  
 
   useEffect(() => {
     WebSocket.current = io("http://3.38.165.165:3131/");
@@ -532,116 +530,134 @@ export default function GameScreen({ navigation, route }) {
   };
 
   const inputOnes = () => {
-    // setPicked_c("ones");
-    // setPickedScore_c(ScoreValue.Ones);
+    setPutD01(false);
+    setPutD02(false);
+    setPutD03(false);
+    setPutD04(false);
+    setPutD05(false);
     WebSocket.current.emit("saveScore", {
       scoreType: "ones",
-      // scoreValue: pickedScore
     });
   };
   const inputTwos = () => {
-    // setPicked_c("twos");
-    // setPickedScore_c(ScoreValue.Twos);
+    setPutD01(false);
+    setPutD02(false);
+    setPutD03(false);
+    setPutD04(false);
+    setPutD05(false);
     WebSocket.current.emit("saveScore", {
       scoreType: "twos",
-      // scoreValue: pickedScore
     });
   };
   const inputThrees = () => {
-    // setPicked_c("threes");
-    // setPickedScore_c(ScoreValue.Threes);
+    setPutD01(false);
+    setPutD02(false);
+    setPutD03(false);
+    setPutD04(false);
+    setPutD05(false);
     WebSocket.current.emit("saveScore", {
       scoreType: "threes",
-      // scoreValue: pickedScore
     });
   };
   const inputFours = () => {
-    // setPicked_c("fours");
-    // setPickedScore_c(ScoreValue.Fours);
+    setPutD01(false);
+    setPutD02(false);
+    setPutD03(false);
+    setPutD04(false);
+    setPutD05(false);
     WebSocket.current.emit("saveScore", {
       scoreType: "fours",
-      // scoreValue: pickedScore
     });
     setPicked([]);
   };
   const inputFives = () => {
-    // setPicked_c("fives");
-    // setPickedScore_c(ScoreValue.Fives);
+    setPutD01(false);
+    setPutD02(false);
+    setPutD03(false);
+    setPutD04(false);
+    setPutD05(false);
     WebSocket.current.emit("saveScore", {
       scoreType: "fives",
-      // scoreValue: pickedScore
     });
   };
   const inputSixes = () => {
-    // setPicked_c("sixes");
-    // setPickedScore_c(ScoreValue.Sixes);
+    setPutD01(false);
+    setPutD02(false);
+    setPutD03(false);
+    setPutD04(false);
+    setPutD05(false);
     WebSocket.current.emit("saveScore", {
       scoreType: "sixes",
-      // scoreValue: pickedScore
     });
-    // };
-    // const inputBonus = () => {
-    //   // setPicked_c("bonus");
-    //   // setPickedScore_c(ScoreValue.Bonus);
-    //   WebSocket.current.emit("saveScore", {
-    //     scoreType: "bonus",
-    //     // scoreValue: pickedScore
-    //   });
   };
   const inputTriple = () => {
-    // setPicked_c("triple");
-    // setPickedScore_c(ScoreValue.Triple);
+    setPutD01(false);
+    setPutD02(false);
+    setPutD03(false);
+    setPutD04(false);
+    setPutD05(false);
     WebSocket.current.emit("saveScore", {
       scoreType: "triple",
-      // scoreValue: pickedScore
     });
   };
   const inputFour_card = () => {
-    // setPicked_c("four_card");
-    // setPickedScore_c(ScoreValue.Four_card);
+    setPutD01(false);
+    setPutD02(false);
+    setPutD03(false);
+    setPutD04(false);
+    setPutD05(false);
     WebSocket.current.emit("saveScore", {
       scoreType: "four_card",
-      // scoreValue: pickedScore
     });
   };
   const inputFull_house = () => {
-    // setPicked_c("full_house");
-    // setPickedScore_c(ScoreValue.Full_house);
+    setPutD01(false);
+    setPutD02(false);
+    setPutD03(false);
+    setPutD04(false);
+    setPutD05(false);
     WebSocket.current.emit("saveScore", {
       scoreType: "full_house",
-      // scoreValue: pickedScore
     });
   };
   const inputSmall_straight = () => {
-    // setPicked_c("small_straight");
-    // setPickedScore_c(ScoreValue.Small_straight);
+    setPutD01(false);
+    setPutD02(false);
+    setPutD03(false);
+    setPutD04(false);
+    setPutD05(false);
     WebSocket.current.emit("saveScore", {
       scoreType: "small_straight",
-      // scoreValue: pickedScore
     });
   };
   const inputLarge_straight = () => {
-    // setPicked_c("large_straight");
-    // setPickedScore_c(ScoreValue.Large_straight);
+    setPutD01(false);
+    setPutD02(false);
+    setPutD03(false);
+    setPutD04(false);
+    setPutD05(false);
     WebSocket.current.emit("saveScore", {
       scoreType: "large_straight",
-      // scoreValue: pickedScore
     });
   };
   const inputYahtzee = () => {
-    // setPicked_c("yahtzee");
-    // setPickedScore_c(ScoreValue.Yahtzee);
+    setPutD01(false);
+    setPutD02(false);
+    setPutD03(false);
+    setPutD04(false);
+    setPutD05(false);
     WebSocket.current.emit("saveScore", {
       scoreType: "yahtzee",
-      // scoreValue: pickedScore
     });
   };
   const inputChance = () => {
-    // setPicked_c("chance");
-    // setPickedScore_c(ScoreValue.Chance);
+    setPutD01(false);
+    setPutD02(false);
+    setPutD03(false);
+    setPutD04(false);
+    setPutD05(false);
     WebSocket.current.emit("saveScore", {
       scoreType: "chance",
-      // scoreValue: pickedScore
     });
   };
 
@@ -1259,6 +1275,12 @@ export default function GameScreen({ navigation, route }) {
               >
                 {2 >= rollChance > 0 ? <Image source={rolledDice01} /> : <></>}
               </TouchableHighlight>
+              <Pressable
+                style={styles.reRollIcon}
+                onPress={() => setPutD01(putD01 == false ? true : false)}
+              >
+                {putD01 == true ? <Image source={ReRoll} /> : <></>}
+              </Pressable>
             </Animated.View>
           </View>
           <View>
@@ -1278,6 +1300,12 @@ export default function GameScreen({ navigation, route }) {
                     <></>
                   )}
                 </TouchableHighlight>
+                <Pressable
+                  style={styles.reRollIcon}
+                  onPress={() => setPutD02(putD02 == false ? true : false)}
+                >
+                  {putD02 == true ? <Image source={ReRoll} /> : <></>}
+                </Pressable>
               </Animated.View>
             </View>
           </View>
@@ -1298,6 +1326,12 @@ export default function GameScreen({ navigation, route }) {
                     <></>
                   )}
                 </TouchableHighlight>
+                <Pressable
+                  style={styles.reRollIcon}
+                  onPress={() => setPutD03(putD03 == false ? true : false)}
+                >
+                  {putD03 == true ? <Image source={ReRoll} /> : <></>}
+                </Pressable>
               </Animated.View>
             </View>
           </View>
@@ -1318,6 +1352,12 @@ export default function GameScreen({ navigation, route }) {
                     <></>
                   )}
                 </TouchableHighlight>
+                <Pressable
+                  style={styles.reRollIcon}
+                  onPress={() => setPutD04(putD04 == false ? true : false)}
+                >
+                  {putD04 == true ? <Image source={ReRoll} /> : <></>}
+                </Pressable>
               </Animated.View>
             </View>
           </View>
@@ -1338,6 +1378,12 @@ export default function GameScreen({ navigation, route }) {
                     <></>
                   )}
                 </TouchableHighlight>
+                <Pressable
+                  style={styles.reRollIcon}
+                  onPress={() => setPutD05(putD05 == false ? true : false)}
+                >
+                  {putD05 == true ? <Image source={ReRoll} /> : <></>}
+                </Pressable>
               </Animated.View>
             </View>
           </View>
@@ -1663,6 +1709,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginTop: 20,
     marginBottom: 20,
+  },
+  reRollIcon: {
+    position: "absolute",
+    alignSelf: "center",
+    marginTop: 7,
   },
   btns: {
     width: 250,
