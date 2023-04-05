@@ -12,6 +12,7 @@ import {
 import Header from "../Components/Header";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Buffer } from "buffer";
 
 export default function HostGameMenu({ navigation }) {
   const [gTitle, onChangeGTitle] = useState("");
@@ -53,16 +54,70 @@ export default function HostGameMenu({ navigation }) {
       if (gTitle == "") {
         onChangeGTitle((gTitle = gTitlePH));
       }
-      // const header = { Authorization: `Bearer ${access_token}` };
-      // console.log(header);
+      const access_token = await AsyncStorage.getItem("access_token");
+      const refresh_token = await AsyncStorage.getItem("refresh_token");
+
+      const userInfo = JSON.parse(await AsyncStorage.getItem("userInfo"));
+      const iat = userInfo.iat;
+      const exp = userInfo.exp;
+      // const exp = await AsyncStorage.getItem("userInfo")["exp"];
+      console.log("iat ==============", iat);
+      console.log("iat ==============", exp);
+
+      var d = Math.round(new Date().getTime() / 1000);
+
+      console.log(d);
+
+      // console.log("asdasdsadasdas", d.getTime() / 1000);
+      if (iat > d || exp < d) {
+        console.log("check1");
+
+        const header = {
+          Authorization: `Bearer ${refresh_token}`,
+        };
+        console.log("check2", header);
+        let response1;
+        try {
+          response1 = await axios.put(
+            "http://3.38.165.165:3000/api/getAccessToken",
+            {},
+            { headers: header }
+          );
+        } catch (e) {
+          console.log(e);
+        }
+
+        // console.log(
+        //   "==========================================res",
+        //   response1.data
+        // );
+        await AsyncStorage.setItem("access_token", response1.data.access_token);
+        const parts = await response1.data.access_token
+          .split(".")
+          .map((part) =>
+            Buffer.from(
+              part.replace(/-/g, "+").replace(/_/g, "/"),
+              "base64"
+            ).toString()
+          );
+        console.log("======", parts[1]);
+        const payload = parts[1];
+        await AsyncStorage.setItem("userInfo", payload);
+        // await AsyncStorage.setItem("userInfo", )
+      }
+
+      const header = {
+        Authorization: `Bearer ${await AsyncStorage.getItem("access_token")}`,
+      };
+      console.log("=====================", header);
       const response = await axios.post(
         "http://3.38.165.165:3000/api/createRoom",
         {
           user_id: userID,
           roomName: gTitle,
           room_max_user: HCNum,
-        }
-        // { header }
+        },
+        { headers: header }
       );
       tempData = {
         room_id: response.data.room_id,
@@ -74,6 +129,7 @@ export default function HostGameMenu({ navigation }) {
       };
       console.log(tempData);
     } catch (error) {
+      console.log(error);
       console.log("응답 실패");
     }
     return tempData;
