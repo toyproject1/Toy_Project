@@ -14,48 +14,11 @@ export default function Header() {
 
   return (
     <View style={styles.header}>
-      <View style={styles.headerRule}>
-        <HeaderBtnRule />
-      </View>
       <View style={styles.headerTitle}>
-        <Text style={styles.headerTitleText}>Yatzy Dice</Text>
-      </View>
-      <View style={styles.headerMy}>
-        <View style={styles.btnSite}>
-          <Modal
-            animationType="none"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <View style={styles.modalBG}>
-              <View style={styles.modalCard}>
-                <View style={styles.modalHeader}>
-                  <Text style={styles.modalHeaderTitle}>My Profile</Text>
-                  <Pressable onPress={() => setModalVisible(!modalVisible)}>
-                    <Text style={styles.btnClose}>close</Text>
-                  </Pressable>
-                </View>
-                {/* {value} */}
-                <View style={styles.profileContents}>
-                  <Text style={styles.profileTexts}>Your Name :</Text>
-                  <Text style={styles.profileTexts}>Win :</Text>
-                  <Text style={styles.profileTexts}>Lose :</Text>
-                  <Text style={styles.profileTexts}>Win Rate :</Text>
-                </View>
-              </View>
-            </View>
-          </Modal>
-          <TouchableOpacity
-            style={styles.btn}
-            activeOpacity={0.9}
-            onPress={() => setModalVisible(true)}
-          >
-            <Text style={styles.btnText}>My</Text>
-          </TouchableOpacity>
+        <View style={styles.headerRule}>
+          <HeaderBtnRule />
         </View>
+        <Text style={styles.headerTitleText}>Yatzy Dice</Text>
       </View>
     </View>
   );
@@ -77,6 +40,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     alignItems: "center",
     justifyContent: "center",
+    flexDirection: "row",
   },
   headerTitleText: {
     fontSize: 30,

@@ -366,7 +366,7 @@ export default function GameScreen({ navigation, route }) {
         Chance: data.scoreBoard.chance,
       });
     });
-    WebSocket.current.on("getUSerScoreBoard", (data) => {
+    WebSocket.current.on("getUserScoreBoard", (data) => {
       console.log(data);
       setPlayerSBoard({
         modal_userId: data.userId,
@@ -422,8 +422,6 @@ export default function GameScreen({ navigation, route }) {
 
       if (appState.current === "background" && nextAppState === "active") {
         console.log("앱으로 다시 돌아오는 경우 foreground");
-        // RNRestart.restart();
-        // navigation.navigate("MainMenu");
         navigation.reset({ routes: [{ name: "MainMenu" }] });
       } else {
         console.log("asdsadsa");
@@ -724,16 +722,12 @@ export default function GameScreen({ navigation, route }) {
                   style={styles.PNameplate}
                   activeOpacity={0.9}
                   onPress={() => {
+                    console.log("선택한 유저의 태그 아이디 : ", list.userId);
+                    setPlayerSBoard({});
                     WebSocket.current.emit("getUserScoreBoard", {
                       userId: list.userId,
                     });
                     // setModalPlayerVisible(true);
-                    console.log("선택한 유저의 태그 아이디 : ", list.userId);
-                    setPlayerSBoard({});
-                    console.log(
-                      "유저의 점수판을 가져옴 : ",
-                      playerSBoard.modal_ones
-                    );
                   }}
                 >
                   <Text style={styles.plateTxt}>{list.userName}</Text>
@@ -787,7 +781,10 @@ export default function GameScreen({ navigation, route }) {
           setModalPlayerVisible(!modalPlayerVisible);
         }}
       >
-        <View style={styles.modalBG}>
+        <Pressable
+          style={styles.modalBG}
+          onPress={() => setModalPlayerVisible(false)}
+        >
           <View style={styles.PModalCard}>
             <View style={styles.PModalHeader}>
               <Text style={styles.PModalHeaderTitle}>
@@ -963,7 +960,7 @@ export default function GameScreen({ navigation, route }) {
               </View>
             </View>
           </View>
-        </View>
+        </Pressable>
       </Modal>
       <View style={styles.sBoardSite}>
         <View style={styles.boardTop}>
