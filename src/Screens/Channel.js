@@ -69,14 +69,7 @@ export default function Channel({ navigation }) {
     // const token = AsyncStorage.getItem("userInfo");
     // console.log(token);
 
-    WebSocket.current = io(
-      "http://3.38.165.165:3131/"
-      // , {
-      //   query: {
-      //     token: token,
-      //   },
-      // }
-    );
+    WebSocket.current = io("http://3.38.165.165:3131/");
 
     WebSocket.current.on("connect", () => {
       console.log("connected");
@@ -104,9 +97,7 @@ export default function Channel({ navigation }) {
     navigation.goBack();
   };
 
-  return roomList.length <= 0 ? (
-    ""
-  ) : (
+  return (
     <View style={styles.main}>
       <Header />
       <ScrollView
@@ -117,41 +108,45 @@ export default function Channel({ navigation }) {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <View>
-          {roomList.map((room) => {
-            return (
-              <TouchableOpacity
-                style={styles.container}
-                onPress={() => {
-                  WebSocket.current.close();
-                  navigation.navigate("GameScreen", {
-                    Host: "User",
-                    roomNumber: room.room_id,
-                    userID: userID,
-                    userName: userName,
-                    gTitle: room.room_name,
-                    HCNum: room.room_max_user,
-                    // plCount: room.room_user_count,
-                  });
-                }}
-                key={room.room_id}
-              >
-                <View style={styles.tSite}>
-                  <View style={styles.rowTxtTop}>
-                    <Text style={styles.lTxt}>No.{room.room_id}</Text>
-                    <Text style={styles.rTxt}>{room.room_name}</Text>
+        {roomList.length <= 0 ? (
+          ""
+        ) : (
+          <View>
+            {roomList.map((room) => {
+              return (
+                <TouchableOpacity
+                  style={styles.container}
+                  onPress={() => {
+                    WebSocket.current.close();
+                    navigation.navigate("GameScreen", {
+                      Host: "User",
+                      roomNumber: room.room_id,
+                      userID: userID,
+                      userName: userName,
+                      gTitle: room.room_name,
+                      HCNum: room.room_max_user,
+                      // plCount: room.room_user_count,
+                    });
+                  }}
+                  key={room.room_id}
+                >
+                  <View style={styles.tSite}>
+                    <View style={styles.rowTxtTop}>
+                      <Text style={styles.lTxt}>No.{room.room_id}</Text>
+                      <Text style={styles.rTxt}>{room.room_name}</Text>
+                    </View>
+                    <View style={styles.rowTxtBot}>
+                      <Text style={styles.lTxt1}>Host : {room.user_name}</Text>
+                      <Text style={styles.rTxt1}>
+                        {room.room_user_count}/{room.room_max_user}
+                      </Text>
+                    </View>
                   </View>
-                  <View style={styles.rowTxtBot}>
-                    <Text style={styles.lTxt1}>Host : {room.user_name}</Text>
-                    <Text style={styles.rTxt1}>
-                      {room.room_user_count}/{room.room_max_user}
-                    </Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        )}
       </ScrollView>
       <View style={styles.btns}>
         <Pressable style={styles.btnCG}>

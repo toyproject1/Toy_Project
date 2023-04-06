@@ -1484,7 +1484,7 @@ export default function GameScreen({ navigation, route }) {
                 {rankList.map((rank, idx4) => {
                   return (
                     <View style={styles.playerBox} key={idx4}>
-                      <Text style={styles.player}>{rank.length}등</Text>
+                      <Text style={styles.player}>{idx4.length}등</Text>
                       <Text style={styles.player}>{rank.userName}</Text>
                       <Text style={styles.player}>{rank.userScore}</Text>
                     </View>

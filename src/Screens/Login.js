@@ -92,7 +92,7 @@ const Login = ({ navigation }) => {
         </Pressable>
         <Text style={styles.otherButtonText}>|</Text>
         <Pressable
-          onPress={() => navigation.reset({ routes: [{ name: "MainMenu" }] })}
+          onPress={() => navigation.reset({ routes: [{ name: "SignUp" }] })}
         >
           <Text style={styles.otherButtonText}> Sign Up</Text>
         </Pressable>
