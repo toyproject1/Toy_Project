@@ -17,14 +17,14 @@ import Dice from "../Components/Imgs/DiceNew03.png";
 
 const MainMenu = ({ navigation }) => {
   const backAction = () => {
-    Alert.alert("Hold on!", "앱을 종료하시겠습니까?", [
-      {
-        text: "취소",
-        onPress: () => null,
-      },
-      { text: "확인", onPress: () => BackHandler.exitApp() },
-    ]);
-    return true;
+    // Alert.alert("Hold on!", "앱을 종료하시겠습니까?", [
+    //   {
+    //     text: "취소",
+    //     onPress: () => null,
+    //   },
+    //   { text: "확인", onPress: () => BackHandler.exitApp() },
+    // ]);
+    // return true;
   };
 
   const backPress = () => {
@@ -116,7 +116,16 @@ const MainMenu = ({ navigation }) => {
           <TouchableOpacity
             style={styles.btnExit}
             activeOpacity={0.9}
-            onPress={backAction}
+            onPress={() => {
+              Alert.alert("Hold on!", "앱을 종료하시겠습니까?", [
+                {
+                  text: "취소",
+                  onPress: () => null,
+                },
+                { text: "확인", onPress: () => BackHandler.exitApp() },
+              ]);
+              return true;
+            }}
           >
             <Text style={styles.btnTextlg}>Exit</Text>
           </TouchableOpacity>

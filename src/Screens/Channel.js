@@ -32,6 +32,10 @@ export default function Channel({ navigation }) {
 
   const WebSocket = useRef(null);
 
+  const backAction = () => {
+    WebSocket.current.close();
+  };
+
   useEffect(() => {
     async function getData() {
       try {
@@ -92,6 +96,11 @@ export default function Channel({ navigation }) {
         });
       });
     });
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+    return () => backHandler.remove();
   }, []);
   const backPress = () => {
     navigation.goBack();
@@ -153,7 +162,10 @@ export default function Channel({ navigation }) {
           <TouchableOpacity
             style={styles.btn}
             activeOpacity={0.9}
-            onPress={() => navigation.navigate("HostGameMenu")}
+            onPress={() => {
+              WebSocket.current.close();
+              navigation.navigate("HostGameMenu");
+            }}
           >
             <Text style={styles.btnTxt}>Create Game</Text>
           </TouchableOpacity>

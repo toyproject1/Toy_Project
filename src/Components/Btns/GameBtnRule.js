@@ -9,8 +9,7 @@ import {
   Image,
   ScrollView,
 } from "react-native";
-import GameRule01 from "../Imgs/gameRule01.png";
-import GameRule02 from "../Imgs/gameRule02.png";
+import yatzy_rule from "../Imgs/yatzy_rule.png";
 
 export default function GameBtnRule() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -50,28 +49,13 @@ export default function GameBtnRule() {
                   점수판에 기록하고 턴을 넘깁니다.
                 </Text>
                 <Text style={styles.ruleTxt}>
-                  각 플레이어들은 점수표를 모두 채울 때까지(약 13라운드)
-                  플레이를 계속하며 모든 플레이어가 점수판을 채웠을 때 점수를
-                  비교하여 순위가 결정되고 게임이 종료됩니다.
+                  각 플레이어들은 점수표를 모두 채울 때까지(13라운드) 플레이를
+                  계속하며 모든 플레이어가 점수판을 채웠을 때 점수를 비교하여
+                  순위가 결정되고 게임이 종료됩니다.
                 </Text>
-                <Text style={styles.ruleTxt}>
-                  주사위 점수 조합표 (이미지에 가로 스크롤이 적용되어 있습니다.)
-                </Text>
-                <View>
-                  <ScrollView
-                    persistentScrollbar={true}
-                    showsVerticalScrollIndicator={true}
-                    horizontal={true}
-                  >
-                    <Image source={GameRule01} />
-                  </ScrollView>
-                  <ScrollView
-                    persistentScrollbar={true}
-                    showsVerticalScrollIndicator={true}
-                    horizontal={true}
-                  >
-                    <Image source={GameRule02} />
-                  </ScrollView>
+                <Text style={styles.ruleTxt}>주사위 점수 조합표</Text>
+                <View style={styles.yatzy_rule}>
+                  <Image source={yatzy_rule} style={styles.ruleImg} />
                 </View>
               </ScrollView>
             </View>
@@ -145,8 +129,12 @@ const styles = StyleSheet.create({
     marginBottom: 25,
     flexDirection: "column",
   },
+  yatzy_rule: {
+    width: 350,
+    height: 350,
+  },
   ruleImg: {
-    width: "100%",
-    height: "100%",
+    width: 330,
+    height: 350,
   },
 });

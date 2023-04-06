@@ -11,23 +11,6 @@ import {
 export default function HeaderBtnMy() {
   const [modalVisible, setModalVisible] = useState(false);
 
-  // const name = async () => {
-  //   JSON.parse(await AsyncStorage.getItem("userInfo")).user_name;
-  // };
-
-  // const userData = async () => {
-  //   JSON.stringify(await AsyncStorage.getItem("userInfo"));
-  //   console.log(JSON.parse(await AsyncStorage.getItem("userInfo")).user_name);
-  //   // console.log(
-  //   //   JSON.stringify(await AsyncStorage.getItem("userInfo")).user_name
-  //   // );
-  // };
-
-  // useEffect(() => {
-  //   userData();
-  //   name();
-  // });
-
   return (
     <View style={styles.btnSite}>
       <Modal

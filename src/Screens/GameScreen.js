@@ -11,6 +11,7 @@ import {
   TouchableHighlight,
   BackHandler,
   Animated,
+  AppState,
 } from "react-native";
 import GHeader from "../Components/GHeader";
 import GameBtnRule from "../Components/Btns/GameBtnRule";
@@ -23,6 +24,7 @@ import Dice5 from "../Components/Imgs/Dice05.png";
 import Dice6 from "../Components/Imgs/Dice06.png";
 import ReRoll from "../Components/Imgs/ReRoll.png";
 import Toast from "react-native-simple-toast";
+import RNRestart from "react-native-restart";
 
 export default function GameScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(true);
@@ -82,7 +84,9 @@ export default function GameScreen({ navigation, route }) {
   const startValue = useRef(new Animated.Value(0)).current;
   const fadeOutValue = useRef(new Animated.Value(0)).current;
   const endValue = 1;
-  const duration = 2000;
+  const duration = 1000;
+
+  const [gameState, setGameState] = useState(false);
 
   const fadeIn = Animated.timing(startValue, {
     toValue: endValue,
@@ -91,21 +95,16 @@ export default function GameScreen({ navigation, route }) {
   });
   const fadeOut = Animated.timing(startValue, {
     toValue: 0,
-    duration: 100,
+    duration: 0,
     useNativeDriver: true,
   });
   const Animfade = Animated.timing(fadeOutValue, {
     toValue: endValue,
-    duration: 500,
+    duration: 300,
     useNativeDriver: true,
   });
   const AnimfadeOut = Animated.timing(fadeOutValue, {
     toValue: 0,
-    duration: 100,
-    useNativeDriver: true,
-  });
-  const hide = Animated.timing(fadeOutValue, {
-    toValue: endValue,
     duration: 0,
     useNativeDriver: true,
   });
@@ -122,9 +121,10 @@ export default function GameScreen({ navigation, route }) {
   const fadeOutInR = () => {
     Animated.sequence([AnimfadeOut, fadeIn, fadeOut, Animfade]).reset();
   };
-  const hideIn = () => {
-    Animated.sequence([hide]).start();
-  };
+
+  const appState = useRef(AppState.currentState);
+
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
 
   useEffect(() => {
     WebSocket.current = io("http://3.38.165.165:3131/");
@@ -224,9 +224,10 @@ export default function GameScreen({ navigation, route }) {
       });
     });
 
-    WebSocket.current.on("gameStart", (data) => {
+    WebSocket.current.on("gameStart", async (data) => {
       console.log(data);
       if (data.state === 1) {
+        setGameState(true);
         setModalVisible(!modalVisible);
       } else {
         Toast.showWithGravity(
@@ -366,9 +367,10 @@ export default function GameScreen({ navigation, route }) {
       });
     });
     WebSocket.current.on("getUSerScoreBoard", (data) => {
-      console.log("++++++++++++", data, "++++++++++++");
+      console.log(data);
       setPlayerSBoard({
         modal_userId: data.userId,
+        modal_userName: data.userName,
         modal_ones: data.ones,
         modal_twos: data.twos,
         modal_threes: data.threes,
@@ -384,9 +386,12 @@ export default function GameScreen({ navigation, route }) {
         modal_yahtzee: data.yahtzee,
         modal_chance: data.chance,
       });
+      setModalPlayerVisible(true);
     });
+    // 사용자가 앱의 상태가 변경 되었을 경우 실행이 된다.
+    AppState.addEventListener("change", fn_handleAppStateChange);
     const backAction = () => {
-      Alert.alert("Hold on!", "게임을 종료하시겠습니까?", [
+      Alert.alert("Hold on!", "게임을 나가시겠습니까?", [
         {
           text: "취소",
           onPress: () => null,
@@ -405,8 +410,28 @@ export default function GameScreen({ navigation, route }) {
       "hardwareBackPress",
       backAction
     );
-    return () => backHandler.remove();
+    return () => {
+      backHandler.remove();
+    };
   }, []);
+
+  const fn_handleAppStateChange =
+    ("change",
+    (nextAppState) => {
+      console.log("appState.current ::: ", appState.current);
+
+      if (appState.current === "background" && nextAppState === "active") {
+        console.log("앱으로 다시 돌아오는 경우 foreground");
+        // RNRestart.restart();
+        // navigation.navigate("MainMenu");
+        navigation.reset({ routes: [{ name: "MainMenu" }] });
+      } else {
+        console.log("asdsadsa");
+        WebSocket.current.close();
+      }
+      appState.current = nextAppState; // 변경된 상태를 바꿔줌.
+      setAppStateVisible(appState.current);
+    });
 
   useEffect(() => {
     switch (temp.dice01) {
@@ -679,12 +704,13 @@ export default function GameScreen({ navigation, route }) {
     }
   }, [dIndex]);
 
-  // useEffect(()=>{
-  //   console.log("Picked 타입 : ", typeof picked);
-  //   console.log("Picked : ", picked);
-  //   console.log("PickedScore 타입 : ", typeof pickedScore);
-  //   console.log("PickedScore : ", pickedScore);
-  // },[picked]);
+  useEffect(() => {
+    if (modalVisible === false && gameState !== true) {
+      WebSocket.current.close();
+      console.log("test!!!!===", modalVisible);
+      navigation.reset({ routes: [{ name: "MainMenu" }] });
+    }
+  }, [gameState, modalVisible]);
 
   return (
     <View style={styles.main}>
@@ -701,8 +727,9 @@ export default function GameScreen({ navigation, route }) {
                     WebSocket.current.emit("getUserScoreBoard", {
                       userId: list.userId,
                     });
-                    setModalPlayerVisible(true);
+                    // setModalPlayerVisible(true);
                     console.log("선택한 유저의 태그 아이디 : ", list.userId);
+                    setPlayerSBoard({});
                     console.log(
                       "유저의 점수판을 가져옴 : ",
                       playerSBoard.modal_ones
@@ -763,7 +790,9 @@ export default function GameScreen({ navigation, route }) {
         <View style={styles.modalBG}>
           <View style={styles.PModalCard}>
             <View style={styles.PModalHeader}>
-              <Text style={styles.PModalHeaderTitle}>{userList.userName}</Text>
+              <Text style={styles.PModalHeaderTitle}>
+                {playerSBoard.modal_userName}
+              </Text>
             </View>
             <View style={styles.MSBoardSite}>
               <View style={styles.sBoardV}>
@@ -851,10 +880,10 @@ export default function GameScreen({ navigation, route }) {
                   </View>
                   <View style={styles.sNameColumn}>
                     <View style={styles.sNameCell}>
-                      <Text style={styles.MSNameTxt}>Three of A Kind</Text>
+                      <Text style={styles.MSNameTxt}>Triple</Text>
                     </View>
                     <View style={styles.sNameCell}>
-                      <Text style={styles.MSNameTxt}>Four of A Kind</Text>
+                      <Text style={styles.MSNameTxt}>Four card</Text>
                     </View>
                     <View style={styles.sNameCell}>
                       <Text style={styles.MSNameTxt}>Full House</Text>
@@ -866,7 +895,7 @@ export default function GameScreen({ navigation, route }) {
                       <Text style={styles.MSNameTxt}>Large Straight</Text>
                     </View>
                     <View style={styles.sNameCell}>
-                      <Text style={styles.MSNameTxt}>Yahtzee</Text>
+                      <Text style={styles.MSNameTxt}>Yatzy</Text>
                     </View>
                     <View style={styles.sNameCell}>
                       <Text style={styles.MSNameTxt}>Chance</Text>
@@ -1102,10 +1131,10 @@ export default function GameScreen({ navigation, route }) {
             </View>
             <View style={styles.sNameColumn}>
               <View style={styles.sNameCell}>
-                <Text style={styles.sNameTxt}>Three of A Kind</Text>
+                <Text style={styles.sNameTxt}>Triple</Text>
               </View>
               <View style={styles.sNameCell}>
-                <Text style={styles.sNameTxt}>Four of A Kind</Text>
+                <Text style={styles.sNameTxt}>Four Card</Text>
               </View>
               <View style={styles.sNameCell}>
                 <Text style={styles.sNameTxt}>Full House</Text>
@@ -1117,7 +1146,7 @@ export default function GameScreen({ navigation, route }) {
                 <Text style={styles.sNameTxt}>Large Straight</Text>
               </View>
               <View style={styles.sNameCell}>
-                <Text style={styles.sNameTxt}>Yahtzee</Text>
+                <Text style={styles.sNameTxt}>Yatzy</Text>
               </View>
               <View style={styles.sNameCell}>
                 <Text style={styles.sNameTxt}>Chance</Text>
@@ -1481,10 +1510,10 @@ export default function GameScreen({ navigation, route }) {
                 <View style={styles.modalHeader}>
                   <Text style={styles.rankHeader}>Ranking</Text>
                 </View>
-                {rankList.map((rank, idx4) => {
+                {rankList.map((rank, index) => {
                   return (
-                    <View style={styles.playerBox} key={idx4}>
-                      <Text style={styles.player}>{idx4.length}등</Text>
+                    <View style={styles.playerBox} key={index}>
+                      <Text style={styles.player}>{index + 1}등</Text>
                       <Text style={styles.player}>{rank.userName}</Text>
                       <Text style={styles.player}>{rank.userScore}</Text>
                     </View>

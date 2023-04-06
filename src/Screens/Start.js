@@ -9,7 +9,7 @@ import {
   // useWindowDimensions,
 } from "react-native";
 import CustomButton from "../Components/Btns/CustomButton";
-import images from "../../assets/Dice.png";
+import images from "../../assets/Dice03.png";
 // 앱을 들어왔을 때 첫 페이지
 const Start = ({ navigation }) => {
   // const { height, width } = useWindowDimensions();
@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#A8D98A",
+    alignItems: "center",
   },
   signInTextContainer: {
     marginTop: "20%",
@@ -50,7 +51,8 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 400,
+    height: 380,
+    marginTop: 50,
   },
 });
 
