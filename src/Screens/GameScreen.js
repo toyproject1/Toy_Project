@@ -110,13 +110,20 @@ export default function GameScreen({ navigation, route }) {
     useNativeDriver: true,
   });
 
+
+  const [hjdiceIndex, hjsetDiceIndex] = useState([]);
+
+
+
   const fadeInOut = () => {
+    hjsetDiceIndex([0, 1, 2, 3, 4])
     Animated.sequence([fadeIn, fadeOut, Animfade]).start();
   };
   const fadeInOutR = () => {
     Animated.sequence([fadeIn, fadeOut, Animfade]).reset();
   };
-  const fadeOutIn = () => {
+  const fadeOutIn = (diceIndex) => {
+    hjsetDiceIndex(diceIndex)
     Animated.sequence([AnimfadeOut, fadeIn, fadeOut, Animfade]).start();
   };
   const fadeOutInR = () => {
@@ -127,11 +134,13 @@ export default function GameScreen({ navigation, route }) {
 
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
 
+  const [sound, setSound] = useState();
+
   const diceSound = async () => {
-    const sound = new Audio.Sound();
-    await sound.loadAsync(DiceSound);
-    await sound.replayAsync();
-  }
+    const { sound } = await Audio.Sound.createAsync(DiceSound);
+    setSound(sound);
+    await sound.playAsync();
+  };
 
   useEffect(() => {
     WebSocket.current = io("http://3.38.165.165:3131/");
@@ -324,7 +333,7 @@ export default function GameScreen({ navigation, route }) {
         Toast.showWithGravity(`${data.message}`, Toast.SHORT, Toast.TOP);
       } else {
         diceSound();
-        fadeOutIn();
+        fadeOutIn(data.diceIndex);
         setTemp({
           dice01: data.diceResult.firstDice,
           dice02: data.diceResult.secDice,
@@ -1303,7 +1312,9 @@ export default function GameScreen({ navigation, route }) {
               source={require("../Components/Imgs/direroll1.gif")}
               style={[styles.diceSquare, { opacity: startValue }]}
             />
-            <Animated.View style={[{ opacity: fadeOutValue }]}>
+            <Animated.View style={
+             hjdiceIndex.includes(0) ? [{ opacity: fadeOutValue }] : [{ }]
+             }>
               <TouchableHighlight
                 style={putD01 == true ? styles.putDice : styles.diceImg}
                 onPress={() => setPutD01(putD01 == false ? true : false)}
@@ -1324,7 +1335,9 @@ export default function GameScreen({ navigation, route }) {
                 source={require("../Components/Imgs/direroll1.gif")}
                 style={[styles.diceSquare, { opacity: startValue }]}
               />
-              <Animated.View style={[{ opacity: fadeOutValue }]}>
+              <Animated.View style={
+                  hjdiceIndex.includes(1) ? [{ opacity: fadeOutValue }] : [{ }]
+                }>
                 <TouchableHighlight
                   style={putD02 == true ? styles.putDice : styles.diceImg}
                   onPress={() => setPutD02(putD02 == false ? true : false)}
@@ -1350,7 +1363,9 @@ export default function GameScreen({ navigation, route }) {
                 source={require("../Components/Imgs/direroll1.gif")}
                 style={[styles.diceSquare, { opacity: startValue }]}
               />
-              <Animated.View style={[{ opacity: fadeOutValue }]}>
+              <Animated.View style={
+             hjdiceIndex.includes(2) ? [{ opacity: fadeOutValue }] : [{ }]
+             }>
                 <TouchableHighlight
                   style={putD03 == true ? styles.putDice : styles.diceImg}
                   onPress={() => setPutD03(putD03 == false ? true : false)}
@@ -1376,7 +1391,9 @@ export default function GameScreen({ navigation, route }) {
                 source={require("../Components/Imgs/direroll1.gif")}
                 style={[styles.diceSquare, { opacity: startValue }]}
               />
-              <Animated.View style={[{ opacity: fadeOutValue }]}>
+              <Animated.View style={
+             hjdiceIndex.includes(3) ? [{ opacity: fadeOutValue }] : [{ }]
+             }>
                 <TouchableHighlight
                   style={putD04 == true ? styles.putDice : styles.diceImg}
                   onPress={() => setPutD04(putD04 == false ? true : false)}
@@ -1402,7 +1419,9 @@ export default function GameScreen({ navigation, route }) {
                 source={require("../Components/Imgs/direroll1.gif")}
                 style={[styles.diceSquare, { opacity: startValue }]}
               />
-              <Animated.View style={[{ opacity: fadeOutValue }]}>
+              <Animated.View style={
+             hjdiceIndex.includes(4) ? [{ opacity: fadeOutValue }] : [{ }]
+             }>
                 <TouchableHighlight
                   style={putD05 == true ? styles.putDice : styles.diceImg}
                   onPress={() => setPutD05(putD05 == false ? true : false)}

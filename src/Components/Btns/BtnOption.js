@@ -7,13 +7,16 @@ import {
   View,
   Modal,
   Pressable,
+  Switch,
 } from "react-native";
 import Slider from "@react-native-community/slider";
 
 export default function HeaderBtnMy() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [sliderValue, setSliderValue] = useState(100);
-  const [sliderValue1, setSliderValue1] = useState(100);
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [Enabled, setEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+  const toggleSwitch2 = () => setEnabled((previousState) => !previousState);
   return (
     <View style={styles.btnSite}>
       <Modal
@@ -29,36 +32,28 @@ export default function HeaderBtnMy() {
             <View style={styles.modalHeader}>
               <Text style={styles.modalHeaderTitle}>Option</Text>
             </View>
-            <View style={{ marginTop: 30 }}>
-              <Text style={styles.bgSound}>BackGround Sound</Text>
-              <View style={styles.bgSd}>
-                <Slider
-                  value={sliderValue}
-                  onValueChange={(e) => setSliderValue(e)}
-                  style={{ width: 300, height: 30 }}
-                  minimumValue={0}
-                  maximumValue={100}
-                  minimumTrackTintColor="#17FFFF"
-                  maximumTrackTintColor="#FFFFFF"
-                  step={5}
+            <View style={styles.container}>
+              <View style={styles.position}>
+                <Text style={styles.bgSound}>BackGround Sound</Text>
+                <Switch
+                  style={styles.bgsize}
+                  trackColor={{ false: "#767577", true: "#81b0ff" }}
+                  thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={toggleSwitch}
+                  value={isEnabled}
                 />
-                <Text>{sliderValue}</Text>
               </View>
-            </View>
-            <View>
-              <Text style={styles.bgSound}>Sound Effect</Text>
-              <View style={styles.bgSd}>
-                <Slider
-                  value={sliderValue1}
-                  onValueChange={(e) => setSliderValue1(e)}
-                  style={{ width: 300, height: 30 }}
-                  minimumValue={0}
-                  maximumValue={100}
-                  minimumTrackTintColor="#17FFFF"
-                  maximumTrackTintColor="#FFFFFF"
-                  step={5}
+              <View style={styles.position}>
+                <Text style={styles.bgSound}>Sound Effect</Text>
+                <Switch
+                  style={styles.bgsize}
+                  trackColor={{ false: "#767577", true: "#81b0ff" }}
+                  thumbColor={Enabled ? "#f5dd4b" : "#f4f3f4"}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={toggleSwitch2}
+                  value={Enabled}
                 />
-                <Text>{sliderValue1}</Text>
               </View>
             </View>
             <View style={styles.btnOp}>
@@ -84,26 +79,25 @@ export default function HeaderBtnMy() {
 }
 
 const styles = StyleSheet.create({
-  btnSite: {},
-  bgSd: {
+  position: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 20,
+    marginVertical: 30,
+  },
+  container: {
+    width: "80%",
+    alignItems: "center",
+    marginTop: 60,
   },
   bgSound: {
     fontSize: 20,
-    marginLeft: 60,
-    marginTop: 20,
-    justifyContent: "center",
-    alignContent: "center",
+    justifyContent: "flex-start",
   },
-  btn: {
-    outline: "none",
-    backgroundColor: "transparent",
-  },
-  btnText: {
-    fontSize: 20,
-    color: "#FFFFFF",
+  bgsize: {
+    justifyContent: "flex-end",
   },
   modalBG: {
     flex: 1,
@@ -135,7 +129,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    marginTop: 160,
+    marginTop: 100,
   },
   btnClose: {
     fontSize: 25,
@@ -148,23 +142,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     marginRight: 30,
     marginTop: 15,
-  },
-  profileContents: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  profileTexts: {
-    fontSize: 24,
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  main: {
-    flex: 1,
-    width: "100%",
-    backgroundColor: "#A8D98A",
-    alignItems: "center",
-    justifyContent: "center",
   },
   btns: {
     width: 250,
