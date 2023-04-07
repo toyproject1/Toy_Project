@@ -11,6 +11,11 @@ export default function GHeader() {
       <View style={styles.headerTitle}>
         <Text style={styles.headerTitleText}>Yatzy Dice</Text>
       </View>
+      <View style={styles.headerMy}>
+        <View style={styles.btnSite}>
+          <Text style={styles.btnText}>My</Text>
+        </View>
+      </View>
     </View>
   );
 }
@@ -40,5 +45,9 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     justifyContent: "center",
     marginRight: 10,
+  },
+  btnText: {
+    fontSize: 20,
+    color: "#7EB85A",
   },
 });

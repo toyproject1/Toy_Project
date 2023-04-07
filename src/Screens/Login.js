@@ -7,25 +7,16 @@ import { Buffer } from "buffer";
 import axios from "axios";
 
 const Login = ({ navigation }) => {
-  const onLoginPressed = () => {
-    console.warn("onLoginPressed");
-  };
   const [Email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const onSubmit = async () => {
     let temp;
-    // const header = { Authorization: `Bearer ${access_token}` };
-    // console.log(header);
     await axios
-      .post(
-        `http://3.38.165.165:3000/api/signIn`,
-        {
-          user_email: Email,
-          user_pw: password,
-        }
-        // { header }
-      )
+      .post(`http://3.38.165.165:3000/api/signIn`, {
+        user_email: Email,
+        user_pw: password,
+      })
       .then(async (response) => {
         temp = response.data;
         console.log(temp);
@@ -87,7 +78,7 @@ const Login = ({ navigation }) => {
       />
       <CustomButton onPress={onSubmit} text="Sign In" />
       <View style={styles.otherButtonContainer}>
-        <Pressable onPress={onLoginPressed}>
+        <Pressable>
           <Text style={styles.otherButtonText}>Login </Text>
         </Pressable>
         <Text style={styles.otherButtonText}>|</Text>
