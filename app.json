@@ -1,6 +1,7 @@
 {
   "expo": {
-    "name": "toy_project",
+    "name": "Yatzy Dice",
+    // "name": "toy_project",
     "slug": "toy_project",
     "version": "1.0.0",
     "orientation": "portrait",

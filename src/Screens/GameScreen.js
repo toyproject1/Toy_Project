@@ -25,7 +25,6 @@ import Dice6 from "../Components/Imgs/Dice06.png";
 import ReRoll from "../Components/Imgs/ReRoll.png";
 import Toast from "react-native-simple-toast";
 import { Audio } from "expo-av";
-import DiceSound from "../../assets/DiceSound.wav";
 
 export default function GameScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(true);
@@ -137,7 +136,7 @@ export default function GameScreen({ navigation, route }) {
   const [sound, setSound] = useState();
 
   const diceSound = async () => {
-    const { sound } = await Audio.Sound.createAsync(DiceSound);
+    const { sound } = await Audio.Sound.createAsync(require("../../assets/DiceSound.wav"));
     setSound(sound);
     await sound.playAsync();
   };
@@ -327,12 +326,12 @@ export default function GameScreen({ navigation, route }) {
       }
     });
 
-    WebSocket.current.on("putDice", (data) => {
+    WebSocket.current.on("putDice", async (data) => {
       console.log(data);
       if (data.state === 0) {
         Toast.showWithGravity(`${data.message}`, Toast.SHORT, Toast.TOP);
       } else {
-        diceSound();
+        await diceSound();
         fadeOutIn(data.diceIndex);
         setTemp({
           dice01: data.diceResult.firstDice,
