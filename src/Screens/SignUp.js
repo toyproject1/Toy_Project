@@ -12,8 +12,7 @@ const SignUp = ({ navigation }) => {
   const [password2, setPassword2] = useState("");
   const onSignInPressed = async () => {
     Alert.alert(`${Username}, ${Email}, ${password}, ${password2}`);
-    // const header = { Authorization: `Bearer ${access_token}` };
-    // console.log(header);
+
     axios
       .post(`http://3.38.165.165:3000/api/signUp`, {
         user_name: Username,
@@ -29,10 +28,6 @@ const SignUp = ({ navigation }) => {
       console.log("error");
     }
     navigation.navigate("Start");
-  };
-
-  const onSignUpPressed = () => {
-    console.warn("onSignUpPressed");
   };
 
   return (
@@ -61,7 +56,7 @@ const SignUp = ({ navigation }) => {
       />
       <CustomButton onPress={onSignInPressed} text="Sign Up" />
       <View style={styles.otherButtonContainer}>
-        <Pressable onPress={onSignUpPressed}>
+        <Pressable>
           <Text style={styles.otherButtonText}> Sign Up</Text>
         </Pressable>
         <Text style={styles.otherButtonText}>|</Text>

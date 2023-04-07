@@ -24,7 +24,8 @@ import Dice5 from "../Components/Imgs/Dice05.png";
 import Dice6 from "../Components/Imgs/Dice06.png";
 import ReRoll from "../Components/Imgs/ReRoll.png";
 import Toast from "react-native-simple-toast";
-import RNRestart from "react-native-restart";
+import { Audio } from "expo-av";
+import DiceSound from "../../assets/DiceSound.wav";
 
 export default function GameScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(true);
@@ -125,6 +126,12 @@ export default function GameScreen({ navigation, route }) {
   const appState = useRef(AppState.currentState);
 
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
+
+  const diceSound = async () => {
+    const sound = new Audio.Sound();
+    await sound.loadAsync(DiceSound);
+    await sound.replayAsync();
+  }
 
   useEffect(() => {
     WebSocket.current = io("http://3.38.165.165:3131/");
@@ -279,6 +286,7 @@ export default function GameScreen({ navigation, route }) {
       if (data.state === 0) {
         Toast.showWithGravity(`${data.message}`, Toast.SHORT, Toast.TOP);
       } else {
+        diceSound();
         fadeInOut();
         setTemp({
           dice01: data.diceResult.firstDice,
@@ -315,6 +323,7 @@ export default function GameScreen({ navigation, route }) {
       if (data.state === 0) {
         Toast.showWithGravity(`${data.message}`, Toast.SHORT, Toast.TOP);
       } else {
+        diceSound();
         fadeOutIn();
         setTemp({
           dice01: data.diceResult.firstDice,
@@ -1739,7 +1748,7 @@ const styles = StyleSheet.create({
   reRollIcon: {
     position: "absolute",
     alignSelf: "center",
-    marginTop: 7,
+    marginTop: 11,
   },
   btns: {
     width: 250,

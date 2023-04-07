@@ -6,6 +6,7 @@ import { StatusBar } from "expo-status-bar";
 import AppStack from "./AppStack";
 import AuthStack from "./AuthStack";
 import { AppState } from "react-native";
+import { Audio } from "expo-av";
 
 const Stack = createStackNavigator();
 

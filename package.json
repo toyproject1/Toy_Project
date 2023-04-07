@@ -19,6 +19,7 @@
     "axios-auth-refresh": "^3.3.6",
     "buffer": "^6.0.3",
     "expo": "~48.0.5",
+    "expo-av": "^13.2.1",
     "expo-jwt": "^1.4.1",
     "expo-status-bar": "~1.4.4",
     "expo-web-browser": "~12.1.1",
