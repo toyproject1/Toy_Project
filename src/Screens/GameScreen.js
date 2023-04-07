@@ -140,15 +140,20 @@ export default function GameScreen({ navigation, route }) {
     setSound(sound);
     await sound.playAsync();
   };
-
+  
+  useEffect(() => {
+    return ( sound ? () => {
+      console.log('Unloading Sound');
+      sound.unloadAsync();
+    } : undefined );
+  }, [sound]);
+  
   useEffect(() => {
     WebSocket.current = io("http://3.38.165.165:3131/");
 
     WebSocket.current.on("connect", () => {
       console.log("connected");
     });
-
-    // userData();
 
     if (Host == "Host") {
       WebSocket.current.emit("hostCreateRoom", {
