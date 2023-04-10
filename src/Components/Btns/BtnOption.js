@@ -10,6 +10,8 @@ import {
   Switch,
 } from "react-native";
 import Slider from "@react-native-community/slider";
+import Bgm from "../../../assets/DreamingRain.mp3";
+import { Audio } from "expo-av";
 
 export default function HeaderBtnMy() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -46,6 +48,21 @@ export default function HeaderBtnMy() {
       console.log('r= ',r);
     });
   }
+
+  const [sound, setSound] = useState();
+
+  const BGM = async () => {
+    const { sound } = await Audio.Sound.createAsync(Bgm);
+    setSound(sound);
+    await sound.playAsync();
+    await sound.setIsLoopingAsync(true);
+  };
+
+
+
+  useEffect(() => {
+    BGM();
+  },[]);
 
   // useEffect(() => {
   //   const option = {
