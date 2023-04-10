@@ -133,11 +133,24 @@ export default function GameScreen({ navigation, route }) {
 
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
 
-  const [sound, setSound] = useState();
+  const [sound, setDSound] = useState();
+  const [putDSound, setPutDSound] = useState();
 
   const diceSound = async () => {
     const { sound } = await Audio.Sound.createAsync(require("../../assets/DiceSound.wav"));
-    setSound(sound);
+    setDSound(sound);
+    await sound.playAsync();
+  };
+  
+  const pickSound = async () => {
+    const { sound } = await Audio.Sound.createAsync(require("../../assets/pick.mp3"));
+    setPutDSound(sound);
+    await sound.playAsync();
+  };
+  
+  const scoreSound = async () => {
+    const { sound } = await Audio.Sound.createAsync(require("../../assets/cardPlace3.mp3"));
+    setPutDSound(sound);
     await sound.playAsync();
   };
   
@@ -148,6 +161,13 @@ export default function GameScreen({ navigation, route }) {
     } : undefined );
   }, [sound]);
   
+  // useEffect(() => {
+  //   return ( putDSound ? () => {
+  //     console.log('Unloading Sound');
+  //     putDSound.unloadAsync();
+  //   } : undefined );
+  // }, [sound]);
+
   useEffect(() => {
     WebSocket.current = io("http://3.38.165.165:3131/");
 
@@ -368,6 +388,7 @@ export default function GameScreen({ navigation, route }) {
       }
     });
     WebSocket.current.on("userScoreBoard", (data) => {
+      scoreSound();
       console.log(data);
       // console.log("다음 유저 점수판 : ", data);
       setPicked(data.picked);
@@ -613,7 +634,6 @@ export default function GameScreen({ navigation, route }) {
     WebSocket.current.emit("saveScore", {
       scoreType: "fours",
     });
-    setPicked([]);
   };
   const inputFives = () => {
     setPutD01(false);
@@ -744,6 +764,7 @@ export default function GameScreen({ navigation, route }) {
                   style={styles.PNameplate}
                   activeOpacity={0.9}
                   onPress={() => {
+                    pickSound();
                     console.log("선택한 유저의 태그 아이디 : ", list.userId);
                     setPlayerSBoard({});
                     WebSocket.current.emit("getUserScoreBoard", {
@@ -1321,13 +1342,19 @@ export default function GameScreen({ navigation, route }) {
              }>
               <TouchableHighlight
                 style={putD01 == true ? styles.putDice : styles.diceImg}
-                onPress={() => setPutD01(putD01 == false ? true : false)}
+                onPress={() => {
+                  pickSound();
+                  setPutD01(putD01 == false ? true : false);
+                }}
               >
                 {2 >= rollChance > 0 ? <Image source={rolledDice01} /> : <></>}
               </TouchableHighlight>
               <Pressable
                 style={styles.reRollIcon}
-                onPress={() => setPutD01(putD01 == false ? true : false)}
+                onPress={() => {
+                  pickSound();
+                  setPutD01(putD01 == false ? true : false);
+                }}
               >
                 {putD01 == true ? <Image source={ReRoll} /> : <></>}
               </Pressable>
@@ -1344,7 +1371,10 @@ export default function GameScreen({ navigation, route }) {
                 }>
                 <TouchableHighlight
                   style={putD02 == true ? styles.putDice : styles.diceImg}
-                  onPress={() => setPutD02(putD02 == false ? true : false)}
+                  onPress={() => {
+                    pickSound();
+                    setPutD02(putD02 == false ? true : false);
+                  }}
                 >
                   {2 >= rollChance > 0 ? (
                     <Image source={rolledDice02} />
@@ -1354,7 +1384,10 @@ export default function GameScreen({ navigation, route }) {
                 </TouchableHighlight>
                 <Pressable
                   style={styles.reRollIcon}
-                  onPress={() => setPutD02(putD02 == false ? true : false)}
+                  onPress={() => {
+                    pickSound();
+                    setPutD02(putD02 == false ? true : false);
+                  }}
                 >
                   {putD02 == true ? <Image source={ReRoll} /> : <></>}
                 </Pressable>
@@ -1372,7 +1405,10 @@ export default function GameScreen({ navigation, route }) {
              }>
                 <TouchableHighlight
                   style={putD03 == true ? styles.putDice : styles.diceImg}
-                  onPress={() => setPutD03(putD03 == false ? true : false)}
+                  onPress={() => {
+                    pickSound();
+                    setPutD03(putD03 == false ? true : false);
+                  }}
                 >
                   {2 >= rollChance > 0 ? (
                     <Image source={rolledDice03} />
@@ -1382,7 +1418,10 @@ export default function GameScreen({ navigation, route }) {
                 </TouchableHighlight>
                 <Pressable
                   style={styles.reRollIcon}
-                  onPress={() => setPutD03(putD03 == false ? true : false)}
+                  onPress={() => {
+                    pickSound();
+                    setPutD03(putD03 == false ? true : false);
+                  }}
                 >
                   {putD03 == true ? <Image source={ReRoll} /> : <></>}
                 </Pressable>
@@ -1400,7 +1439,10 @@ export default function GameScreen({ navigation, route }) {
              }>
                 <TouchableHighlight
                   style={putD04 == true ? styles.putDice : styles.diceImg}
-                  onPress={() => setPutD04(putD04 == false ? true : false)}
+                  onPress={() => {
+                    pickSound();
+                    setPutD04(putD04 == false ? true : false);
+                  }}
                 >
                   {2 >= rollChance > 0 ? (
                     <Image source={rolledDice04} />
@@ -1410,7 +1452,10 @@ export default function GameScreen({ navigation, route }) {
                 </TouchableHighlight>
                 <Pressable
                   style={styles.reRollIcon}
-                  onPress={() => setPutD04(putD04 == false ? true : false)}
+                  onPress={() => {
+                    pickSound();
+                    setPutD04(putD04 == false ? true : false);
+                  }}
                 >
                   {putD04 == true ? <Image source={ReRoll} /> : <></>}
                 </Pressable>
@@ -1428,7 +1473,10 @@ export default function GameScreen({ navigation, route }) {
              }>
                 <TouchableHighlight
                   style={putD05 == true ? styles.putDice : styles.diceImg}
-                  onPress={() => setPutD05(putD05 == false ? true : false)}
+                  onPress={() => {
+                    pickSound();
+                    setPutD05(putD05 == false ? true : false);
+                  }}
                 >
                   {2 >= rollChance > 0 ? (
                     <Image source={rolledDice05} />
@@ -1438,7 +1486,10 @@ export default function GameScreen({ navigation, route }) {
                 </TouchableHighlight>
                 <Pressable
                   style={styles.reRollIcon}
-                  onPress={() => setPutD05(putD05 == false ? true : false)}
+                  onPress={() => {
+                    pickSound();
+                    setPutD05(putD05 == false ? true : false);
+                  }}
                 >
                   {putD05 == true ? <Image source={ReRoll} /> : <></>}
                 </Pressable>

@@ -28,7 +28,15 @@ export default function App() {
   //   const { sound } = await Audio.Sound.createAsync(Bgm);
   //   setSound(sound);
   //   await sound.playAsync();
+  //   await sound.setIsLoopingAsync(true);
   // };
+
+  // useEffect(() => {
+  //   return ( sound ? () => {
+  //     console.log('Unloading Sound');
+  //     sound.unloadAsync();
+  //   } : undefined );
+  // }, [sound]);
 
   useEffect(() => {
     getLogin();
