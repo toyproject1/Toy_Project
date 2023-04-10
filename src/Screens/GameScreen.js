@@ -133,24 +133,23 @@ export default function GameScreen({ navigation, route }) {
 
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
 
-  const [sound, setDSound] = useState();
-  const [putDSound, setPutDSound] = useState();
+  const [sound, setSound] = useState();
 
   const diceSound = async () => {
     const { sound } = await Audio.Sound.createAsync(require("../../assets/DiceSound.wav"));
-    setDSound(sound);
+    setSound(sound);
     await sound.playAsync();
   };
   
   const pickSound = async () => {
     const { sound } = await Audio.Sound.createAsync(require("../../assets/pick.mp3"));
-    setPutDSound(sound);
+    setSound(sound);
     await sound.playAsync();
   };
   
   const scoreSound = async () => {
     const { sound } = await Audio.Sound.createAsync(require("../../assets/cardPlace3.mp3"));
-    setPutDSound(sound);
+    setSound(sound);
     await sound.playAsync();
   };
   

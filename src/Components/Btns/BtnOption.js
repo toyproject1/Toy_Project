@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   TouchableOpacity,
@@ -15,8 +15,54 @@ export default function HeaderBtnMy() {
   const [modalVisible, setModalVisible] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
   const [Enabled, setEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+
+  useEffect(() => {
+    if(modalVisible) {
+      AsyncStorage.getItem("option_state").then(r => {
+        const data = JSON.parse(r);
+        setIsEnabled(data.bgcSound)
+        setEnabled(data.eftSound)
+      });
+    }
+  }, [modalVisible])
+  const toggleSwitch = () => {
+    setIsEnabled((previousState) => !previousState)
+  };
   const toggleSwitch2 = () => setEnabled((previousState) => !previousState);
+
+  /*
+  * 옵션 AsyncStorage 저장
+  * */
+  const saveOption = () => {
+    const option = {
+      bgcSound: isEnabled,
+      eftSound: Enabled,
+    }
+    AsyncStorage.setItem("option_state", JSON.stringify(option)).then(r =>
+      console.log(isEnabled)
+    );
+
+    AsyncStorage.getItem("option_state").then(r => {
+      console.log('r= ',r);
+    });
+  }
+
+  // useEffect(() => {
+  //   const option = {
+  //     bgcSound: isEnabled,
+  //     eftSound: Enabled,
+  //   }
+  //   AsyncStorage.setItem("option_state", JSON.stringify(option)).then(r =>
+  //     console.log(isEnabled)
+  //   );
+  //
+  //   AsyncStorage.getItem("option_state").then(r => {
+  //     console.log('r= ',r);
+  //   });
+  //
+  // }, [isEnabled, Enabled]);
+
+
   return (
     <View style={styles.btnSite}>
       <Modal
@@ -60,7 +106,12 @@ export default function HeaderBtnMy() {
               <Pressable onPress={() => setModalVisible(!modalVisible)}>
                 <Text style={styles.btnClose}>Close</Text>
               </Pressable>
-              <Pressable onPress={() => setModalVisible(!modalVisible)}>
+              <Pressable onPress={() => {
+                setModalVisible(!modalVisible)
+                saveOption()
+                console.log('touch Save')
+                }
+              }>
                 <Text style={styles.btnSave}>Save</Text>
               </Pressable>
             </View>

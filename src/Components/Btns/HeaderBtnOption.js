@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
   TouchableOpacity,
   Text,
@@ -8,11 +8,36 @@ import {
   Pressable,
   Switch,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HeaderBtnOption() {
   const [modalVisible, setModalVisible] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
   const [Enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    if(modalVisible) {
+      AsyncStorage.getItem("option_state").then(r => {
+        const data = JSON.parse(r);
+        setIsEnabled(data.bgcSound)
+        setEnabled(data.eftSound)
+      });
+    }
+  }, [modalVisible])
+
+  const saveOption = () => {
+    const option = {
+      bgcSound: isEnabled,
+      eftSound: Enabled,
+    }
+    AsyncStorage.setItem("option_state", JSON.stringify(option)).then(r =>
+      console.log(isEnabled)
+    );
+
+    AsyncStorage.getItem("option_state").then(r => {
+      console.log('r= ',r);
+    });
+  }
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
   const toggleSwitch2 = () => setEnabled((previousState) => !previousState);
 
@@ -60,7 +85,11 @@ export default function HeaderBtnOption() {
               <Pressable onPress={() => setModalVisible(!modalVisible)}>
                 <Text style={styles.btnClose}>Close</Text>
               </Pressable>
-              <Pressable onPress={() => setModalVisible(!modalVisible)}>
+              <Pressable onPress={() => {
+                setModalVisible(!modalVisible)
+                saveOption()
+              }
+              }>
                 <Text style={styles.btnSave}>Save</Text>
               </Pressable>
             </View>
