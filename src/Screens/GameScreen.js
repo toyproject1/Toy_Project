@@ -25,6 +25,7 @@ import Dice6 from "../Components/Imgs/Dice06.png";
 import ReRoll from "../Components/Imgs/ReRoll.png";
 import Toast from "react-native-simple-toast";
 import { Audio } from "expo-av";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function GameScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(true);
@@ -109,10 +110,7 @@ export default function GameScreen({ navigation, route }) {
     useNativeDriver: true,
   });
 
-
   const [hjdiceIndex, hjsetDiceIndex] = useState([]);
-
-
 
   const fadeInOut = () => {
     hjsetDiceIndex([0, 1, 2, 3, 4])
@@ -136,21 +134,35 @@ export default function GameScreen({ navigation, route }) {
   const [sound, setSound] = useState();
 
   const diceSound = async () => {
-    const { sound } = await Audio.Sound.createAsync(require("../../assets/DiceSound.wav"));
-    setSound(sound);
-    await sound.playAsync();
+    const soundOption1 = JSON.parse(await AsyncStorage.getItem("option_state"));
+    console.log(soundOption1)
+    if(soundOption1.eftSound) {
+      const {sound} = await Audio.Sound.createAsync(require("../../assets/DiceSound.wav"));
+      setSound(sound);
+      await sound.playAsync();
+    }
+    // const { sound } = await Audio.Sound.createAsync(require("../../assets/DiceSound.wav"));
+    // setSound(sound);
+    // await sound.playAsync();
   };
   
   const pickSound = async () => {
-    const { sound } = await Audio.Sound.createAsync(require("../../assets/pick.mp3"));
-    setSound(sound);
-    await sound.playAsync();
+    const soundOption1 = JSON.parse(await AsyncStorage.getItem("option_state"));
+    if(soundOption1.eftSound) {
+      const { sound } = await Audio.Sound.createAsync(require("../../assets/pick.mp3"));
+      setSound(sound);
+      await sound.playAsync();
+    }
+    
   };
   
   const scoreSound = async () => {
-    const { sound } = await Audio.Sound.createAsync(require("../../assets/cardPlace3.mp3"));
-    setSound(sound);
-    await sound.playAsync();
+    const soundOption1 = JSON.parse(await AsyncStorage.getItem("option_state"));
+    if(soundOption1.eftSound) {
+      const { sound } = await Audio.Sound.createAsync(require("../../assets/cardPlace3.mp3"));
+      setSound(sound);
+      await sound.playAsync();
+    }
   };
   
   useEffect(() => {

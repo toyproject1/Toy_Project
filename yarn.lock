@@ -6145,7 +6145,17 @@ react-native-simple-toast@^2.0.0:
   resolved "https://registry.npmjs.org/react-native-simple-toast/-/react-native-simple-toast-2.0.0.tgz"
   integrity sha512-x++CvxTLSTv+o5zaC8lv5W37VH0qMDs31wQPV1DH8OMHo1EJ3cMY0Nwblha1lwA9PK1ASuGLvHmumoVFQvnLkg==
 
-react-native@*, "react-native@^0.0.0-0 || 0.60 - 0.71 || 1000.0.0", react-native@>=0.57, react-native@>=0.70.0, react-native@0.71.4:
+react-native-sound-player@^0.13.2:
+  version "0.13.2"
+  resolved "https://registry.npmjs.org/react-native-sound-player/-/react-native-sound-player-0.13.2.tgz"
+  integrity sha512-m457mjp496sARAED7epYzbhorfiLZ3j6HzJn7zEL9RU+ZJKcans/0gFNUEBvlh31fSDZRliQ2WwE4mJ6836bNg==
+
+react-native-track-player@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.npmjs.org/react-native-track-player/-/react-native-track-player-3.2.0.tgz"
+  integrity sha512-svv6TOgU/quFV1aajG5PskVhgFG0wHQtO+aYs6cIH0D27ckzN8WVoC3jI94m1CVaSgLMw48P911csYuD2fIcqA==
+
+react-native@*, "react-native@^0.0.0-0 || 0.60 - 0.71 || 1000.0.0", react-native@>=0.57, react-native@>=0.60.0-rc.2, react-native@>=0.70.0, react-native@0.71.4:
   version "0.71.4"
   resolved "https://registry.npmjs.org/react-native/-/react-native-0.71.4.tgz"
   integrity sha512-3hSYqvWrOdKhpV3HpEKp1/CkWx8Sr/N/miCrmUIAsVTSJUR7JW0VvIsrV9urDhUj/s6v2WF4n7qIEEJsmTCrPw==
@@ -6206,7 +6216,7 @@ react-shallow-renderer@^16.15.0:
     object-assign "^4.1.1"
     react-is "^16.12.0 || ^17.0.0 || ^18.0.0"
 
-react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", react@^18.2.0, "react@>= 16.8.0", react@>=16.0, react@>=17.0.0, react@18.2.0:
+react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", react@^18.2.0, "react@>= 16.8.0", react@>=16.0, react@>=16.8.6, react@>=17.0.0, react@18.2.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==

@@ -7,7 +7,8 @@ import AppStack from "./AppStack";
 import AuthStack from "./AuthStack";
 import { AppState } from "react-native";
 import { Audio } from "expo-av";
-import Bgm from "./assets/DreamingRain.mp3";
+// import Bgm from "./android/app/src/main/res/raw/DreamingRain.mp3";
+import SoundPlayer from "react-native-sound-player";
 
 const Stack = createStackNavigator();
 
@@ -18,6 +19,13 @@ export default function App() {
       setIsLogin(true);
     }
   };
+
+  try {
+    console.log('asdadsadasdas')
+    SoundPlayer.playSoundFile('DreamingRain', 'mp3')
+  } catch (error) {
+    console.log(error);
+  }
 
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(AppState.currentState);
@@ -44,6 +52,18 @@ export default function App() {
 
   useEffect(() => {
     // BGM();
+    const option = {
+      bgcSound: true,
+      eftSound: true,
+    }
+    AsyncStorage.getItem('option_state').then(r => {
+      if(r=== null) {
+        AsyncStorage.setItem("option_state", JSON.stringify(option)).then(r =>
+          console.log('inputOption')
+        );
+      }
+    })
+
     const appState = AppState.addEventListener("change", (nextAppState) => {
       if (appState.current === "background") {
         console.log("앱이 백그라운드 상태임.");
