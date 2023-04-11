@@ -10,6 +10,7 @@ import {
   ScrollView,
 } from "react-native";
 import yatzy_rule from "../Imgs/yatzy_rule.png";
+import { height, width } from "../../globalStyles";
 
 export default function GameBtnRule() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
     height: 350,
   },
   ruleImg: {
-    width: 330,
-    height: 350,
+    width: width * 330,
+    height: height * 350,
   },
 });

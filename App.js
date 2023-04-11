@@ -7,12 +7,14 @@ import AppStack from "./AppStack";
 import AuthStack from "./AuthStack";
 import { AppState } from "react-native";
 import { Audio } from "expo-av";
+import { useWindowDimensions } from "react-native";
 
 // import Bgm from "./assets/DreamingRain.mp3";
 
 const Stack = createStackNavigator();
 
 export default function App() {
+  const {height, width, scale, fontScale} = useWindowDimensions();
   const [isLogin, setIsLogin] = useState(false);
   const getLogin = async () => {
     if ((await AsyncStorage.getItem("userInfo")) !== null) {
@@ -21,21 +23,18 @@ export default function App() {
   };
 
 
-  try {
-    console.log('asdadsadasdas')
-    SoundPlayer.playSoundFile('DreamingRain', 'mp3')
-  } catch (error) {
-    console.log(error);
-  }
+  // try {
+  //   console.log('asdadsadasdas')
+  //   SoundPlayer.playSoundFile('DreamingRain', 'mp3')
+  // } catch (error) {
+  //   console.log(error);
+  // }
 
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(AppState.currentState);
 
   useEffect(() => {
     getLogin();
-  });
-
-  useEffect(() => {
     // BGM();
     const option = {
       bgcSound: true,
@@ -54,6 +53,11 @@ export default function App() {
         console.log("앱이 백그라운드 상태임.");
       }
     });
+
+    console.log("height : ", height);
+    console.log("width : ", width);
+    console.log("scale : ", scale);
+    console.log("fontScale : ", fontScale);
   }, []);
 
   return (

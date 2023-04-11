@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Text, StyleSheet, View } from "react-native";
 import HeaderBtnRule from "./Btns/HeaderBtnRule";
+import HeaderBtnOption from "./Btns/HeaderBtnOption";
 export default function Header() {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -14,7 +15,8 @@ export default function Header() {
       </View>
       <View style={styles.headerMy}>
         <View style={styles.btnSite}>
-          <Text style={styles.btnText}>My</Text>
+          <Text style={styles.btnText}>Rule</Text>
+          {/* <HeaderBtnOption/> */}
         </View>
       </View>
     </View>

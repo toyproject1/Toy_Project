@@ -6,14 +6,14 @@ export default function GHeader() {
   return (
     <View style={styles.header}>
       <View style={styles.headerRule}>
-        <HeaderBtnOption />
+        {/* <HeaderBtnOption /> */}
       </View>
       <View style={styles.headerTitle}>
         <Text style={styles.headerTitleText}>Yatzy Dice</Text>
       </View>
       <View style={styles.headerMy}>
         <View style={styles.btnSite}>
-          <Text style={styles.btnText}>My</Text>
+          {/* <Text style={styles.btnText}>My</Text> */}
         </View>
       </View>
     </View>

@@ -26,6 +26,7 @@ import ReRoll from "../Components/Imgs/ReRoll.png";
 import Toast from "react-native-simple-toast";
 import { Audio } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { height, width } from "../globalStyles";
 
 export default function GameScreen({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(true);
@@ -140,6 +141,7 @@ export default function GameScreen({ navigation, route }) {
       const {sound} = await Audio.Sound.createAsync(require("../../assets/DiceSound.wav"));
       setSound(sound);
       await sound.playAsync();
+      await sound.setVolumeAsync(0.8);
     }
     // const { sound } = await Audio.Sound.createAsync(require("../../assets/DiceSound.wav"));
     // setSound(sound);
@@ -152,6 +154,7 @@ export default function GameScreen({ navigation, route }) {
       const { sound } = await Audio.Sound.createAsync(require("../../assets/pick.mp3"));
       setSound(sound);
       await sound.playAsync();
+      await sound.setVolumeAsync(0.9);
     }
     
   };
@@ -162,6 +165,7 @@ export default function GameScreen({ navigation, route }) {
       const { sound } = await Audio.Sound.createAsync(require("../../assets/cardPlace3.mp3"));
       setSound(sound);
       await sound.playAsync();
+      await sound.setVolumeAsync(1);
     }
   };
   
@@ -925,7 +929,7 @@ export default function GameScreen({ navigation, route }) {
                       style={styles.savedUserScoreCell}
                     >
                       <Text style={styles.MScoreTxt}>
-                        {playerSBoard.modal_Bonus}
+                        {playerSBoard.modal_bonus}
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -1635,12 +1639,13 @@ export default function GameScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   PNameplateSite: {
     alignItems: "center",
+    marginTop: width * 8,
   },
   PNameplate: {
-    width: 80,
-    height: 30,
-    borderRadius: 15,
-    marginTop: 8,
+    width: width * 80,
+    height: height * 30,
+    borderRadius: width * 15,
+    marginTop: width * 8,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -1652,11 +1657,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#815E06",
-    marginHorizontal: 8,
+    marginHorizontal: width * 6,
   },
   PScoreplate: {
-    width: 80,
-    height: 30,
+    width: width * 80,
+    height: height * 30,
     shadowColor: "#000",
     marginBottom: 3,
     shadowOffset: {
@@ -1668,7 +1673,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     alignItems: "center",
     justifyContent: "center",
-    marginHorizontal: 8,
+    marginHorizontal: width * 6,
   },
   plateTxt: {
     color: "#FFFFFF",
@@ -1697,8 +1702,8 @@ const styles = StyleSheet.create({
   },
   sBoardSite: {
     width: "90%",
-    marginTop: 10,
-    marginBottom: 10,
+    marginTop: height * 6,
+    marginBottom: height * 10,
   },
   diceBoxSite: {
     width: "95%",
@@ -1907,7 +1912,7 @@ const styles = StyleSheet.create({
   },
   diceBox: {
     width: "100%",
-    height: 80,
+    height: width * 80,
     backgroundColor: "#815E06",
     borderRadius: 10,
     justifyContent: "center",
@@ -1924,11 +1929,11 @@ const styles = StyleSheet.create({
     marginVertical: 15,
   },
   boxSquare: {
-    width: 68,
-    height: 68,
+    width: width * 68,
+    height: width * 68,
     borderRadius: 10,
     backgroundColor: "#61490E",
-    marginHorizontal: 1.8,
+    marginHorizontal: width * 1.8,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2015,11 +2020,11 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   sNameCell: {
-    height: 50,
+    height: height * 46,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#815E06",
-    borderWidth: 0.25,
+    borderWidth: width * 0.25,
     borderColor: "#000000",
   },
   sNameTxt: {
@@ -2030,20 +2035,20 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   userScoreCell: {
-    height: 50,
+    height: height * 46,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
-    borderWidth: 0.25,
+    borderWidth: width * 0.25,
     textAlign: "center",
     borderColor: "#000000",
   },
   savedUserScoreCell: {
-    height: 50,
+    height: height * 46,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#B4923D",
-    borderWidth: 0.25,
+    borderWidth: width * 0.25,
     textAlign: "center",
     borderColor: "#000000",
   },
@@ -2058,7 +2063,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   PModalCard: {
-    flex: 0.6,
+    flex: height * 0.6,
     alignItems: "center",
     width: "80%",
     backgroundColor: "#A8D98A",
@@ -2066,7 +2071,7 @@ const styles = StyleSheet.create({
   PModalHeader: {
     width: "100%",
     backgroundColor: "#7EB85A",
-    height: 54,
+    height: height * 54,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2078,7 +2083,7 @@ const styles = StyleSheet.create({
   },
   MSBoardSite: {
     width: "90%",
-    marginVertical: 20,
+    marginVertical: height * 20,
   },
   MSNameTxt: {
     fontSize: 10,

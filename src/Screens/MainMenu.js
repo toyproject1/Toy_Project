@@ -14,6 +14,7 @@ import BtnOption from "../Components/Btns/BtnOption";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Header from "../Components/Header";
 import Dice from "../Components/Imgs/DiceNew03.png";
+import { width, height } from "../globalStyles";
 
 const MainMenu = ({ navigation }) => {
   const backAction = () => {
@@ -64,6 +65,7 @@ const MainMenu = ({ navigation }) => {
   };
 
   useEffect(() => {
+    userData();
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       backAction
@@ -79,9 +81,10 @@ const MainMenu = ({ navigation }) => {
     console.log(userName);
     console.log(userId);
   };
-  useEffect(() => {
-    userData();
-  });
+  
+  // useEffect(() => {
+  //   userData();
+  // }, []);
 
   return (
     <View style={styles.main}>
@@ -95,14 +98,14 @@ const MainMenu = ({ navigation }) => {
           activeOpacity={0.9}
           onPress={() => navigation.navigate("HostGameMenu")}
         >
-          <Text style={styles.btnTexthg}>Host Game</Text>
+          <Text style={styles.btnText}>Host Game</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.btnshg}
           activeOpacity={0.9}
           onPress={() => navigation.navigate("Channel")}
         >
-          <Text style={styles.btnTexthg}>Join Game</Text>
+          <Text style={styles.btnText}>Join Game</Text>
         </TouchableOpacity>
         <BtnOption />
         <View style={styles.sBtns}>
@@ -111,7 +114,7 @@ const MainMenu = ({ navigation }) => {
             activeOpacity={0.9}
             onPress={logout}
           >
-            <Text style={styles.btnTextlg}>Log Out</Text>
+            <Text style={styles.btnText}>Log Out</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.btnExit}
@@ -127,7 +130,7 @@ const MainMenu = ({ navigation }) => {
               return true;
             }}
           >
-            <Text style={styles.btnTextlg}>Exit</Text>
+            <Text style={styles.btnText}>Exit</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -153,7 +156,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 5,
+    marginTop: "5%",
   },
   btns: {
     flex: 1,
@@ -186,8 +189,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#D9D9D9",
     marginTop: 15,
   },
-  btnTexthg: {
-    fontSize: 30,
+  btnText: {
+    fontSize: width * 28,
   },
   mainlg: {
     flex: 1,
@@ -231,9 +234,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#D9D9D9",
     marginTop: 15,
     marginLeft: 10,
-  },
-  btnTextlg: {
-    fontSize: 30,
   },
 });
 

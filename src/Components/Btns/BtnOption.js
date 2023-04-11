@@ -26,7 +26,8 @@ export default function HeaderBtnMy() {
         setEnabled(data.eftSound)
       });
     }
-  }, [modalVisible])
+  }, [modalVisible]);
+
   const toggleSwitch = () => {
     setIsEnabled((previousState) => !previousState)
   };
@@ -47,6 +48,15 @@ export default function HeaderBtnMy() {
     AsyncStorage.getItem("option_state").then(r => {
       console.log('r= ',r);
     });
+
+    console.log(option.bgcSound)
+    if (option.bgcSound === false) {
+      sound.unloadAsync();
+      console.log('unload')
+    } else {
+      BGM();
+    }
+
   }
 
   const [sound, setSound] = useState();
@@ -56,13 +66,18 @@ export default function HeaderBtnMy() {
     setSound(sound);
     await sound.playAsync();
     await sound.setIsLoopingAsync(true);
+    await sound.setVolumeAsync(0.3);
   };
 
-
-
   useEffect(() => {
-    BGM();
+    AsyncStorage.getItem("option_state").then(r => {
+      if(JSON.parse(r).bgcSound !== false){
+        BGM();
+      }
+    });
   },[]);
+
+
 
   // useEffect(() => {
   //   const option = {
@@ -229,6 +244,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   btnTextop: {
-    fontSize: 30,
+    fontSize: 28,
   },
 });
