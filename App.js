@@ -14,6 +14,7 @@ const Stack = createStackNavigator();
 
 export default function App() {
   const {height, width, scale, fontScale} = useWindowDimensions();
+  let bgmState;
   const [isLogin, setIsLogin] = useState(false);
   const getLogin = async () => {
     if ((await AsyncStorage.getItem("userInfo")) !== null) {
@@ -34,7 +35,6 @@ export default function App() {
   const [sound, setSound] = useState();
 
   const BGM = async () => {
-    const bgmState = JSON.parse(await AsyncStorage.getItem("bgm_state"));
     console.log("bgmState(App) : ", bgmState);
     const { sound } = await Audio.Sound.createAsync(Bgm);
     setSound(sound);
@@ -43,6 +43,10 @@ export default function App() {
     await sound.setVolumeAsync(0.3);
     await sound.setIsMutedAsync(bgmState === true ? false : true);
   };
+
+  useEffect( async () => {
+    bgmState = JSON.parse(await AsyncStorage.getItem("bgm_state"));
+  });
 
   useEffect(() => {
     BGM();
