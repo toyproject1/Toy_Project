@@ -8,13 +8,14 @@ import AuthStack from "./AuthStack";
 import { AppState } from "react-native";
 import { Audio } from "expo-av";
 import { useWindowDimensions } from "react-native";
-import Bgm from "./assets/DreamingRain.mp3"
+import AppContext from "./src/Components/AppContext";
+import Bgm from "./assets/DreamingRain.mp3";
+// import Bgm from "./assets/DreamingRain.mp3";
 
 const Stack = createStackNavigator();
 
 export default function App() {
   const {height, width, scale, fontScale} = useWindowDimensions();
-  let bgmState;
   const [isLogin, setIsLogin] = useState(false);
   const getLogin = async () => {
     if ((await AsyncStorage.getItem("userInfo")) !== null) {
@@ -22,35 +23,77 @@ export default function App() {
     }
   };
 
-  // try {
-  //   console.log('asdadsadasdas')
-  //   SoundPlayer.playSoundFile('DreamingRain', 'mp3')
-  // } catch (error) {
-  //   console.log(error);
-  // }
+  /*
+  * 현준 추가
+  * */
+  const [setting1value, setSetting1value] = useState(false);
+  const [setting2value, setSetting2value] = useState(false);
+
+
+
+  const toggleSetting2 = () => {
+    setting3 ? setSetting2(true) : setSetting2value(false);
+  };
+
+  const userSettings = {
+    setting1name: setting1value,
+    setting2name: setting2value,
+    setSetting1value,
+    toggleSetting2,
+  };
+
+
+  useEffect(() => {
+    if(setting1value === true) {
+      console.log(' ==> ',setting1value)
+      sound.playAsync();
+
+    }else {
+      console.log(' ==> ',setting1value)
+      try {
+        sound.pauseAsync()
+      }catch (e) {
+        
+      }
+
+    }
+  },[setting1value])
+
+  /*
+  * bgm 메서드
+  * */
+  const [sound, setSound] = React.useState();
+
+  async function playSound() {
+    const {sound} = await Audio.Sound.createAsync(Bgm)
+    await setSound(sound);
+    await sound.setIsLoopingAsync(true);
+    await sound.setVolumeAsync(0.3);
+    return sound
+  }
+
+  useEffect(() => {
+    playSound().then(r => {
+      console.log('sound -> ',r)
+      AsyncStorage.getItem("option_state").then(data => {
+        if(JSON.parse(data).bgcSound !== false){
+          setSetting1value(JSON.parse(data).bgcSound);
+        }
+      });
+    })
+
+
+  },[]);
+
+  //****
+
 
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(AppState.currentState);
-  
-  const [sound, setSound] = useState();
-
-  const BGM = async () => {
-    console.log("bgmState(App) : ", bgmState);
-    const { sound } = await Audio.Sound.createAsync(Bgm);
-    setSound(sound);
-    await sound.playAsync();
-    await sound.setIsLoopingAsync(true);
-    await sound.setVolumeAsync(0.3);
-    await sound.setIsMutedAsync(bgmState === true ? false : true);
-  };
-
-  useEffect( async () => {
-    bgmState = JSON.parse(await AsyncStorage.getItem("bgm_state"));
-  });
 
   useEffect(() => {
-    BGM();
     getLogin();
+    // BGM();
     const option = {
       bgcSound: true,
       eftSound: true,
@@ -77,6 +120,7 @@ export default function App() {
 
   return (
     <>
+      <AppContext.Provider value={userSettings}>
       <StatusBar hidden={true} />
       <NavigationContainer independent={true}>
         <Stack.Navigator>
@@ -99,6 +143,7 @@ export default function App() {
           )}
         </Stack.Navigator>
       </NavigationContainer>
+      </AppContext.Provider>
     </>
   );
 }

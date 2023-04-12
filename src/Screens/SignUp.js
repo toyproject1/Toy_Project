@@ -40,7 +40,11 @@ const SignUp = ({ navigation }) => {
         setValue={setUsername}
         placeholder="Username"
       />
-      <CustomInput value={Email} setValue={setEmail} placeholder="Email" />
+      <CustomInput
+        value={Email}
+        setValue={setEmail}
+        placeholder="Email"
+      />
 
       <CustomInput
         value={password}

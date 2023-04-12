@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   TouchableOpacity,
@@ -12,11 +12,17 @@ import {
 import Slider from "@react-native-community/slider";
 import Bgm from "../../../assets/DreamingRain.mp3";
 import { Audio } from "expo-av";
+import AppContext from "../AppContext";
 
 export default function HeaderBtnMy() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [isEnabled, setIsEnabled] = useState();
-  const [Enabled, setEnabled] = useState();
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [Enabled, setEnabled] = useState(false);
+
+  /*
+  * 현준 추가
+  // * */
+  const myContext = useContext(AppContext);
 
   useEffect(() => {
     if(modalVisible) {
@@ -36,37 +42,34 @@ export default function HeaderBtnMy() {
   /*
   * 옵션 AsyncStorage 저장
   * */
-
-  const [bgmState, setBgmState] = useState(Boolean);
-
   const saveOption = () => {
     const option = {
       bgcSound: isEnabled,
       eftSound: Enabled,
     }
     AsyncStorage.setItem("option_state", JSON.stringify(option)).then(r =>
-      console.log("isEnabled : ", isEnabled)
+      console.log(isEnabled)
     );
-      
+
     AsyncStorage.getItem("option_state").then(r => {
       console.log('r= ',r);
     });
-      
-    // console.log(option.bgcSound);
 
-    AsyncStorage.setItem("bgm_state", JSON.stringify(option.bgcSound)).then(r =>
-      console.log("bgmState(Option) : ", option.bgcSound)
-    );
+    myContext.setSetting1value(isEnabled);
 
+
+
+    // console.log(option.bgcSound)
     // if (option.bgcSound === false) {
     //   sound.unloadAsync();
     //   console.log('unload')
     // } else {
     //   BGM();
     // }
+
   }
 
-  // const [sound, setSound] = useState();
+  const [sound, setSound] = useState();
 
   // const BGM = async () => {
   //   const { sound } = await Audio.Sound.createAsync(Bgm);
@@ -74,9 +77,8 @@ export default function HeaderBtnMy() {
   //   await sound.playAsync();
   //   await sound.setIsLoopingAsync(true);
   //   await sound.setVolumeAsync(0.3);
-  //   // await sound.setIsMutedAsync(isEnabled === true ? false : true);
   // };
-
+  //
   // useEffect(() => {
   //   AsyncStorage.getItem("option_state").then(r => {
   //     if(JSON.parse(r).bgcSound !== false){
@@ -148,7 +150,7 @@ export default function HeaderBtnMy() {
               </Pressable>
               <Pressable onPress={() => {
                 setModalVisible(!modalVisible)
-                saveOption();
+                saveOption()
                 console.log('touch Save')
                 }
               }>
