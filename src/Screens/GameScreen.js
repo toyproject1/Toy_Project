@@ -169,6 +169,16 @@ export default function GameScreen({ navigation, route }) {
     }
   };
   
+  const GameSetSound = async () => {
+    const soundOption1 = JSON.parse(await AsyncStorage.getItem("option_state"));
+    if(soundOption1.eftSound) {
+      const { sound } = await Audio.Sound.createAsync(require("../../assets/Walking.mp3"));
+      setSound(sound);
+      await sound.playAsync();
+      await sound.setVolumeAsync(1);
+    }
+  };
+
   useEffect(() => {
     return ( sound ? () => {
       console.log('Unloading Sound');
@@ -259,6 +269,7 @@ export default function GameScreen({ navigation, route }) {
     });
 
     WebSocket.current.on("gameEnd", (data) => {
+      GameSetSound();
       console.log(data);
       console.log(data.length);
       console.log(data.length);

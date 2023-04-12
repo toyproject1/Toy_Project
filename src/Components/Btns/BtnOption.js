@@ -15,8 +15,8 @@ import { Audio } from "expo-av";
 
 export default function HeaderBtnMy() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [isEnabled, setIsEnabled] = useState(false);
-  const [Enabled, setEnabled] = useState(false);
+  const [isEnabled, setIsEnabled] = useState();
+  const [Enabled, setEnabled] = useState();
 
   useEffect(() => {
     if(modalVisible) {
@@ -36,46 +36,54 @@ export default function HeaderBtnMy() {
   /*
   * 옵션 AsyncStorage 저장
   * */
+
+  const [bgmState, setBgmState] = useState(Boolean);
+
   const saveOption = () => {
     const option = {
       bgcSound: isEnabled,
       eftSound: Enabled,
     }
     AsyncStorage.setItem("option_state", JSON.stringify(option)).then(r =>
-      console.log(isEnabled)
+      console.log("isEnabled : ", isEnabled)
     );
-
+      
     AsyncStorage.getItem("option_state").then(r => {
       console.log('r= ',r);
     });
+      
+    // console.log(option.bgcSound);
 
-    console.log(option.bgcSound)
-    if (option.bgcSound === false) {
-      sound.unloadAsync();
-      console.log('unload')
-    } else {
-      BGM();
-    }
+    AsyncStorage.setItem("bgm_state", JSON.stringify(option.bgcSound)).then(r =>
+      console.log("bgmState(Option) : ", option.bgcSound)
+    );
 
+    // if (option.bgcSound === false) {
+    //   sound.unloadAsync();
+    //   console.log('unload')
+    // } else {
+    //   BGM();
+    // }
   }
 
-  const [sound, setSound] = useState();
+  // const [sound, setSound] = useState();
 
-  const BGM = async () => {
-    const { sound } = await Audio.Sound.createAsync(Bgm);
-    setSound(sound);
-    await sound.playAsync();
-    await sound.setIsLoopingAsync(true);
-    await sound.setVolumeAsync(0.3);
-  };
+  // const BGM = async () => {
+  //   const { sound } = await Audio.Sound.createAsync(Bgm);
+  //   setSound(sound);
+  //   await sound.playAsync();
+  //   await sound.setIsLoopingAsync(true);
+  //   await sound.setVolumeAsync(0.3);
+  //   // await sound.setIsMutedAsync(isEnabled === true ? false : true);
+  // };
 
-  useEffect(() => {
-    AsyncStorage.getItem("option_state").then(r => {
-      if(JSON.parse(r).bgcSound !== false){
-        BGM();
-      }
-    });
-  },[]);
+  // useEffect(() => {
+  //   AsyncStorage.getItem("option_state").then(r => {
+  //     if(JSON.parse(r).bgcSound !== false){
+  //       BGM();
+  //     }
+  //   });
+  // },[]);
 
 
 
@@ -140,7 +148,7 @@ export default function HeaderBtnMy() {
               </Pressable>
               <Pressable onPress={() => {
                 setModalVisible(!modalVisible)
-                saveOption()
+                saveOption();
                 console.log('touch Save')
                 }
               }>

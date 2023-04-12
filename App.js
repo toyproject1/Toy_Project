@@ -8,8 +8,7 @@ import AuthStack from "./AuthStack";
 import { AppState } from "react-native";
 import { Audio } from "expo-av";
 import { useWindowDimensions } from "react-native";
-
-// import Bgm from "./assets/DreamingRain.mp3";
+import Bgm from "./assets/DreamingRain.mp3"
 
 const Stack = createStackNavigator();
 
@@ -22,7 +21,6 @@ export default function App() {
     }
   };
 
-
   // try {
   //   console.log('asdadsadasdas')
   //   SoundPlayer.playSoundFile('DreamingRain', 'mp3')
@@ -32,10 +30,23 @@ export default function App() {
 
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(AppState.currentState);
+  
+  const [sound, setSound] = useState();
+
+  const BGM = async () => {
+    const bgmState = JSON.parse(await AsyncStorage.getItem("bgm_state"));
+    console.log("bgmState(App) : ", bgmState);
+    const { sound } = await Audio.Sound.createAsync(Bgm);
+    setSound(sound);
+    await sound.playAsync();
+    await sound.setIsLoopingAsync(true);
+    await sound.setVolumeAsync(0.3);
+    await sound.setIsMutedAsync(bgmState === true ? false : true);
+  };
 
   useEffect(() => {
+    BGM();
     getLogin();
-    // BGM();
     const option = {
       bgcSound: true,
       eftSound: true,
