@@ -13,6 +13,7 @@ import HeaderBtnRule from "../Components/Btns/HeaderBtnRule";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Buffer } from "buffer";
+import { Audio } from "expo-av";
 
 export default function HostGameMenu({ navigation }) {
   const [gTitle, onChangeGTitle] = useState("");
@@ -22,6 +23,26 @@ export default function HostGameMenu({ navigation }) {
   const [userName, setUsername] = useState();
   const [Host, setHost] = useState("Host");
   // const [Room, setRoom] = useState({});
+
+  const [sound, setSound] = useState();
+
+  const pickSound = async () => {
+    const soundOption1 = JSON.parse(await AsyncStorage.getItem("option_state"));
+    if(soundOption1.eftSound) {
+      const { sound } = await Audio.Sound.createAsync(require("../../assets/pick.mp3"));
+      setSound(sound);
+      await sound.playAsync();
+      await sound.setVolumeAsync(0.9);
+    }
+  };
+
+  useEffect(() => {
+    return ( sound ? () => {
+      console.log('Unloading Sound');
+      sound.unloadAsync();
+    } : undefined );
+  }, [sound]);
+
   const backPressed = () => {
     navigation.goBack();
   };
@@ -149,7 +170,10 @@ export default function HostGameMenu({ navigation }) {
         </View>
         <View style={styles.headerMy}>
           <View style={styles.btnSite}>
-            <TouchableOpacity onPress={backPressed}>
+            <TouchableOpacity onPress={() => {
+              pickSound();
+              backPressed();
+            }}>
               <Text style={styles.btnText}>Back</Text>
             </TouchableOpacity>
           </View>
@@ -174,12 +198,18 @@ export default function HostGameMenu({ navigation }) {
                 </View>
                 <View style={styles.upDownBtns}>
                   <Pressable
-                    onPress={() => onChangeHCNum(HCNum < 4 ? HCNum + 1 : HCNum)}
+                    onPress={() => {
+                      HCNum < 4 ? pickSound() : <></>;
+                      onChangeHCNum(HCNum < 4 ? HCNum + 1 : HCNum);
+                    }}
                   >
                     <Text style={styles.btnUpDown}>▲</Text>
                   </Pressable>
                   <Pressable
-                    onPress={() => onChangeHCNum(HCNum > 2 ? HCNum - 1 : HCNum)}
+                    onPress={() => {
+                      HCNum > 2 ? pickSound() : <></>;
+                      onChangeHCNum(HCNum > 2 ? HCNum - 1 : HCNum);
+                    }}
                   >
                     <Text style={styles.btnUpDown}>▼</Text>
                   </Pressable>
@@ -194,6 +224,7 @@ export default function HostGameMenu({ navigation }) {
                 activeOpacity={0.9}
                 // onPress={onSubmit}
                 onPress={async () => {
+                  pickSound();
                   const tempPostData = await postGData();
                   navigation.navigate("GameScreen", {
                     gTitle: gTitle,
@@ -213,7 +244,10 @@ export default function HostGameMenu({ navigation }) {
               <TouchableOpacity
                 style={styles.btn}
                 activeOpacity={0.9}
-                onPress={() => navigation.navigate("MainMenu")}
+                onPress={() => {
+                  pickSound();
+                  navigation.navigate("MainMenu");
+                }}
                 // onPress={navigation.goBack}
               >
                 <Text style={styles.btnTxt}>Main Menu</Text>

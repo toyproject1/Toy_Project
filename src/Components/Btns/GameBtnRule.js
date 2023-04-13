@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TouchableOpacity,
   Text,
@@ -10,11 +10,33 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Audio } from "expo-av";
 import ruleImg from "../Imgs/yatzy_rule.png";
 import { height, width } from "../../globalStyles";
 
 export default function GameBtnRule() {
   const [modalVisible, setModalVisible] = useState(false);
+
+  const [sound, setSound] = useState();
+
+  const pickSound = async () => {
+    const soundOption1 = JSON.parse(await AsyncStorage.getItem("option_state"));
+    if(soundOption1.eftSound) {
+      const { sound } = await Audio.Sound.createAsync(require("../../../assets/pick.mp3"));
+      setSound(sound);
+      await sound.playAsync();
+      await sound.setVolumeAsync(0.9);
+    }
+  };
+
+  useEffect(() => {
+    return ( sound ? () => {
+      console.log('Unloading Sound');
+      sound.unloadAsync();
+    } : undefined );
+  }, [sound]);
+
   return (
     <View style={styles.btnSite}>
       <Modal
@@ -29,7 +51,10 @@ export default function GameBtnRule() {
           <View style={styles.modalCard}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalHeaderTitle}>Game Rule</Text>
-              <Pressable onPress={() => setModalVisible(!modalVisible)}>
+              <Pressable onPress={() => {
+                pickSound();
+                setModalVisible(!modalVisible);
+              }}>
                 <Text style={styles.btnClose}>close</Text>
               </Pressable>
             </View>
@@ -73,7 +98,10 @@ export default function GameBtnRule() {
       <TouchableOpacity
         style={styles.btn}
         activeOpacity={0.9}
-        onPress={() => setModalVisible(true)}
+        onPress={() => {
+          pickSound();
+          setModalVisible(true);
+        }}
       >
         <Text style={styles.btnText}>Rule</Text>
       </TouchableOpacity>

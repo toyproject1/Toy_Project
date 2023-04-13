@@ -20,6 +20,7 @@ import ChannelButton from "../Components/Btns/ChannelButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import HeaderBtnRule from "../Components/Btns/HeaderBtnRule";
 import io from "socket.io-client";
+import { Audio } from "expo-av";
 
 export default function Channel({ navigation }) {
   const [userID, setUserID] = useState();
@@ -41,6 +42,25 @@ export default function Channel({ navigation }) {
   const backAction = () => {
     WebSocket.current.close();
   };
+
+  const [sound, setSound] = useState();
+
+  const pickSound = async () => {
+    const soundOption1 = JSON.parse(await AsyncStorage.getItem("option_state"));
+    if(soundOption1.eftSound) {
+      const { sound } = await Audio.Sound.createAsync(require("../../assets/pick.mp3"));
+      setSound(sound);
+      await sound.playAsync();
+      await sound.setVolumeAsync(0.9);
+    }
+  };
+
+  useEffect(() => {
+    return ( sound ? () => {
+      console.log('Unloading Sound');
+      sound.unloadAsync();
+    } : undefined );
+  }, [sound]);
 
   useEffect(() => {
     async function getData() {
@@ -124,7 +144,10 @@ export default function Channel({ navigation }) {
         </View>
         <View style={styles.headerMy}>
           <View style={styles.btnSite}>
-            <TouchableOpacity onPress={backPress}>
+            <TouchableOpacity onPress={() => {
+              pickSound();
+              backPress();
+            }}>
               <Text style={styles.btnText}>Back</Text>
             </TouchableOpacity>
           </View>
@@ -147,6 +170,7 @@ export default function Channel({ navigation }) {
                 <TouchableOpacity
                   style={styles.container}
                   onPress={() => {
+                    pickSound();
                     WebSocket.current.close();
                     navigation.navigate("GameScreen", {
                       Host: "User",
@@ -184,6 +208,7 @@ export default function Channel({ navigation }) {
             style={styles.btn}
             activeOpacity={0.9}
             onPress={() => {
+              pickSound();
               WebSocket.current.close();
               navigation.navigate("HostGameMenu");
             }}
@@ -196,6 +221,7 @@ export default function Channel({ navigation }) {
             style={styles.btn}
             activeOpacity={0.9}
             onPress={() => {
+              pickSound();
               WebSocket.current.close();
               navigation.navigate("MainMenu");
             }}

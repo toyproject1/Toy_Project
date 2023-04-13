@@ -169,13 +169,17 @@ export default function BtnOption() {
                   </View>
                 </View>
                 <View style={styles.btnOp}>
-                  <Pressable onPress={() => setModalVisible(!modalVisible)}>
+                  <Pressable onPress={() => {
+                    pickSound();
+                    setModalVisible(!modalVisible);
+                    }}>
                     <Text style={styles.btnClose}>Close</Text>
                   </Pressable>
                   <Pressable onPress={() => {
-                    setModalVisible(!modalVisible)
-                    saveOption()
-                    console.log('touch Save')
+                    pickSound();
+                    setModalVisible(!modalVisible);
+                    saveOption();
+                    console.log('touch Save');
                     }
                   }>
                     <Text style={styles.btnSave}>Save</Text>

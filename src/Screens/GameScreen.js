@@ -87,6 +87,8 @@ export default function GameScreen({ navigation, route }) {
   let [turnName, setTurnName] = useState();
   const [fadedice, setFadedice] = useState(false);
 
+  const [userBtnCheck, setUserBtnCheck] = useState('Ready');
+
   const startValue = useRef(new Animated.Value(0)).current;
   const fadeOutValue = useRef(new Animated.Value(0)).current;
   const endValue = 1;
@@ -236,11 +238,21 @@ export default function GameScreen({ navigation, route }) {
     WebSocket.current.on("joinError", () => {
       console.log("참여 제한");
       Toast.showWithGravity("방이 꽉 찼습니다.", Toast.SHORT, Toast.TOP);
-      navigation.reset({ routes: [{ name: "Channel" }] });
+      navigation.navigate("MainMenu");
+      WebSocket.current.close();
     });
 
     WebSocket.current.on("refreshUserList", (data) => {
-      console.log(data);
+      console.log('refreshUserList > ', data);
+      AsyncStorage.getItem("userInfo").then(r => {
+        const stData = JSON.parse(r);
+        if(data.userInfo[0].userId === stData.user_id){
+          setUserBtnCheck('Start')
+        }else {
+          setUserBtnCheck('Ready')
+        }
+      })
+
 
       setUserList([]);
       const tempArr = [];
@@ -253,10 +265,30 @@ export default function GameScreen({ navigation, route }) {
         };
         tempArr.push(tempList);
       });
+      setPlCount(tempArr.length);
       setUserList((current) => {
         return tempArr;
       });
     });
+
+    // WebSocket.current.on("refreshUserList", (data) => {
+    //   console.log(data);
+
+    //   setUserList([]);
+    //   const tempArr = [];
+    //   data.userInfo.map((usermap) => {
+    //     const tempList = {
+    //       userId: usermap.userId,
+    //       userName: usermap.userName,
+    //       userState: usermap.userState,
+    //       userRole: usermap.userRole,
+    //     };
+    //     tempArr.push(tempList);
+    //   });
+    //   setUserList((current) => {
+    //     return tempArr;
+    //   });
+    // });
 
     WebSocket.current.on("userScoreInfo", (data) => {
       console.log(data);
@@ -1033,6 +1065,7 @@ export default function GameScreen({ navigation, route }) {
                   style={styles.PNameplate}
                   activeOpacity={0.9}
                   onPress={() => {
+                    pickSound();
                     WebSocket.current.emit("getUserScoreBoard", {
                       userId: list.userId,
                     });
@@ -1593,7 +1626,7 @@ export default function GameScreen({ navigation, route }) {
               <TouchableHighlight
                 style={turnId == myId && putD01 == true ? styles.putDice : styles.diceImg}
                 onPress={() => {
-                  pickSound();
+                  turnId == myId ? pickSound() : <></>;
                   setPutD01(turnId == myId && putD01 == false ? true : false);
                 }}
               >
@@ -1602,7 +1635,7 @@ export default function GameScreen({ navigation, route }) {
               <Pressable
                 style={styles.reRollIcon}
                 onPress={() => {
-                  pickSound();
+                  turnId == myId ? pickSound() : <></>;
                   setPutD01(turnId == myId && putD01 == false ? true : false);
                 }}
               >
@@ -1622,7 +1655,7 @@ export default function GameScreen({ navigation, route }) {
                 <TouchableHighlight
                   style={turnId == myId && putD02 == true ? styles.putDice : styles.diceImg}
                   onPress={() => {
-                    pickSound();
+                    turnId == myId ? pickSound() : <></>;
                     setPutD02(turnId == myId && putD02 == false ? true : false);
                   }}
                 >
@@ -1635,7 +1668,7 @@ export default function GameScreen({ navigation, route }) {
                 <Pressable
                   style={styles.reRollIcon}
                   onPress={() => {
-                    pickSound();
+                    turnId == myId ? pickSound() : <></>;
                     setPutD02(turnId == myId && putD02 == false ? true : false);
                   }}
                 >
@@ -1656,7 +1689,7 @@ export default function GameScreen({ navigation, route }) {
                 <TouchableHighlight
                   style={turnId == myId && putD03 == true ? styles.putDice : styles.diceImg}
                   onPress={() => {
-                    pickSound();
+                    turnId == myId ? pickSound() : <></>;
                     setPutD03(turnId == myId && putD03 == false ? true : false);
                   }}
                 >
@@ -1669,7 +1702,7 @@ export default function GameScreen({ navigation, route }) {
                 <Pressable
                   style={styles.reRollIcon}
                   onPress={() => {
-                    pickSound();
+                    turnId == myId ? pickSound() : <></>;
                     setPutD03(turnId == myId && putD03 == false ? true : false);
                   }}
                 >
@@ -1690,7 +1723,7 @@ export default function GameScreen({ navigation, route }) {
                 <TouchableHighlight
                   style={turnId == myId && putD04 == true ? styles.putDice : styles.diceImg}
                   onPress={() => {
-                    pickSound();
+                    turnId == myId ? pickSound() : <></>;
                     setPutD04(turnId == myId && putD04 == false ? true : false);
                   }}
                 >
@@ -1703,7 +1736,7 @@ export default function GameScreen({ navigation, route }) {
                 <Pressable
                   style={styles.reRollIcon}
                   onPress={() => {
-                    pickSound();
+                    turnId == myId ? pickSound() : <></>;
                     setPutD04(turnId == myId && putD04 == false ? true : false);
                   }}
                 >
@@ -1724,7 +1757,7 @@ export default function GameScreen({ navigation, route }) {
                 <TouchableHighlight
                   style={turnId == myId && putD05 == true ? styles.putDice : styles.diceImg}
                   onPress={() => {
-                    pickSound();
+                    turnId == myId ? pickSound() : <></>;
                     setPutD05(turnId == myId && putD05 == false ? true : false);
                   }}
                 >
@@ -1737,7 +1770,7 @@ export default function GameScreen({ navigation, route }) {
                 <Pressable
                   style={styles.reRollIcon}
                   onPress={() => {
-                    pickSound();
+                    turnId == myId ? pickSound() : <></>;
                     setPutD05(turnId == myId && putD05 == false ? true : false);
                   }}
                 >
@@ -1753,6 +1786,7 @@ export default function GameScreen({ navigation, route }) {
           style={styles.btnRoll}
           activeOpacity={0.9}
           onPress={() => {
+            // turnId == myId ? pickSound() : <></>;
             rollDice();
           }}
         >
@@ -1807,13 +1841,15 @@ export default function GameScreen({ navigation, route }) {
                 <View style={styles.btnOp}>
                   <Pressable
                     onPress={() => {
+                      pickSound();
                       WebSocket.current.emit("gameReadyBtn");
                     }}
                   >
-                    <Text style={styles.btnClose}>Ready</Text>
+                    <Text style={styles.btnClose}>{userBtnCheck}</Text>
                   </Pressable>
                   <Pressable
                     onPress={() => {
+                      pickSound();
                       WebSocket.current.close();
                       navigation.reset({ routes: [{ name: "MainMenu" }] });
                     }}
