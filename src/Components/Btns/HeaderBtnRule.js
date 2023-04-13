@@ -10,7 +10,8 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import yatzy_rule from "../Imgs/yatzy_rule.png";
+import ruleImg from "../Imgs/yatzy_rule.png";
+import { height, width } from "../../globalStyles";
 
 export default function HeaderBtnRule() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -55,8 +56,14 @@ export default function HeaderBtnRule() {
                   순위가 결정되고 게임이 종료됩니다.
                 </Text>
                 <Text style={styles.ruleTxt}>주사위 점수 조합표</Text>
-                <View style={styles.yatzy_rule}>
-                  <Image source={yatzy_rule} style={styles.ruleImg} />
+                <View>
+                  <ScrollView
+                    persistentScrollbar={true}
+                    showsVerticalScrollIndicator={true}
+                    horizontal={true}
+                  >
+                    <Image source={ruleImg} style={styles.ruleImg} />
+                  </ScrollView>
                 </View>
               </ScrollView>
             </View>
@@ -135,7 +142,7 @@ const styles = StyleSheet.create({
     height: 350,
   },
   ruleImg: {
-    width: 330,
-    height: 350,
+    width: width * 380,
+    height: height * 368,
   },
 });

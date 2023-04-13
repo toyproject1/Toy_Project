@@ -12,7 +12,6 @@ import {
   BackHandler,
   Animated,
   AppState,
-  TouchableWithoutFeedback,
 } from "react-native";
 import GHeader from "../Components/GHeader";
 import GameBtnRule from "../Components/Btns/GameBtnRule";
@@ -40,7 +39,7 @@ export default function GameScreen({ navigation, route }) {
   const [plCount, setPlCount] = useState(1);
   const [scoreNum, setScoreNum] = useState(0);
   // const [player, setPlayer] = useState("User Name");
-  const [rollChance, setChanceCount] = useState(3);
+  const [rollChance, setChanceCount] = useState(2);
   // const [ready, setReady] = useState("Wait ...");
   const { gTitle, HCNum, Host, roomNumber, userID, userName, userId } =
     route.params;
@@ -160,7 +159,6 @@ export default function GameScreen({ navigation, route }) {
       await sound.playAsync();
       await sound.setVolumeAsync(0.9);
     }
-    
   };
   
   const scoreSound = async () => {
@@ -477,7 +475,6 @@ export default function GameScreen({ navigation, route }) {
         Yahtzee: data.scoreBoard.yahtzee,
         Chance: data.scoreBoard.chance,
       });
-      setChanceCount(data.diceCount);
     });
     WebSocket.current.on("getUserScoreBoard", (data) => {
       console.log(data);
@@ -648,17 +645,8 @@ export default function GameScreen({ navigation, route }) {
   }, [temp]);
 
   const rollDice = () => {
-    setDIndex((DIndex = dIndex));
-    WebSocket.current.emit("tempthrowDice", {
-      diceResult: DiceResult,
-      diceIndex: DIndex,
-    });
-    setPutD01(false);
-    setPutD02(false);
-    setPutD03(false);
-    setPutD04(false);
-    setPutD05(false);
-    setDIndex([]);
+    WebSocket.current.emit("throwDice");
+    
   };
 
   const reRollDice = () => {
@@ -1073,187 +1061,186 @@ export default function GameScreen({ navigation, route }) {
           setModalPlayerVisible(!modalPlayerVisible);
         }}
       >
-        <TouchableWithoutFeedback onPress={() => setModalPlayerVisible(false)}>
-          <View style={styles.modalBG}>
-            <TouchableWithoutFeedback onPress={() => {}}>
-              <View style={styles.PModalCard}>
-                <View style={styles.PModalHeader}>
-                  <Text style={styles.PModalHeaderTitle}>
-                    {playerSBoard.modal_userName}
-                  </Text>
-                </View>
-                <View style={styles.MSBoardSite}>
-                  <View style={styles.sBoardV}>
-                    <View style={styles.sBoard}>
-                      <View style={styles.sNameColumn}>
-                        <View style={styles.sNameCell}>
-                          <Text style={styles.MSNameTxt}>Aces</Text>
-                        </View>
-                        <View style={styles.sNameCell}>
-                          <Text style={styles.MSNameTxt}>Twos</Text>
-                        </View>
-                        <View style={styles.sNameCell}>
-                          <Text style={styles.MSNameTxt}>Threes</Text>
-                        </View>
-                        <View style={styles.sNameCell}>
-                          <Text style={styles.MSNameTxt}>Fours</Text>
-                        </View>
-                        <View style={styles.sNameCell}>
-                          <Text style={styles.MSNameTxt}>Fives</Text>
-                        </View>
-                        <View style={styles.sNameCell}>
-                          <Text style={styles.MSNameTxt}>Sixes</Text>
-                        </View>
-                        <View style={styles.sNameCell}>
-                          <Text style={styles.MSNameTxt}>Bonus</Text>
-                        </View>
-                      </View>
-                      <View style={styles.userScoreColumn}>
-                        <TouchableOpacity
-                          activeOpacity={0.9}
-                          style={styles.userScoreCell}
-                        >
-                          <Text style={styles.MScoreTxt}>
-                            {playerSBoard.modal_ones}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          activeOpacity={0.9}
-                          style={styles.userScoreCell}
-                        >
-                          <Text style={styles.MScoreTxt}>
-                            {playerSBoard.modal_twos}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          activeOpacity={0.9}
-                          style={styles.userScoreCell}
-                        >
-                          <Text style={styles.MScoreTxt}>
-                            {playerSBoard.modal_threes}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          activeOpacity={0.9}
-                          style={styles.userScoreCell}
-                        >
-                          <Text style={styles.MScoreTxt}>
-                            {playerSBoard.modal_fours}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          activeOpacity={0.9}
-                          style={styles.userScoreCell}
-                        >
-                          <Text style={styles.MScoreTxt}>
-                            {playerSBoard.modal_fives}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          activeOpacity={0.9}
-                          style={styles.userScoreCell}
-                        >
-                          <Text style={styles.MScoreTxt}>
-                            {playerSBoard.modal_sixes}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          activeOpacity={0.9}
-                          style={styles.savedUserScoreCell}
-                        >
-                          <Text style={styles.MScoreTxt}>
-                            {playerSBoard.modal_bonus}
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                      <View style={styles.sNameColumn}>
-                        <View style={styles.sNameCell}>
-                          <Text style={styles.MSNameTxt}>Triple</Text>
-                        </View>
-                        <View style={styles.sNameCell}>
-                          <Text style={styles.MSNameTxt}>Four card</Text>
-                        </View>
-                        <View style={styles.sNameCell}>
-                          <Text style={styles.MSNameTxt}>Full House</Text>
-                        </View>
-                        <View style={styles.sNameCell}>
-                          <Text style={styles.MSNameTxt}>Small Straight</Text>
-                        </View>
-                        <View style={styles.sNameCell}>
-                          <Text style={styles.MSNameTxt}>Large Straight</Text>
-                        </View>
-                        <View style={styles.sNameCell}>
-                          <Text style={styles.MSNameTxt}>Yatzy</Text>
-                        </View>
-                        <View style={styles.sNameCell}>
-                          <Text style={styles.MSNameTxt}>Chance</Text>
-                        </View>
-                      </View>
-                      <View style={styles.userScoreColumn}>
-                        <TouchableOpacity
-                          activeOpacity={0.9}
-                          style={styles.userScoreCell}
-                        >
-                          <Text style={styles.MScoreTxt}>
-                            {playerSBoard.modal_triple}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          activeOpacity={0.9}
-                          style={styles.userScoreCell}
-                        >
-                          <Text style={styles.MScoreTxt}>
-                            {playerSBoard.modal_four_card}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          activeOpacity={0.9}
-                          style={styles.userScoreCell}
-                        >
-                          <Text style={styles.MScoreTxt}>
-                            {playerSBoard.modal_full_house}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          activeOpacity={0.9}
-                          style={styles.userScoreCell}
-                        >
-                          <Text style={styles.MScoreTxt}>
-                            {playerSBoard.modal_small_straight}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          activeOpacity={0.9}
-                          style={styles.userScoreCell}
-                        >
-                          <Text style={styles.MScoreTxt}>
-                            {playerSBoard.modal_large_straight}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          activeOpacity={0.9}
-                          style={styles.userScoreCell}
-                        >
-                          <Text style={styles.MScoreTxt}>
-                            {playerSBoard.modal_yahtzee}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          activeOpacity={0.9}
-                          style={styles.userScoreCell}
-                        >
-                          <Text style={styles.MScoreTxt}>
-                            {playerSBoard.modal_chance}
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
+        <Pressable
+          style={styles.modalBG}
+          onPress={() => setModalPlayerVisible(false)}
+        >
+          <View style={styles.PModalCard}>
+            <View style={styles.PModalHeader}>
+              <Text style={styles.PModalHeaderTitle}>
+                {playerSBoard.modal_userName}
+              </Text>
+            </View>
+            <View style={styles.MSBoardSite}>
+              <View style={styles.sBoardV}>
+                <View style={styles.sBoard}>
+                  <View style={styles.sNameColumn}>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Aces</Text>
                     </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Twos</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Threes</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Fours</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Fives</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Sixes</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Bonus</Text>
+                    </View>
+                  </View>
+                  <View style={styles.userScoreColumn}>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_ones}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_twos}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_threes}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_fours}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_fives}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_sixes}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.savedUserScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_bonus}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.sNameColumn}>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Triple</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Four card</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Full House</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Small Straight</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Large Straight</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Yatzy</Text>
+                    </View>
+                    <View style={styles.sNameCell}>
+                      <Text style={styles.MSNameTxt}>Chance</Text>
+                    </View>
+                  </View>
+                  <View style={styles.userScoreColumn}>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_triple}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_four_card}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_full_house}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_small_straight}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_large_straight}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_yahtzee}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={styles.userScoreCell}
+                    >
+                      <Text style={styles.MScoreTxt}>
+                        {playerSBoard.modal_chance}
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
               </View>
-            </TouchableWithoutFeedback>
+            </View>
           </View>
-        </TouchableWithoutFeedback>
+        </Pressable>
       </Modal>
       <View style={styles.sBoardSite}>
         <View style={styles.boardTop}>
@@ -1757,9 +1744,8 @@ export default function GameScreen({ navigation, route }) {
           }}
         >
           <Text style={styles.btnRollTxt}>Roll</Text>
-          <Text style={styles.CountTxt}>{rollChance}</Text>
         </TouchableOpacity>
-        {/* <TouchableOpacity
+        <TouchableOpacity
           style={styles.btnReRoll}
           activeOpacity={0.9}
           onPress={() => {
@@ -1769,7 +1755,7 @@ export default function GameScreen({ navigation, route }) {
         >
           <Text style={styles.btnRollTxt}>Re Roll</Text>
           <Text style={styles.CountTxt}>{rollChance}</Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </View>
       <View>
         <View style={styles.btnSite}>
@@ -2102,8 +2088,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   btnRoll: {
-    width: "auto",
-    height: height * 60,
+    width: 80,
+    height: 60,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#815E06",
@@ -2117,7 +2103,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 4,
     flexDirection: "row",
-    paddingHorizontal: width * 20,
+    marginRight: 10,
   },
   btnReRoll: {
     width: 130,
@@ -2140,12 +2126,11 @@ const styles = StyleSheet.create({
   btnRollTxt: {
     fontSize: 25,
     color: "#FFFFFF",
-    marginRight: width * 8,
   },
   CountTxt: {
     fontSize: 25,
     color: "#FFFFFF",
-    marginLeft: width * 8,
+    marginLeft: 10,
   },
   diceBox: {
     width: "100%",

@@ -18,12 +18,18 @@ import {
 import Header from "../Components/Header";
 import ChannelButton from "../Components/Btns/ChannelButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import HeaderBtnRule from "../Components/Btns/HeaderBtnRule";
 import io from "socket.io-client";
 
 export default function Channel({ navigation }) {
   const [userID, setUserID] = useState();
   const [userName, setUsername] = useState();
   const [refreshing, setRefreshing] = useState(false);
+  const backPressed = () => {
+    WebSocket.current.close();
+    console.log("Test");
+    navigation.goBack();
+  };
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     // wait(2000).then(() => setRefreshing(false));
@@ -103,12 +109,27 @@ export default function Channel({ navigation }) {
     return () => backHandler.remove();
   }, []);
   const backPress = () => {
+    WebSocket.current.close();
     navigation.goBack();
   };
 
   return (
     <View style={styles.main}>
-      <Header />
+      <View style={styles.header}>
+        <View style={styles.headerRule}>
+          <HeaderBtnRule />
+        </View>
+        <View style={styles.headerTitle}>
+          <Text style={styles.headerTitleText}>Yatzy Dice</Text>
+        </View>
+        <View style={styles.headerMy}>
+          <View style={styles.btnSite}>
+            <TouchableOpacity onPress={backPress}>
+              <Text style={styles.btnText}>Back</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
       <ScrollView
         persistentScrollbar={true}
         showsVerticalScrollIndicator={true}
@@ -188,6 +209,36 @@ export default function Channel({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    backgroundColor: "#7EB85A",
+    height: 54,
+  },
+  headerRule: {
+    alignItems: "flex-start",
+    justifyContent: "center",
+    marginLeft: 10,
+  },
+  headerTitle: {
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+  },
+  headerTitleText: {
+    fontSize: 30,
+    color: "#FFFFFF",
+  },
+  headerMy: {
+    alignItems: "flex-end",
+    justifyContent: "center",
+    marginRight: 10,
+  },
+  btnText: {
+    fontSize: 20,
+    color: "#FFFFFF",
+  },
   main: {
     flex: 1,
     backgroundColor: "#A8D98A",

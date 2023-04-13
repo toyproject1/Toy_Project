@@ -3,6 +3,7 @@ import CustomInput from "../Components/Btns/CustomInput";
 import { Text, StyleSheet, Pressable, View, Json, Alert } from "react-native";
 import CustomButton from "../Components/Btns/CustomButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-simple-toast";
 import { Buffer } from "buffer";
 import axios from "axios";
 
@@ -12,6 +13,9 @@ const Login = ({ navigation }) => {
 
   const onSubmit = async () => {
     let temp;
+
+    try {
+    } catch (e) {}
     await axios
       .post(`http://3.38.165.165:3000/api/signIn`, {
         user_email: Email,
@@ -49,11 +53,22 @@ const Login = ({ navigation }) => {
         console.log(userInfo);
         userInfo["access_token"] = temp.access_token;
         userInfo["refresh_token"] = temp.refresh_token;
+        navigation.reset({ routes: [{ name: "MainMenu" }] });
 
-        navigation.navigate("MainMenu");
+        Toast.showWithGravity(
+          "로그인에 성공하였습니다.",
+          Toast.SHORT,
+          Toast.TOP
+        );
       })
-      .catch((err) => console.log("err"));
-    // await AsyncStorage.setItem("userInfo");
+      .catch((err) => {
+        console.log("err");
+        Toast.showWithGravity(
+          "이메일과 비밀번호가 일치하지 않습니다.",
+          Toast.SHORT,
+          Toast.TOP
+        );
+      });
   };
 
   return (
@@ -68,6 +83,7 @@ const Login = ({ navigation }) => {
         value={Email}
         setValue={setEmail}
         placeholder="Email"
+        type="email"
       />
       <CustomInput
         value={password}
@@ -79,7 +95,7 @@ const Login = ({ navigation }) => {
       <CustomButton onPress={onSubmit} text="Sign In" />
       <View style={styles.otherButtonContainer}>
         <Pressable>
-          <Text style={styles.otherButtonText}>Login </Text>
+          <Text style={styles.choiceButtonText}>Login </Text>
         </Pressable>
         <Text style={styles.otherButtonText}>|</Text>
         <Pressable
@@ -131,6 +147,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#000000",
     marginRight: 8,
+  },
+  choiceButtonText: {
+    fontWeight: "500",
+    fontSize: 15,
+    color: "#000000",
+    marginRight: 8,
+    textDecorationLine: "underline",
   },
 });
 export default Login;

@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import Header from "../Components/Header";
+import HeaderBtnRule from "../Components/Btns/HeaderBtnRule";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Buffer } from "buffer";
@@ -22,6 +22,9 @@ export default function HostGameMenu({ navigation }) {
   const [userName, setUsername] = useState();
   const [Host, setHost] = useState("Host");
   // const [Room, setRoom] = useState({});
+  const backPressed = () => {
+    navigation.goBack();
+  };
   useEffect(() => {
     const getData = async () => {
       try {
@@ -137,7 +140,21 @@ export default function HostGameMenu({ navigation }) {
 
   return (
     <View style={styles.main}>
-      <Header />
+      <View style={styles.header}>
+        <View style={styles.headerRule}>
+          <HeaderBtnRule />
+        </View>
+        <View style={styles.headerTitle}>
+          <Text style={styles.headerTitleText}>Yatzy Dice</Text>
+        </View>
+        <View style={styles.headerMy}>
+          <View style={styles.btnSite}>
+            <TouchableOpacity onPress={backPressed}>
+              <Text style={styles.btnText}>Back</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
       <View>
         <View style={styles.container}>
           <View style={styles.txts}>
@@ -210,6 +227,36 @@ export default function HostGameMenu({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    backgroundColor: "#7EB85A",
+    height: 54,
+  },
+  headerRule: {
+    alignItems: "flex-start",
+    justifyContent: "center",
+    marginLeft: 10,
+  },
+  headerTitle: {
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+  },
+  headerTitleText: {
+    fontSize: 30,
+    color: "#FFFFFF",
+  },
+  headerMy: {
+    alignItems: "flex-end",
+    justifyContent: "center",
+    marginRight: 10,
+  },
+  btnText: {
+    fontSize: 20,
+    color: "#FFFFFF",
+  },
   main: {
     flex: 1,
     width: "100%",

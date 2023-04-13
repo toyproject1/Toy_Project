@@ -15,6 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Header from "../Components/Header";
 import Dice from "../Components/Imgs/DiceNew03.png";
 import { width, height } from "../globalStyles";
+import { Audio } from "expo-av";
 
 const MainMenu = ({ navigation }) => {
   const backAction = () => {
@@ -64,6 +65,25 @@ const MainMenu = ({ navigation }) => {
     ]);
   };
 
+  const [sound, setSound] = useState();
+
+  const pickSound = async () => {
+    const soundOption1 = JSON.parse(await AsyncStorage.getItem("option_state"));
+    if(soundOption1.eftSound) {
+      const { sound } = await Audio.Sound.createAsync(require("../../assets/pick.mp3"));
+      setSound(sound);
+      await sound.playAsync();
+      await sound.setVolumeAsync(0.9);
+    }
+  };
+
+  useEffect(() => {
+    return ( sound ? () => {
+      console.log('Unloading Sound');
+      sound.unloadAsync();
+    } : undefined );
+  }, [sound]);
+
   useEffect(() => {
     userData();
     const backHandler = BackHandler.addEventListener(
@@ -96,14 +116,20 @@ const MainMenu = ({ navigation }) => {
         <TouchableOpacity
           style={styles.btnshg}
           activeOpacity={0.9}
-          onPress={() => navigation.navigate("HostGameMenu")}
+          onPress={() => {
+            pickSound();
+            navigation.navigate("HostGameMenu");
+          }}
         >
           <Text style={styles.btnText}>Host Game</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.btnshg}
           activeOpacity={0.9}
-          onPress={() => navigation.navigate("Channel")}
+          onPress={() => {
+            pickSound();
+            navigation.navigate("Channel");
+          }}
         >
           <Text style={styles.btnText}>Join Game</Text>
         </TouchableOpacity>
@@ -112,14 +138,18 @@ const MainMenu = ({ navigation }) => {
           <TouchableOpacity
             style={styles.btnslg}
             activeOpacity={0.9}
-            onPress={logout}
+            onPress={()=> {
+              pickSound();
+              logout();
+            }}
           >
-            <Text style={styles.btnText}>Log Out</Text>
+            <Text style={styles.btnText}>LogOut</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.btnExit}
             activeOpacity={0.9}
             onPress={() => {
+              pickSound();
               Alert.alert("Hold on!", "앱을 종료하시겠습니까?", [
                 {
                   text: "취소",
@@ -190,7 +220,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   btnText: {
-    fontSize: width * 28,
+    fontSize: width * 26,
   },
   mainlg: {
     flex: 1,
@@ -200,8 +230,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   btnslg: {
-    width: 115,
-    height: 60,
+    width: width * 115,
+    height: height * 60,
     borderRadius: 15,
     shadowColor: "#000",
     shadowOffset: {
@@ -218,8 +248,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   btnExit: {
-    width: 115,
-    height: 60,
+    width: width * 115,
+    height: height * 60,
     borderRadius: 15,
     shadowColor: "#000",
     shadowOffset: {

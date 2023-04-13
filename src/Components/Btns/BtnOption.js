@@ -8,13 +8,14 @@ import {
   Modal,
   Pressable,
   Switch,
+  TouchableWithoutFeedback,
 } from "react-native";
 import Slider from "@react-native-community/slider";
 import Bgm from "../../../assets/DreamingRain.mp3";
 import { Audio } from "expo-av";
 import AppContext from "../AppContext";
 
-export default function HeaderBtnMy() {
+export default function BtnOption() {
   const [modalVisible, setModalVisible] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
   const [Enabled, setEnabled] = useState(false);
@@ -35,9 +36,13 @@ export default function HeaderBtnMy() {
   }, [modalVisible]);
 
   const toggleSwitch = () => {
+    pickSound();
     setIsEnabled((previousState) => !previousState)
   };
-  const toggleSwitch2 = () => setEnabled((previousState) => !previousState);
+  const toggleSwitch2 = () => {
+    pickSound();
+    setEnabled((previousState) => !previousState);
+  }
 
   /*
   * 옵션 AsyncStorage 저장
@@ -70,6 +75,23 @@ export default function HeaderBtnMy() {
   }
 
   const [sound, setSound] = useState();
+
+  const pickSound = async () => {
+    const soundOption1 = JSON.parse(await AsyncStorage.getItem("option_state"));
+    if(soundOption1.eftSound) {
+      const { sound } = await Audio.Sound.createAsync(require("../../../assets/pick.mp3"));
+      setSound(sound);
+      await sound.playAsync();
+      await sound.setVolumeAsync(0.9);
+    }
+  };
+
+  useEffect(() => {
+    return ( sound ? () => {
+      console.log('Unloading Sound');
+      sound.unloadAsync();
+    } : undefined );
+  }, [sound]);
 
   // const BGM = async () => {
   //   const { sound } = await Audio.Sound.createAsync(Bgm);
@@ -111,59 +133,66 @@ export default function HeaderBtnMy() {
         animationType="none"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
+        // onRequestClose={() => {
+          //   setModalVisible(!modalVisible);
+        // }}
       >
-        <View style={styles.modalBG}>
-          <View style={styles.modalCard}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalHeaderTitle}>Option</Text>
-            </View>
-            <View style={styles.container}>
-              <View style={styles.position}>
-                <Text style={styles.bgSound}>BackGround Sound</Text>
-                <Switch
-                  style={styles.bgsize}
-                  trackColor={{ false: "#767577", true: "#81b0ff" }}
-                  thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-                  ios_backgroundColor="#3e3e3e"
-                  onValueChange={toggleSwitch}
-                  value={isEnabled}
-                />
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View style={styles.modalBG}>
+            <TouchableWithoutFeedback onPress={() => {}}>
+              <View style={styles.modalCard}>
+                <View style={styles.modalHeader}>
+                  <Text style={styles.modalHeaderTitle}>Option</Text>
+                </View>
+                <View style={styles.container}>
+                  <View style={styles.position}>
+                    <Text style={styles.bgSound}>BackGround Sound</Text>
+                    <Switch
+                      style={styles.bgsize}
+                      trackColor={{ false: "#767577", true: "#81b0ff" }}
+                      thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+                      ios_backgroundColor="#3e3e3e"
+                      onValueChange={toggleSwitch}
+                      value={isEnabled}
+                    />
+                  </View>
+                  <View style={styles.position}>
+                    <Text style={styles.bgSound}>Sound Effect</Text>
+                    <Switch
+                      style={styles.bgsize}
+                      trackColor={{ false: "#767577", true: "#81b0ff" }}
+                      thumbColor={Enabled ? "#f5dd4b" : "#f4f3f4"}
+                      ios_backgroundColor="#3e3e3e"
+                      onValueChange={toggleSwitch2}
+                      value={Enabled}
+                    />
+                  </View>
+                </View>
+                <View style={styles.btnOp}>
+                  <Pressable onPress={() => setModalVisible(!modalVisible)}>
+                    <Text style={styles.btnClose}>Close</Text>
+                  </Pressable>
+                  <Pressable onPress={() => {
+                    setModalVisible(!modalVisible)
+                    saveOption()
+                    console.log('touch Save')
+                    }
+                  }>
+                    <Text style={styles.btnSave}>Save</Text>
+                  </Pressable>
+                </View>
               </View>
-              <View style={styles.position}>
-                <Text style={styles.bgSound}>Sound Effect</Text>
-                <Switch
-                  style={styles.bgsize}
-                  trackColor={{ false: "#767577", true: "#81b0ff" }}
-                  thumbColor={Enabled ? "#f5dd4b" : "#f4f3f4"}
-                  ios_backgroundColor="#3e3e3e"
-                  onValueChange={toggleSwitch2}
-                  value={Enabled}
-                />
-              </View>
-            </View>
-            <View style={styles.btnOp}>
-              <Pressable onPress={() => setModalVisible(!modalVisible)}>
-                <Text style={styles.btnClose}>Close</Text>
-              </Pressable>
-              <Pressable onPress={() => {
-                setModalVisible(!modalVisible)
-                saveOption()
-                console.log('touch Save')
-                }
-              }>
-                <Text style={styles.btnSave}>Save</Text>
-              </Pressable>
-            </View>
+            </TouchableWithoutFeedback>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
       <TouchableOpacity
         style={styles.btns}
         activeOpacity={0.9}
-        onPress={() => setModalVisible(true)}
+        onPress={() => {
+          pickSound();
+          setModalVisible(true);
+        }}
       >
         <Text style={styles.btnTextop}>Option</Text>
       </TouchableOpacity>
@@ -198,6 +227,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
+    elevation: 3,
   },
   modalCard: {
     flex: 0.8,
