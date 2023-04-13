@@ -94,40 +94,6 @@ export default function BtnOption() {
     } : undefined );
   }, [sound]);
 
-  // const BGM = async () => {
-  //   const { sound } = await Audio.Sound.createAsync(Bgm);
-  //   setSound(sound);
-  //   await sound.playAsync();
-  //   await sound.setIsLoopingAsync(true);
-  //   await sound.setVolumeAsync(0.3);
-  // };
-  //
-  // useEffect(() => {
-  //   AsyncStorage.getItem("option_state").then(r => {
-  //     if(JSON.parse(r).bgcSound !== false){
-  //       BGM();
-  //     }
-  //   });
-  // },[]);
-
-
-
-  // useEffect(() => {
-  //   const option = {
-  //     bgcSound: isEnabled,
-  //     eftSound: Enabled,
-  //   }
-  //   AsyncStorage.setItem("option_state", JSON.stringify(option)).then(r =>
-  //     console.log(isEnabled)
-  //   );
-  //
-  //   AsyncStorage.getItem("option_state").then(r => {
-  //     console.log('r= ',r);
-  //   });
-  //
-  // }, [isEnabled, Enabled]);
-
-
   return (
     <View style={styles.btnSite}>
       <Modal
