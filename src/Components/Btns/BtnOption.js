@@ -14,6 +14,7 @@ import Slider from "@react-native-community/slider";
 import Bgm from "../../../assets/DreamingRain.mp3";
 import { Audio } from "expo-av";
 import AppContext from "../AppContext";
+import { height, width } from "../../globalStyles";
 
 export default function BtnOption() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -271,8 +272,8 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   btns: {
-    width: 250,
-    height: 60,
+    width: width * 250,
+    height: height * 60,
     borderRadius: 15,
     shadowColor: "#000",
     shadowOffset: {

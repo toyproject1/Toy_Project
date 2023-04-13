@@ -203,8 +203,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   btnshg: {
-    width: 250,
-    height: 60,
+    width: width * 250,
+    height: height * 60,
     borderRadius: 15,
     shadowColor: "#000",
     shadowOffset: {
